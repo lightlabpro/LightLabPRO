@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Light Lab PRO — Full Settings &amp; Values Documentation</title>
+  <meta name="description" content="UI-first reference from README_LightLabPRO_Features_Tutorial.md — control names, value ranges, and notes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="#top">
+        <span class="brand-dot"></span>
+        <span>Light Lab PRO</span>
+      </a>
+      <nav class="top-nav">
+        <a href="#quickstart">Quick Start</a>
+        <a href="#modules">Modules</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#downloads">Downloads</a>
+      </nav>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="badge">README-sourced</p>
+          <div id="heroReadmeIntro" class="readme-md readme-md-hero"></div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#quickstart">Start Tutorial</a>
+            <a class="btn btn-secondary" href="#modules">Explore Features</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <h2>What you get</h2>
+          <ul>
+            <li>Clear step-by-step flow for first setup</li>
+            <li>Visual walkthroughs matched to each tab screenshot</li>
+            <li>Practical tips for URP, cookies, presets, and performance</li>
+            <li>Troubleshooting for render pipeline and persistence issues</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section container" id="quickstart">
+      <div class="section-head">
+        <h2>Suggested documentation flow</h2>
+        <p class="subtle">Verbatim from README §19.</p>
+        <input id="searchInput" class="search" type="search" placeholder="Search modules, effects, or terms..." />
+      </div>
+      <div id="quickstartReadme" class="readme-md readme-md-steps"></div>
+    </section>
+
+    <section class="section section-soft" id="modules">
+      <div class="container">
+        <h2>Feature Modules</h2>
+        <p class="subtle">Each module shows <strong>verbatim</strong> excerpts from <code>README_LightLabPRO_Features_Tutorial.md</code> (same tables and wording). Click a card to load its README sections.</p>
+        <div class="modules-layout">
+        <div class="cards" id="moduleCards">
+          <article class="card card-text" data-readme-sections="1" data-keywords="window overview open lighting settings light explorer render pipeline asset">
+            <div class="card-body">
+              <h3>Window Overview & Utilities</h3>
+              <p>Title bar tools, utility actions, and top-level tab navigation behavior as documented in the latest UI-first manual.</p>
+            </div>
+          </article>
+
+          <article class="card card-text" data-readme-sections="2,22,24" data-keywords="scene lights refresh select all deselect sort cluster focus on off">
+            <div class="card-body">
+              <h3>Scene Lights & Cluster</h3>
+              <p>Refresh, sorting modes, Edit toggles, cluster groups, focus controls, and synced-property cluster behavior.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="3,21,25,37" data-keywords="studio lighting baseline layout gizmos">
+            <img src="StudioLightingUI.png" alt="Studio Lighting tab interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Studio Lighting</h3>
+              <p>Arrange scene lights, tune global intensity and shadow bias, and manage live-edit references with gizmo/label visibility controls.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="5,7,17" data-keywords="presets global fx animation pro cookies">
+            <img src="PresetsTabUI.png" alt="Presets tab interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Presets</h3>
+              <p>Create reusable FX, Animation, PRO Cookies, and Global presets to apply consistent looks across scenes quickly.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="4" data-keywords="light groups grouping organization">
+            <img src="LightGroupsUI.png" alt="Light groups interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Light Groups</h3>
+              <p>Organize many lights into manageable sets for faster editing and cleaner project workflows.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="13,20,23,27" data-keywords="fx settings basic settings intensity range shadows">
+            <img src="FxAndSettingsBasicSettingsUI.png" alt="FX basic settings interface" loading="lazy" />
+            <div class="card-body">
+              <h3>FX & Settings: Basic</h3>
+              <p>Control core light parameters such as color, intensity, range, shadow behavior, and render-related options.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="6,7" data-keywords="fx settings presets section saved effect setups">
+            <img src="FxAndSettingsPresetsUI.png" alt="FX and settings presets interface" loading="lazy" />
+            <div class="card-body">
+              <h3>FX & Settings: Presets Panel</h3>
+              <p>Use the in-tab presets controls to quickly apply tested effect combinations while keeping per-light adjustments editable.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="8,26,38" data-keywords="gradual effect smooth transition">
+            <img src="FxAndSettingsGradualEffectUI.png" alt="Gradual effect interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Gradual Effect</h3>
+              <p>Animate intensity and range smoothly across min/max values using forward, reverse, ping-pong, or random behavior.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="8,26,38" data-keywords="strobe effect pulse flashing">
+            <img src="FxAndSettingsStrobeEffectUI.png" alt="Strobe effect interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Strobe Effect</h3>
+              <p>Create rhythmic pulse patterns by toggling intensity/range with loop or random timing styles.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="8,26,38" data-keywords="step sequencer timed states">
+            <img src="FxAndSettingsStepSequencerUI.png" alt="Step sequencer interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Step Sequencer</h3>
+              <p>Define ordered lighting steps with per-step color, intensity, and range for custom time-based lighting choreography.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="10,33" data-keywords="color switcher forward reverse random gradient">
+            <img src="FxAndSettingsColorSwitcherUI.png" alt="Color switcher interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Color Switcher</h3>
+              <p>Cycle through a palette in forward, reverse, or random modes with instant or smooth gradual transitions.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="12,32" data-keywords="material changer realtime emission albedo">
+            <img src="FxAndSettingsMaterialChangerUI.png" alt="Material changer interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Material Changer</h3>
+              <p>Drive material albedo/emission from live light behavior for synchronized neon, signage, and reactive scene accents.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="11,34" data-keywords="sound effect audio source">
+            <img src="FxAndSettingsSoundEffectUI.png" alt="Sound effect handler interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Sound Effect Handler</h3>
+              <p>Attach and configure audio playback options, with optional intensity-linked volume behavior.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="11,34" data-keywords="sound reactor rms audio reactive">
+            <img src="FxAndSettingsSoundReactorUI.png" alt="Sound reactor interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Sound Reactor</h3>
+              <p>Convert audio amplitude into reactive light intensity and color for music-synced environments.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="9,27" data-keywords="volumetrics urp fog additional light">
+            <img src="FxAndSettingsVolumetricsUI.png" alt="Volumetrics controls interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Volumetrics (URP)</h3>
+              <p>Integrate fog contribution per-light in URP projects using renderer features, volume overrides, and additional light components.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="16,31" data-keywords="pro cookies texture layers blur motion">
+            <img src="ProCookiesTextureTabUI.png" alt="PRO Cookies texture tab interface" loading="lazy" />
+            <div class="card-body">
+              <h3>PRO Cookies: Texture</h3>
+              <p>Blend up to 4 texture layers with color tinting, blur controls, and optional cookie motion presets.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="16,31" data-keywords="pro cookies animated custom render texture crt">
+            <img src="ProCookiesAnimatedTabUI.png" alt="PRO Cookies animated tab interface" loading="lazy" />
+            <div class="card-body">
+              <h3>PRO Cookies: Animated</h3>
+              <p>Assign animated custom render textures and edit initialization materials directly for dynamic procedural cookie output.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="16,31" data-keywords="pro cookies video clip render texture">
+            <img src="ProCookiesVideoTabUI.png" alt="PRO Cookies video tab interface" loading="lazy" />
+            <div class="card-body">
+              <h3>PRO Cookies: Video</h3>
+              <p>Route a VideoClip through VideoPlayer and RenderTexture, then use it as a live cookie for cinematic light projection.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="14" data-keywords="animation firefly movement">
+            <img src="AnimationTabFireflyUI.png" alt="Animation firefly tab interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Animation: Firefly</h3>
+              <p>Create natural drifting light movement with obstacle avoidance, seeded randomness, and configurable jitter ranges.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="14" data-keywords="animation rotation axis pingpong random">
+            <img src="AnimationTabRotatorUI.png" alt="Animation rotation tab interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Animation: Rotation</h3>
+              <p>Animate X/Y/Z rotation independently in forward, ping-pong, or random patterns with optional axis-specific jitter.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="15,35" data-keywords="day night directional cycle skybox">
+            <img src="DayNightCycleDirectionalUI01.png" alt="Day-night directional controls screenshot one" loading="lazy" />
+            <div class="card-body">
+              <h3>Day-Night Cycle: Directional (1)</h3>
+              <p>Configure phase timing and directional light behavior for sunrise, day, sunset, and night transitions.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="15,35" data-keywords="day night sun colors intensity phases">
+            <img src="DayNightCycleDirectionalUI02.png" alt="Day-night directional controls screenshot two" loading="lazy" />
+            <div class="card-body">
+              <h3>Day-Night Cycle: Directional (2)</h3>
+              <p>Fine-tune phase-isolated color/intensity interpolation so transitions stay smooth while each phase remains stable.</p>
+            </div>
+          </article>
+
+          <article class="card" data-readme-sections="15,5,35" data-keywords="moon cycle profile skybox">
+            <img src="DayNightCycleMoonCycleUI.png" alt="Day-night moon cycle interface" loading="lazy" />
+            <div class="card-body">
+              <h3>Day-Night Cycle: Moon</h3>
+              <p>Adjust moon texture, glow, visibility, and orbital presentation for a cohesive night atmosphere.</p>
+            </div>
+          </article>
+        </div>
+        <aside class="doc-panel" id="docPanel" aria-live="polite">
+          <div class="doc-panel-head">
+            <p class="doc-kicker">Module Documentation</p>
+            <h3 id="docTitle">Select a module</h3>
+            <p id="docSummary" class="doc-summary-line">README text loads first (tables and wording match the markdown file). Screenshot below.</p>
+            <p id="docSectionIds" class="doc-section-ids" aria-label="README section numbers"></p>
+          </div>
+          <div class="doc-panel-body doc-panel-readme">
+            <h4 class="readme-heading">README excerpt (verbatim)</h4>
+            <article id="docReadmeBody" class="readme-md"></article>
+          </div>
+          <div class="doc-panel-thumb">
+            <p class="doc-thumb-label">Screenshot (reference)</p>
+            <button type="button" id="docImageOpen" class="doc-thumb-btn" aria-label="Open full-size screenshot">
+              <img id="docImage" src="StudioLightingUI.png" alt="Selected module reference image" loading="lazy" />
+            </button>
+            <p class="doc-thumb-hint">Click image to view full size</p>
+            <p id="docImageCaption" class="doc-thumb-caption">Studio Lighting reference</p>
+          </div>
+        </aside>
+      </div>
+      </div>
+    </section>
+
+    <section class="section container" id="troubleshooting">
+      <h2>Troubleshooting</h2>
+      <p class="subtle">Verbatim from README §18.</p>
+      <div id="troubleshootingReadme" class="readme-md readme-md-wide"></div>
+    </section>
+
+    <section class="section section-soft" id="downloads">
+      <div class="container downloads">
+        <h2>Reference Files</h2>
+        <p>Need the full settings and values documentation? Open the included docs directly:</p>
+        <div class="download-links">
+          <a class="btn btn-secondary" href="README_LightLabPRO_Features_Tutorial.md">Markdown Guide</a>
+          <a class="btn btn-secondary" href="Light Lab PRO.pdf">PDF Guide</a>
+          <a class="btn btn-secondary" href="Light Lab PRO.docx">DOCX Guide</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="imageLightbox" class="lightbox" hidden aria-hidden="true">
+    <div class="lightbox-backdrop" data-lightbox-close tabindex="-1" aria-hidden="true"></div>
+    <div class="lightbox-inner" role="dialog" aria-modal="true" aria-labelledby="lightboxCaption">
+      <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close full-size view">×</button>
+      <img id="lightboxImage" class="lightbox-img" src="" alt="" />
+      <p id="lightboxCaption" class="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <p>Light Lab PRO Tutorial Hub</p>
+      <a href="#top">Back to top</a>
+    </div>
+  </footer>
+
+  <script src="readme-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
