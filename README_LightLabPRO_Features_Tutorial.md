@@ -1,15 +1,11 @@
-# Light Lab PRO — Full Settings & Values Documentation
+# Light Lab PRO — Tutorials & Documentation
 
-Learn how every setting in **Light Lab PRO** works: names match the editor, value ranges match the sliders, with short notes where it helps. Use this alongside Unity’s **Details & Instructions** panels.
+## 1) Window overview
 
 **Conventions**
 - **Range** = min–max shown on a slider in code (or “unbounded” for float fields).
 - **Per-light** = inside an expanded light row after **Edit** is enabled.
 - **Pipeline**: some Unity `Light` fields behave differently in **Built-In** vs **URP/HDRP** (called out where relevant).
-
----
-
-## 1) Window overview
 
 | Area | Purpose |
 |------|---------|
@@ -664,7 +660,7 @@ When **Sync with Light Intensity** is enabled:
 
 ## 40) Revision note
 
-This file was **restored** to the **Full Settings & Values Documentation** style after a tutorial-style rewrite. Without version control, **exact** byte-for-byte recovery of an older README is not guaranteed — this version is **rebuilt from `LightLabProWindow.cs` bindings** and expanded appendices. If you need a **perfect** match to an older file, use **Cursor Local History** or a backup copy.
+This file was **restored** to a **settings reference** style after a tutorial-style rewrite. Without version control, **exact** byte-for-byte recovery of an older README is not guaranteed — this version is **rebuilt from `LightLabProWindow.cs` bindings** and expanded appendices. If you need a **perfect** match to an older file, use **Cursor Local History** or a backup copy.
 
 ---
 
