@@ -516,10 +516,18 @@ h1 span {
 }
 
 .doc-panel-readme,
-#troubleshootingReadme,
-#quickstartReadme {
+#troubleshootingReadme {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.modules-section-head {
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.modules-section-head .subtle {
+  margin-bottom: 0;
 }
 
 .readme-md table {

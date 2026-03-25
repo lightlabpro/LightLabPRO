@@ -13,7 +13,6 @@ const lightboxImage = document.getElementById("lightboxImage");
 const lightboxCaption = document.getElementById("lightboxCaption");
 const docImageOpen = document.getElementById("docImageOpen");
 const heroReadmeIntro = document.getElementById("heroReadmeIntro");
-const quickstartReadme = document.getElementById("quickstartReadme");
 const troubleshootingReadme = document.getElementById("troubleshootingReadme");
 
 const README_URL = "README_LightLabPRO_Features_Tutorial.md";
@@ -80,7 +79,6 @@ function showReadmeError(message) {
   const html = `<p class="readme-error"><strong>Could not load README.</strong> ${message}</p>`;
   if (docReadmeBody) docReadmeBody.innerHTML = html;
   if (heroReadmeIntro) heroReadmeIntro.innerHTML = html;
-  if (quickstartReadme) quickstartReadme.innerHTML = "";
   if (troubleshootingReadme) troubleshootingReadme.innerHTML = "";
 }
 
@@ -104,9 +102,6 @@ async function loadReadme() {
 
   if (heroReadmeIntro && by.preamble) {
     heroReadmeIntro.innerHTML = renderMarkdown(by.preamble);
-  }
-  if (quickstartReadme && by["19"]) {
-    quickstartReadme.innerHTML = renderMarkdown(by["19"]);
   }
   if (troubleshootingReadme && by["18"]) {
     troubleshootingReadme.innerHTML = renderMarkdown(by["18"]);
