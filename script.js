@@ -3,11 +3,10 @@ const themeToggle = document.getElementById("themeToggle");
 const searchInput = document.getElementById("searchInput");
 const cards = Array.from(document.querySelectorAll("#moduleCards .card"));
 const docTitle = document.getElementById("docTitle");
-const docSummary = document.getElementById("docSummary");
-const docSectionIds = document.getElementById("docSectionIds");
 const docReadmeBody = document.getElementById("docReadmeBody");
+const docReadmeWrap = document.getElementById("docReadmeWrap");
+const docThumbWrap = document.getElementById("docThumbWrap");
 const docImage = document.getElementById("docImage");
-const docImageCaption = document.getElementById("docImageCaption");
 const imageLightbox = document.getElementById("imageLightbox");
 const lightboxImage = document.getElementById("lightboxImage");
 const lightboxCaption = document.getElementById("lightboxCaption");
@@ -40,14 +39,23 @@ function escapeHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
+/** Strips README-style numeric prefixes from headings for on-site reading. */
+function stripReadmeNumbering(md) {
+  if (!md || typeof md !== "string") return md;
+  return md
+    .replace(/^##\s*\d+\)\s+/gm, "## ")
+    .replace(/^###\s*\d+(?:\.\d+)+\s+/gm, "### ");
+}
+
 function renderMarkdown(md) {
   if (!md || !String(md).trim()) {
     return "<p><em>(empty)</em></p>";
   }
+  const cleaned = stripReadmeNumbering(md);
   if (typeof marked !== "undefined" && marked.parse) {
-    return marked.parse(md, { async: false });
+    return marked.parse(cleaned, { async: false });
   }
-  return `<pre class="readme-fallback">${escapeHtml(md)}</pre>`;
+  return `<pre class="readme-fallback">${escapeHtml(cleaned)}</pre>`;
 }
 
 function parseReadmeSections(md) {
@@ -125,11 +133,6 @@ function selectCard(card) {
     .filter(Boolean);
 
   docTitle.textContent = title;
-  docSummary.textContent =
-    "Tables and paragraphs below are copied verbatim from README_LightLabPRO_Features_Tutorial.md.";
-  docSectionIds.textContent = sectionIds.length
-    ? `README sections: \u00a7${sectionIds.join(", \u00a7")}`
-    : "";
 
   const by = window.__readmeBySection;
   if (by && docReadmeBody) {
@@ -142,14 +145,21 @@ function selectCard(card) {
     docReadmeBody.innerHTML = "<p><em>Loading README\u2026</em></p>";
   }
 
-  if (cardImage) {
-    docImage.src = cardImage.getAttribute("src");
-    docImage.alt = cardImage.getAttribute("alt") || `${title} reference image`;
-    docImageCaption.textContent = `${title} screenshot`;
-  } else if (mappedImage) {
-    docImage.src = mappedImage.src;
-    docImage.alt = `${title} reference image`;
-    docImageCaption.textContent = mappedImage.caption;
+  const hasRefImage = Boolean(cardImage || mappedImage);
+  if (docThumbWrap) docThumbWrap.hidden = !hasRefImage;
+  if (docReadmeWrap) docReadmeWrap.classList.toggle("doc-thumb-visible", hasRefImage);
+
+  if (hasRefImage) {
+    if (cardImage) {
+      docImage.src = cardImage.getAttribute("src");
+      docImage.alt = cardImage.getAttribute("alt") || `${title} reference image`;
+    } else if (mappedImage) {
+      docImage.src = mappedImage.src;
+      docImage.alt = `${title} reference image`;
+    }
+  } else if (docImage) {
+    docImage.removeAttribute("src");
+    docImage.alt = "";
   }
 }
 
@@ -198,8 +208,8 @@ function openLightbox() {
   if (!imageLightbox || !lightboxImage || !docImage) return;
   lightboxImage.src = docImage.currentSrc || docImage.src;
   lightboxImage.alt = docImage.alt || "Screenshot";
-  if (lightboxCaption && docImageCaption) {
-    lightboxCaption.textContent = docImageCaption.textContent || "";
+  if (lightboxCaption) {
+    lightboxCaption.textContent = docTitle?.textContent?.trim() || docImage.alt || "";
   }
   imageLightbox.removeAttribute("hidden");
   imageLightbox.setAttribute("aria-hidden", "false");

@@ -47,7 +47,7 @@
         <div class="section-head modules-section-head">
           <div>
             <h2>Feature Modules</h2>
-            <p class="subtle">Each module shows <strong>verbatim</strong> excerpts from <code>README_LightLabPRO_Features_Tutorial.md</code> (same tables and wording). Click a card to load its README sections.</p>
+            <p class="subtle">Choose a module to load its documentation.</p>
           </div>
           <input id="searchInput" class="search" type="search" placeholder="Search modules, effects, or terms..." />
         </div>
@@ -239,20 +239,16 @@
           <div class="doc-panel-head">
             <p class="doc-kicker">Module Documentation</p>
             <h3 id="docTitle">Select a module</h3>
-            <p id="docSummary" class="doc-summary-line">README text loads first (tables and wording match the markdown file). Screenshot below.</p>
-            <p id="docSectionIds" class="doc-section-ids" aria-label="README section numbers"></p>
           </div>
-          <div class="doc-panel-body doc-panel-readme">
-            <h4 class="readme-heading">README excerpt (verbatim)</h4>
-            <article id="docReadmeBody" class="readme-md"></article>
-          </div>
-          <div class="doc-panel-thumb">
-            <p class="doc-thumb-label">Screenshot (reference)</p>
-            <button type="button" id="docImageOpen" class="doc-thumb-btn" aria-label="Open full-size screenshot">
-              <img id="docImage" src="StudioLightingUI.png" alt="Selected module reference image" loading="lazy" />
-            </button>
-            <p class="doc-thumb-hint">Click image to view full size</p>
-            <p id="docImageCaption" class="doc-thumb-caption">Studio Lighting reference</p>
+          <div class="doc-panel-body">
+            <div id="docReadmeWrap" class="doc-panel-readme-wrap">
+              <div id="docThumbWrap" class="doc-thumb-float" hidden>
+                <button type="button" id="docImageOpen" class="doc-thumb-btn" aria-label="Open full-size screenshot">
+                  <img id="docImage" alt="" loading="lazy" />
+                </button>
+              </div>
+              <article id="docReadmeBody" class="readme-md doc-readme-article"></article>
+            </div>
           </div>
         </aside>
       </div>
@@ -261,7 +257,6 @@
 
     <section class="section container" id="troubleshooting">
       <h2>Troubleshooting</h2>
-      <p class="subtle">Verbatim from README §18.</p>
       <div id="troubleshootingReadme" class="readme-md readme-md-wide"></div>
     </section>
 
