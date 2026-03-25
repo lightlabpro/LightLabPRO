@@ -1,6 +1,6 @@
 # Light Lab PRO — Full Settings & Values Documentation
 
-This document is a **UI-first reference**: control names as they appear in **Light Lab PRO**, typical **value ranges** where the window enforces sliders, and short **notes** on behavior. It complements in-editor **Details & Instructions** foldouts.
+Learn how every setting in **Light Lab PRO** works: names match the editor, value ranges match the sliders, with short notes where it helps. Use this alongside Unity’s **Details & Instructions** panels.
 
 **Conventions**
 - **Range** = min–max shown on a slider in code (or “unbounded” for float fields).
