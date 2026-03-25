@@ -235,22 +235,38 @@
             </div>
           </article>
         </div>
-        <aside class="doc-panel" id="docPanel" aria-live="polite">
-          <div class="doc-panel-head">
-            <p class="doc-kicker">Module Documentation</p>
-            <h3 id="docTitle">Select a module</h3>
-          </div>
-          <div class="doc-panel-body">
-            <div id="docReadmeWrap" class="doc-panel-readme-wrap">
-              <div id="docThumbWrap" class="doc-thumb-float" hidden>
-                <button type="button" id="docImageOpen" class="doc-thumb-btn" aria-label="Open full-size screenshot">
-                  <img id="docImage" alt="" loading="lazy" />
-                </button>
-              </div>
-              <article id="docReadmeBody" class="readme-md doc-readme-article"></article>
+        <div class="doc-panel-column">
+          <div
+            id="docOverlayBackdrop"
+            class="doc-overlay-backdrop"
+            hidden
+            aria-hidden="true"
+          ></div>
+          <aside class="doc-panel" id="docPanel" aria-live="polite">
+            <div class="doc-panel-head">
+              <button
+                type="button"
+                id="docPanelClose"
+                class="doc-panel-close"
+                aria-label="Close documentation"
+              >
+                ×
+              </button>
+              <p class="doc-kicker">Module Documentation</p>
+              <h3 id="docTitle">Select a module</h3>
             </div>
-          </div>
-        </aside>
+            <div class="doc-panel-body">
+              <div id="docReadmeWrap" class="doc-panel-readme-wrap">
+                <div id="docThumbWrap" class="doc-thumb-float" hidden>
+                  <button type="button" id="docImageOpen" class="doc-thumb-btn" aria-label="Open full-size screenshot">
+                    <img id="docImage" alt="" loading="lazy" />
+                  </button>
+                </div>
+                <article id="docReadmeBody" class="readme-md doc-readme-article"></article>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
       </div>
     </section>

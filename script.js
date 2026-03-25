@@ -7,6 +7,9 @@ const docReadmeBody = document.getElementById("docReadmeBody");
 const docReadmeWrap = document.getElementById("docReadmeWrap");
 const docThumbWrap = document.getElementById("docThumbWrap");
 const docImage = document.getElementById("docImage");
+const docPanel = document.getElementById("docPanel");
+const docOverlayBackdrop = document.getElementById("docOverlayBackdrop");
+const docPanelClose = document.getElementById("docPanelClose");
 const imageLightbox = document.getElementById("imageLightbox");
 const lightboxImage = document.getElementById("lightboxImage");
 const lightboxCaption = document.getElementById("lightboxCaption");
@@ -83,6 +86,39 @@ function getReadmeMarkdown() {
   return null;
 }
 
+function isMobileModules() {
+  return typeof window.matchMedia === "function" && window.matchMedia("(max-width: 900px)").matches;
+}
+
+function openDocPanelMobile() {
+  if (!isMobileModules() || !docPanel || !docOverlayBackdrop) return;
+  docOverlayBackdrop.hidden = false;
+  docOverlayBackdrop.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => docOverlayBackdrop.classList.add("is-visible"));
+  docPanel.classList.add("doc-panel--open");
+  document.body.classList.add("doc-modal-open");
+}
+
+function closeDocPanelMobile() {
+  if (!docPanel || !docOverlayBackdrop) return;
+  docOverlayBackdrop.classList.remove("is-visible");
+  docPanel.classList.remove("doc-panel--open");
+  document.body.classList.remove("doc-modal-open");
+  window.setTimeout(() => {
+    docOverlayBackdrop.hidden = true;
+    docOverlayBackdrop.setAttribute("aria-hidden", "true");
+  }, 280);
+}
+
+function resetMobileDocOverlay() {
+  if (!docPanel || !docOverlayBackdrop) return;
+  docOverlayBackdrop.classList.remove("is-visible");
+  docPanel.classList.remove("doc-panel--open");
+  document.body.classList.remove("doc-modal-open");
+  docOverlayBackdrop.hidden = true;
+  docOverlayBackdrop.setAttribute("aria-hidden", "true");
+}
+
 function showReadmeError(message) {
   const html = `<p class="readme-error"><strong>Could not load README.</strong> ${message}</p>`;
   if (docReadmeBody) docReadmeBody.innerHTML = html;
@@ -116,11 +152,13 @@ async function loadReadme() {
   }
 
   if (cards[0]) {
-    selectCard(cards[0]);
+    selectCard(cards[0], { openMobile: false });
   }
 }
 
-function selectCard(card) {
+function selectCard(card, options = {}) {
+  const openMobile = options.openMobile !== false;
+
   cards.forEach((c) => c.classList.remove("active"));
   card.classList.add("active");
 
@@ -161,6 +199,10 @@ function selectCard(card) {
     docImage.removeAttribute("src");
     docImage.alt = "";
   }
+
+  if (openMobile && isMobileModules()) {
+    openDocPanelMobile();
+  }
 }
 
 const storedTheme = localStorage.getItem("llp-theme");
@@ -200,6 +242,16 @@ cards.forEach((card) => {
   });
 });
 
+docOverlayBackdrop?.addEventListener("click", () => {
+  if (isMobileModules()) closeDocPanelMobile();
+});
+
+docPanelClose?.addEventListener("click", () => closeDocPanelMobile());
+
+window.addEventListener("resize", () => {
+  if (!isMobileModules()) resetMobileDocOverlay();
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   loadReadme();
 });
@@ -236,7 +288,12 @@ imageLightbox?.querySelectorAll("[data-lightbox-close]").forEach((el) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && imageLightbox && !imageLightbox.hasAttribute("hidden")) {
+  if (event.key !== "Escape") return;
+  if (imageLightbox && !imageLightbox.hasAttribute("hidden")) {
     closeLightbox();
+    return;
+  }
+  if (isMobileModules() && docPanel?.classList.contains("doc-panel--open")) {
+    closeDocPanelMobile();
   }
 });
