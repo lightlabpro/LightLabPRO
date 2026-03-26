@@ -857,7 +857,7 @@ body.lightbox-open {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 740px) {
   .modules-layout {
     gap: 0;
   }

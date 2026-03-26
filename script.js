@@ -88,7 +88,9 @@ function getReadmeMarkdown() {
 }
 
 function isMobileModules() {
-  return typeof window.matchMedia === "function" && window.matchMedia("(max-width: 900px)").matches;
+  // Keep the "mobile sheet" behavior for small screens only.
+  // Tablet/desktop should use the sticky side panel instead.
+  return typeof window.matchMedia === "function" && window.matchMedia("(max-width: 740px)").matches;
 }
 
 function openDocPanelMobile() {
