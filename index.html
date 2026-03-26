@@ -49,7 +49,19 @@
             <h2>Feature Modules</h2>
             <p class="subtle">Choose a module to load its documentation.</p>
           </div>
-          <input id="searchInput" class="search" type="search" placeholder="Search modules, effects, or terms..." />
+          <div class="search-wrap">
+            <input
+              id="searchInput"
+              class="search"
+              type="text"
+              autocomplete="off"
+              placeholder="Search modules, effects, or terms..."
+              aria-label="Search modules, effects, or terms"
+            />
+            <button type="button" id="searchClear" class="search-clear" aria-label="Clear search" hidden>
+              ×
+            </button>
+          </div>
         </div>
         <div class="modules-layout">
         <div class="cards" id="moduleCards">

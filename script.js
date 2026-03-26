@@ -1,6 +1,7 @@
 const body = document.body;
 const themeToggle = document.getElementById("themeToggle");
 const searchInput = document.getElementById("searchInput");
+const searchClear = document.getElementById("searchClear");
 const cards = Array.from(document.querySelectorAll("#moduleCards .card"));
 const docTitle = document.getElementById("docTitle");
 const docReadmeBody = document.getElementById("docReadmeBody");
@@ -218,8 +219,8 @@ themeToggle?.addEventListener("click", () => {
   localStorage.setItem("llp-theme", isLight ? "light" : "dark");
 });
 
-searchInput?.addEventListener("input", () => {
-  const query = searchInput.value.trim().toLowerCase();
+function applyModuleSearch() {
+  const query = searchInput?.value.trim().toLowerCase() ?? "";
 
   cards.forEach((card) => {
     const text = card.textContent.toLowerCase();
@@ -227,6 +228,25 @@ searchInput?.addEventListener("input", () => {
     const matches = !query || text.includes(query) || keywords.includes(query);
     card.classList.toggle("hidden", !matches);
   });
+}
+
+function updateSearchClearVisibility() {
+  if (!searchClear || !searchInput) return;
+  const hasText = searchInput.value.length > 0;
+  searchClear.hidden = !hasText;
+  searchClear.setAttribute("aria-hidden", hasText ? "false" : "true");
+}
+
+searchInput?.addEventListener("input", () => {
+  updateSearchClearVisibility();
+  applyModuleSearch();
+});
+
+searchClear?.addEventListener("click", () => {
+  searchInput.value = "";
+  updateSearchClearVisibility();
+  applyModuleSearch();
+  searchInput.focus();
 });
 
 cards.forEach((card) => {
@@ -253,6 +273,7 @@ window.addEventListener("resize", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  updateSearchClearVisibility();
   loadReadme();
 });
 
