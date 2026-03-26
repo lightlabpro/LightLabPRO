@@ -232,8 +232,9 @@ function applyModuleSearch() {
 
 function updateSearchClearVisibility() {
   if (!searchClear || !searchInput) return;
-  const hasText = searchInput.value.length > 0;
-  searchClear.hidden = !hasText;
+  const hasText = searchInput.value.trim().length > 0;
+  // Use toggleAttribute to reliably add/remove the `hidden` boolean attribute.
+  searchClear.toggleAttribute("hidden", !hasText);
   searchClear.setAttribute("aria-hidden", hasText ? "false" : "true");
 }
 

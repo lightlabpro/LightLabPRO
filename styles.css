@@ -192,7 +192,8 @@ h1 span {
 
 .search-wrap {
   position: relative;
-  width: min(360px, 100%);
+  width: min(520px, 100%);
+  flex: 0 0 auto; /* prevent flexbox from shrinking the search field */
 }
 
 .search {
@@ -215,7 +216,7 @@ h1 span {
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--panel-soft);
+  background: var(--panel);
   color: var(--muted);
   font-size: 1.25rem;
   line-height: 1;
@@ -223,12 +224,13 @@ h1 span {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .search-clear:hover,
 .search-clear:focus-visible {
-  background: color-mix(in oklab, var(--primary) 18%, var(--panel-soft));
+  background: color-mix(in oklab, var(--primary) 18%, var(--panel));
   border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
   color: var(--text);
   outline: none;
@@ -267,7 +269,7 @@ h1 span {
   display: grid;
   grid-template-columns: minmax(0, 1.18fr) minmax(420px, 1.42fr);
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .modules-layout > * {
@@ -275,12 +277,13 @@ h1 span {
 }
 
 .doc-panel-column {
-  position: relative;
+  position: sticky;
+  top: 84px;
+  height: calc(100vh - 105px);
   min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  /* Stretch to full grid row height so sticky .doc-panel has a tall scroll ancestor */
   align-self: stretch;
 }
 
@@ -354,9 +357,10 @@ h1 span {
 }
 
 .doc-panel {
-  position: sticky;
-  top: 84px;
-  max-height: calc(100vh - 105px);
+  position: relative;
+  top: auto;
+  height: 100%;
+  max-height: none;
   overflow: auto;
   overflow-x: hidden;
   width: 100%;
@@ -914,6 +918,7 @@ body.lightbox-open {
   }
 
   .doc-panel-column {
+    position: static; /* sticky on desktop; disabled for mobile sheet */
     height: 0;
     min-height: 0;
     margin: 0;
