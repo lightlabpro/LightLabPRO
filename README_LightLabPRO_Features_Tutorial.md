@@ -18,6 +18,16 @@ Across the bottom of the window (outside the tab content) you’ll find shortcut
 | **Open Light Explorer** | Unity **Light Explorer** |
 | **Open Render Pipeline Asset** | The active **Scriptable Render Pipeline** asset (if any) |
 
+### Appendix A — Related Unity windows
+
+These are the same actions as the **bottom buttons** on the Light Lab PRO window:
+
+| Unity window | Opens from LLP |
+|----------------|----------------|
+| **Lighting** | **Open Lighting Settings** |
+| **Light Explorer** | **Open Light Explorer** |
+| **Render Pipeline Asset** | **Open Render Pipeline Asset** |
+
 ---
 
 ## 2) Scene Lights list (shared controls)
@@ -34,6 +44,30 @@ Across the bottom of the window (outside the tab content) you’ll find shortcut
 | **Cluster group** | Button (A–Z, 0–9) | **Left-click** cycles the group character (A–Z, then 0–9). Lights with **Cluster** on and the **same** group letter/number mirror a subset of properties when you edit one of them. **Right-click** the group button to **reset** the group assignment (clear back to default). |
 | **Focus** | Button | Frames the light in the Scene view. |
 | **On / Off** | Button | Enables/disables the light component. |
+
+### Appendix A — Sorting options (exact IDs)
+
+| `LightSortOption` | User-visible meaning |
+|-------------------|----------------------|
+| `NameAscending` | A → Z by `light.name`. |
+| `NameDescending` | Z → A. |
+| `TypeAscending` | By `LightType` (ordering per Unity). |
+| `TypeDescending` | Reverse type order. |
+| `IntensityAscending` | Dim → bright (`light.intensity`). |
+| `IntensityDescending` | Bright → dim. |
+
+### Appendix B — Cluster synchronization (what copies)
+
+When **Cluster** is on and lights share the same **group** character, changing a **source** light can sync:
+
+- **Intensity**  
+- **Range**  
+- **Spot angle**  
+- **Color**  
+- **Indirect multiplier** (`bounceIntensity`)  
+- **Shadows** (type)  
+
+Other properties are not listed in the cluster sync routine — treat cluster as a **linked subset**, not a full duplicate.
 
 ---
 
@@ -274,6 +308,32 @@ Holds timed **steps**, each with duration, intensity, range, and color.
 - Slider ranges in the inspector may differ from defaults in code after you **Load Current Values** or edit curves.  
 - If a subsection is missing, the **MonoBehaviour** for that effect is not on the GameObject—add it or apply a preset that includes it.
 
+### Appendix A — When effect controls appear
+
+The **Effects** foldout reflects **components** on the GameObject. If a control is missing:
+
+- The backing behaviour (`MonoBehaviour`) may not be attached.  
+- The light may be **disabled** or wrong object selected.  
+- A preset may need to be applied first to add components.  
+
+**Sequencer**-style fields (**Step Count**, per-step **Intensity** / **Range**) appear when the relevant effect type exposes steps in `DrawEffectsSection`.
+
+### Appendix B — Quick reference: effect sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Min/Max Intensity (effects bounds) | 0 | 50 |
+| Min/Max Range (effects bounds) | 0 | 50 |
+| Min Intensity Speed | 0.1 | 40 |
+| Max Intensity Speed | 0.1 | 40 |
+| Min Range Speed | 0.1 | 10 |
+| Max Range Speed | 0.1 | 10 |
+| Step Count | 1 | 24 |
+| Step Intensity | 0 | 10 |
+| Step Range | 0 | 100 |
+
+**Max Blur** / **Blur Scale** apply only under **PRO Cookies → Texture** (**§16**), not to Gradual / Strobe / Step Sequencer.
+
 ---
 
 ## 9) Volumetrics section
@@ -298,6 +358,14 @@ When **Volumetric Lighting Effect** is enabled, the window drives a **URP-style*
 
 Requires the volumetrics package/scripts from Light Lab PRO and a compatible URP fog volume setup.
 
+### Appendix A — Pipeline & volume context
+
+| Topic | Notes |
+|-------|--------|
+| **SRP** | Confirm **Graphics Settings → Scriptable Render Pipeline** (URP vs HDRP vs Built-In). |
+| **Volumetrics UI** | This foldout expects a **Global Volume**, profile, and **Volumetric Fog** override compatible with the LLP `VolumetricFogVolumeComponent`. |
+| **Shadow resolution** | **Basic Settings → Shadows → Resolution** is **Built-In only**; URP/HDRP use pipeline-specific shadow settings. |
+
 ---
 
 ## 10) Color Switcher
@@ -313,6 +381,12 @@ Requires the volumetrics package/scripts from Light Lab PRO and a compatible URP
 - **Pattern** selects **which colors** or **order** (implementation-specific list).  
 - **Change Type** selects **interpolation / step / hold** style transitions.  
 - **Switch Speed** scales how fast the script advances — combine with frame rate and light responsiveness for the desired look.
+
+### Appendix B — Quick reference: Color Switcher slider
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Switch Speed | 0.1 | 50 |
 
 ---
 
@@ -346,6 +420,22 @@ Light Lab PRO exposes two different audio features—do not confuse them:
 | **Color Change Speed** | 0–20 | How fast color shifts with the signal. |
 | **Threshold** | 0–4 | Band above which the reactor kicks in. |
 
+### Appendix A — Quick reference: Sound sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Audio Volume / Compensation | 0 | 1 |
+| Intensity Multiplier (Sound Reactor) | 0 | 5 |
+| Base Intensity (Sound Reactor) | 0 | 2 |
+| Color Change Speed (Sound Reactor) | 0 | 20 |
+| Threshold (Sound Reactor) | 0 | 4 |
+
+### Appendix B — Sync, compensation, and direction
+
+**Sound Effect:** when **Sync with Light Intensity** is on, **Compensation Volume** sets baseline loudness before mapping so audio follows the light without clipping.
+
+**Sound Reactor:** the **light** follows **audio level**, not the other way around — see the comparison table at the start of **§11**.
+
 ---
 
 ## 12) Material Changer
@@ -357,6 +447,15 @@ Light Lab PRO exposes two different audio features—do not confuse them:
 | **Affect Albedo** | Toggle |
 | **Affect Emission** | Toggle |
 | **Emission Multiplier** | Slider — scales emission when enabled. |
+
+### Appendix A — Expected use (checklist)
+
+| Step | Action |
+|------|--------|
+| 1 | Pick target materials index from the popup. |
+| 2 | Enable **Instantiate Materials** if you must avoid shared asset edits. |
+| 3 | Toggle **Affect Albedo** / **Affect Emission** to limit channels. |
+| 4 | Raise **Emission Multiplier** only when emission path is enabled. |
 
 ---
 
@@ -435,6 +534,12 @@ Top-level: **Details & Instructions** (description + numbered steps), then **Bas
 | **Standard Light fields** | Full | Full (with URP Light limits) | HDRP uses Light components + volume stack |
 | **Volumetrics / Fog UI** | Depends on project packages | Often URP Fog + volumes | HDRP Fog/Volumetrics |
 
+### Appendix D — Quick reference: shadow strength
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Shadow Strength | 0 | 1 |
+
 ---
 
 ## 14) Animation tab (window-level)
@@ -480,6 +585,12 @@ When a day–night component is referenced:
 | **Time Of Day** | Slider | Scrub phase. |
 
 **Configuration Settings** and other fields follow the attached script’s public API.
+
+### Appendix A — Editor preview cautions
+
+- **Auto Update In Editor** can incur cost in large scenes — increase **Editor Update Interval**.  
+- **Time Of Day** scrubbing is for **preview**; runtime scripts may use different time sources.  
+- **Current Phase** is a **readout** — treat as diagnostic, not authoritative gameplay state.
 
 ---
 
@@ -536,6 +647,17 @@ When **LightCookieMotion** is present, per-layer fields may include:
 | **PathN U / PathN V** | `AnimationCurve` paths. |
 | **TilingN UV / OffsetN UV** | UV transform. |
 
+### Appendix A — UI regions (summary)
+
+| Region | Typical contents |
+|--------|------------------|
+| **Per-light list** | Edit/Close, tracker/preset actions. |
+| **Texture** | 4-layer 2D, cubemap duplicate, **Blur Settings**, motion, built-in cookie. |
+| **Animated** | Animated CRT assignment. |
+| **Video** | VideoClip, VideoPlayer GO, RenderTexture → cookie. |
+
+Performance tip: fewer animated layers and lower **Blur Scale** reduce per-pixel work.
+
 ---
 
 ## 17) Preset asset types (reference)
@@ -581,77 +703,55 @@ If you publish this as a manual site:
 
 ---
 
-## 20) Appendix A — Unity enums (Basic Settings)
+## 20) Reference stub: Unity enums (Basic Settings)
 
-*Consolidated into **§13 Basic Settings** → **Appendix A — Unity enums (Basic Settings)** so module docs stay in one place.*
-
----
-
-## 21) Appendix B — Studio Lighting workflow (checklist)
-
-*Consolidated into **§3 Studio Lighting tab** → **Appendix A — Studio workflow checklist**.*
+*Body moved to **§13 Basic Settings → Appendix A**.*
 
 ---
 
-## 22) Appendix C — Cluster synchronization (what copies)
+## 21) Reference stub: Studio workflow checklist
 
-When **Cluster** is on and lights share the same **group** character, changing a **source** light can sync:
-
-- **Intensity**  
-- **Range**  
-- **Spot angle**  
-- **Color**  
-- **Indirect multiplier** (`bounceIntensity`)  
-- **Shadows** (type)  
-
-Other properties are not listed in the cluster sync routine — treat cluster as a **linked subset**, not a full duplicate.
+*Body moved to **§3 Studio Lighting → Appendix A**.*
 
 ---
 
-## 23) Appendix D — Basic Settings: full control inventory
+## 22) Reference stub: Cluster synchronization
 
-*Consolidated into **§13 Basic Settings** → **Appendix B — Basic Settings control inventory**.*
-
----
-
-## 24) Appendix E — Sorting options (exact IDs)
-
-| `LightSortOption` | User-visible meaning |
-|-------------------|----------------------|
-| `NameAscending` | A → Z by `light.name`. |
-| `NameDescending` | Z → A. |
-| `TypeAscending` | By `LightType` (ordering per Unity). |
-| `TypeDescending` | Reverse type order. |
-| `IntensityAscending` | Dim → bright (`light.intensity`). |
-| `IntensityDescending` | Bright → dim. |
+*Body moved to **§2 Scene Lights → Appendix B**.*
 
 ---
 
-## 25) Appendix F — Gizmo & label matrix
+## 23) Reference stub: Basic Settings control inventory
 
-*Consolidated into **§3 Studio Lighting tab** → **Appendix B — Gizmo & label matrix**.*
-
----
-
-## 26) Appendix G — Effects section: when controls appear
-
-The **Effects** foldout reflects **components** on the GameObject. If a control is missing:
-
-- The backing behaviour (`MonoBehaviour`) may not be attached.  
-- The light may be **disabled** or wrong object selected.  
-- A preset may need to be applied first to add components.  
-
-**Sequencer**-style fields (**Step Count**, per-step **Intensity** / **Range**) appear when the relevant effect type exposes steps in `DrawEffectsSection`.
+*Body moved to **§13 Basic Settings → Appendix B**.*
 
 ---
 
-## 27) Appendix H — Pipeline compatibility matrix
+## 24) Reference stub: Sorting options
 
-*Consolidated into **§13 Basic Settings** → **Appendix C — Pipeline compatibility (Basic / shadows)**.*
+*Body moved to **§2 Scene Lights → Appendix A**.*
 
 ---
 
-## 28) Appendix I — Expanded FAQ
+## 25) Reference stub: Studio gizmo matrix
+
+*Body moved to **§3 Studio Lighting → Appendix B**.*
+
+---
+
+## 26) Reference stub: Effects foldout visibility
+
+*Body moved to **§8 Effects → Appendix A**.*
+
+---
+
+## 27) Reference stub: Pipeline compatibility matrix
+
+*Body moved to **§13 Basic Settings → Appendix C** and **§9 Volumetrics → Appendix A**.*
+
+---
+
+## 28) Expanded FAQ
 
 **Q: Why two “preset” areas?**  
 A: **Global / toolbar** presets load whole profiles or configs; **per-light Presets** apply to individual lights or asset rows.
@@ -664,7 +764,7 @@ A: **Cluster** syncs a **small set** of properties for lights in the same charac
 
 ---
 
-## 29) Appendix J — Editor tips
+## 29) Editor tips
 
 - Undock **Light Lab PRO** to a second monitor for long sessions.  
 - Use **Deselect All** before switching scenes to reduce serialization load.  
@@ -673,7 +773,7 @@ A: **Cluster** syncs a **small set** of properties for lights in the same charac
 
 ---
 
-## 30) Appendix K — Glossary
+## 30) Glossary
 
 | Term | Meaning |
 |------|---------|
@@ -686,55 +786,37 @@ A: **Cluster** syncs a **small set** of properties for lights in the same charac
 
 ---
 
-## 31) Appendix L — PRO Cookies: UI regions (conceptual)
+## 31) Reference stub: PRO Cookies UI regions
 
-See **§16 PRO Cookies** for the full Texture / Animated / Video breakdown. Summary:
-
-| Region | Typical contents |
-|--------|------------------|
-| **Per-light list** | Edit/Close, tracker/preset actions. |
-| **Texture** | 4-layer 2D, cubemap duplicate, **Blur Settings**, motion, built-in cookie. |
-| **Animated** | Animated CRT assignment. |
-| **Video** | VideoClip, VideoPlayer GO, RenderTexture → cookie. |
-
-Performance tip: fewer animated layers and lower **Blur Scale** reduce per-pixel work.
+*Body moved to **§16 PRO Cookies → Appendix A**.*
 
 ---
 
-## 32) Appendix M — Material Changer: expected use
+## 32) Reference stub: Material Changer checklist
 
-| Step | Action |
-|------|--------|
-| 1 | Pick target materials index from the popup. |
-| 2 | Enable **Instantiate Materials** if you must avoid shared asset edits. |
-| 3 | Toggle **Affect Albedo** / **Affect Emission** to limit channels. |
-| 4 | Raise **Emission Multiplier** only when emission path is enabled. |
+*Body moved to **§12 Material Changer → Appendix A**.*
 
 ---
 
-## 33) Appendix N — Color Switcher: pattern vs change type
+## 33) Reference stub: Color Switcher notes
 
-*Consolidated into **§10 Color Switcher** → **Appendix A — Pattern, change type, and speed**.*
-
----
-
-## 34) Appendix O — Sound: sync with lights
-
-**Sound Effect** path: when **Sync with Light Intensity** is on, **Compensation Volume** sets baseline loudness before mapping so audio follows the light without clipping.
-
-**Sound Reactor** path: see **§11** — the light follows audio level, not the other way around.
+*Body moved to **§10 Color Switcher → Appendix A** (and **Appendix B** for slider bounds).*
 
 ---
 
-## 35) Appendix P — Day–Night: editor preview cautions
+## 34) Reference stub: Sound sync notes
 
-- **Auto Update In Editor** can incur cost in large scenes — increase **Editor Update Interval**.  
-- **Time Of Day** scrubbing is for **preview**; runtime scripts may use different time sources.  
-- **Current Phase** is a **readout** — treat as diagnostic, not authoritative gameplay state.
+*Body moved to **§11 Sound → Appendix B**.*
 
 ---
 
-## 36) Appendix Q — File & asset hygiene
+## 35) Reference stub: Day–Night preview cautions
+
+*Body moved to **§15 Day–Night cycle → Appendix A**.*
+
+---
+
+## 36) File & asset hygiene
 
 - Keep preset assets in a **dedicated folder** under `Assets/`.  
 - Name presets with **pipeline** or **scene** tags, e.g. `Studio_Night_URP`.  
@@ -742,54 +824,31 @@ Performance tip: fewer animated layers and lower **Blur Scale** reduce per-pixel
 
 ---
 
-## 37) Appendix R — Quick reference: slider ranges (Studio tab)
+## 37) Reference stub: Studio slider quick reference
 
-*Consolidated into **§3 Studio Lighting tab** → **Appendix C — Quick reference: Studio sliders**.*
-
----
-
-## 38) Appendix S — Quick reference: slider ranges (effects / color / sound samples)
-
-| Slider | Min | Max |
-|--------|-----|-----|
-| Min/Max Intensity (effects bounds) | 0 | 50 |
-| Min/Max Range (effects bounds) | 0 | 50 |
-| Min Intensity Speed | 0.1 | 40 |
-| Max Intensity Speed | 0.1 | 40 |
-| Min Range Speed | 0.1 | 10 |
-| Max Range Speed | 0.1 | 10 |
-| Step Count | 1 | 24 |
-| Step Intensity | 0 | 10 |
-| Step Range | 0 | 100 |
-| Color Switch Speed | 0.1 | 50 |
-| Audio Volume / Compensation | 0 | 1 |
-| Intensity Multiplier (Sound Reactor) | 0 | 5 |
-| Base Intensity (Sound Reactor) | 0 | 2 |
-| Color Change Speed (Sound Reactor) | 0 | 20 |
-| Threshold (Sound Reactor) | 0 | 4 |
-| Shadow Strength | 0 | 1 |
-
-**Max Blur** / **Blur Scale** apply to **PRO Cookies → Texture** only (**§16**), not to Gradual / Strobe / Step Sequencer.
+*Body moved to **§3 Studio Lighting → Appendix C**.*
 
 ---
 
-## 39) Appendix T — Related Unity windows
+## 38) Reference stub: Combined slider quick reference
 
-| Unity window | Opens from LLP |
-|----------------|----------------|
-| **Lighting** | **Open Lighting Settings** |
-| **Light Explorer** | **Open Light Explorer** |
-| **Render Pipeline Asset** | **Open Render Pipeline Asset** |
+*Split across modules: **§8 Effects → Appendix B**, **§10 Color Switcher → Appendix B**, **§11 Sound → Appendix A**, **§13 Basic Settings → Appendix D** (shadow strength). **Max Blur** / **Blur Scale** remain documented under **§16 PRO Cookies**.*
+
+---
+
+## 39) Reference stub: Related Unity windows
+
+*Body moved to **§1 Window overview → Appendix A**.*
 
 ---
 
 ## 40) Revision note
 
-This manual is maintained against the **Light Lab PRO** editor UI (`LightLabProWindow.cs` and related scripts). Module-specific **Appendix A/B/C** subsections under **§3**, **§10**, and **§13** replace duplicated global appendix bodies where noted in **§20–§27** and **§33**, **§37**.
+Appendix lettering **restarts at A** within each numbered section (**§1**, **§2**, **§3**, …) so module views on the site never show skipped letters. Sections **§20–§39** keep stable IDs for deep links but use neutral titles; long-form text lives under the primary section’s **Appendix A, B, C, …** in order.
 
 ---
 
-## 41) Appendix U — Section index (1–41)
+## 41) Section index (1–42)
 
 | § | Title |
 |---|--------|
@@ -812,32 +871,32 @@ This manual is maintained against the **Light Lab PRO** editor UI (`LightLabProW
 | 17 | Preset asset types |
 | 18 | Troubleshooting |
 | 19 | Suggested website structure |
-| 20 | Appendix A — Unity enums (→ §13 App. A) |
-| 21 | Appendix B — Studio checklist (→ §3 App. A) |
-| 22 | Appendix C — Cluster sync |
-| 23 | Appendix D — Basic inventory (→ §13 App. B) |
-| 24 | Appendix E — Sorting options |
-| 25 | Appendix F — Gizmo matrix (→ §3 App. B) |
-| 26 | Appendix G — Effects visibility |
-| 27 | Appendix H — Pipeline matrix (→ §13 App. C) |
-| 28 | Appendix I — FAQ |
-| 29 | Appendix J — Editor tips |
-| 30 | Appendix K — Glossary |
-| 31 | Appendix L — PRO Cookies regions |
-| 32 | Appendix M — Material Changer use |
-| 33 | Appendix N — Color Switcher (→ §10 App. A) |
-| 34 | Appendix O — Sound sync |
-| 35 | Appendix P — Day–Night preview |
-| 36 | Appendix Q — Asset hygiene |
-| 37 | Appendix R — Studio sliders (→ §3 App. C) |
-| 38 | Appendix S — Effects/color/sound ranges |
-| 39 | Appendix T — Related Unity windows |
+| 20 | Reference stub → §13 App. A |
+| 21 | Reference stub → §3 App. A |
+| 22 | Reference stub → §2 App. B |
+| 23 | Reference stub → §13 App. B |
+| 24 | Reference stub → §2 App. A |
+| 25 | Reference stub → §3 App. B |
+| 26 | Reference stub → §8 App. A |
+| 27 | Reference stub → §13 App. C / §9 App. A |
+| 28 | Expanded FAQ |
+| 29 | Editor tips |
+| 30 | Glossary |
+| 31 | Reference stub → §16 App. A |
+| 32 | Reference stub → §12 App. A |
+| 33 | Reference stub → §10 App. A–B |
+| 34 | Reference stub → §11 App. B |
+| 35 | Reference stub → §15 App. A |
+| 36 | File & asset hygiene |
+| 37 | Reference stub → §3 App. C |
+| 38 | Reference stub (sliders split to §8/§10/§11/§13) |
+| 39 | Reference stub → §1 App. A |
 | 40 | Revision note |
-| 41 | Appendix U — Section index |
+| 41 | Section index (this table) |
 
 ---
 
-## 42) Appendix V — Cross-references (scripts)
+## 42) Cross-references (scripts)
 
 | Topic | Primary script / location |
 |-------|---------------------------|
