@@ -2,18 +2,21 @@
 
 ## 1) Window overview
 
-**Conventions**
-- **Range** = min–max shown on a slider in code (or “unbounded” for float fields).
-- **Per-light** = inside an expanded light row after **Edit** is enabled.
-- **Pipeline**: some Unity `Light` fields behave differently in **Built-In** vs **URP/HDRP** (called out where relevant).
+The **Light Lab PRO** editor window has two main areas to learn first: the **tab row** (layout) and the **footer buttons** (utilities).
 
-| Area | Purpose |
-|------|---------|
-| **Title bar** | Window identity; standard Unity dock/float behavior. |
-| **Open Lighting Settings** | Opens Unity’s Lighting window. |
-| **Open Light Explorer** | Opens Unity’s Light Explorer. |
-| **Open Render Pipeline Asset** | Selects/opens the active SRP asset (if any). |
-| **Main tabs** | Switch between high-level workflows (e.g. Scene Lights, Studio Lighting, FX & Settings, Animation, … — exact tab set matches your Unity layout). |
+### Tab layout
+
+Use the horizontal tabs at the top of the window to switch workflows. Typical tabs include **Studio Lighting**, **Presets**, **FX & Settings**, **PRO Cookies**, **Animation**, and **Day–Night Cycle** (exact names match your build). Each tab shows a different tool surface; per-light options appear after you enable **Edit** on a light in the scene list.
+
+### Bottom buttons
+
+Across the bottom of the window (outside the tab content) you’ll find shortcuts to Unity:
+
+| Button | Opens |
+|--------|--------|
+| **Open Lighting Settings** | Unity **Lighting** window |
+| **Open Light Explorer** | Unity **Light Explorer** |
+| **Open Render Pipeline Asset** | The active **Scriptable Render Pipeline** asset (if any) |
 
 ---
 
@@ -28,7 +31,7 @@
 | **Per-row: light reference** | Object field | The `Light` in the scene. |
 | **Edit** | Toggle | Unlocks per-light foldouts for that row. |
 | **Cluster** | Toggle | Cluster mode for synchronized editing (see cluster group). |
-| **Cluster group** | Button (A–Z, 0–9) | Assigns lights that sync when clustered. |
+| **Cluster group** | Button (A–Z, 0–9) | **Left-click** cycles the group character (A–Z, then 0–9). Lights with **Cluster** on and the **same** group letter/number mirror a subset of properties when you edit one of them. **Right-click** the group button to **reset** the group assignment (clear back to default). |
 | **Focus** | Button | Frames the light in the Scene view. |
 | **On / Off** | Button | Enables/disables the light component. |
 
@@ -36,13 +39,37 @@
 
 ## 3) Studio Lighting tab
 
+### 3.0 Settings asset & save/load
+
+At the top of the tab, assign a **`StudioLightingSettings`** asset in the **Settings Asset** field. This ScriptableObject stores your studio rig (POI, slots, arrangement, gizmo options, live-edit parent, etc.).
+
+| Control | Notes |
+|---------|--------|
+| **Settings Asset** | Object field — drag an existing asset or create one when you first **Save Settings**. |
+| **Save Settings** | Writes the current POI, light slots, and related fields into the asset (requires POI + at least one studio slot). If no asset is assigned, the tool prompts you to create one in the Project. |
+| **Load Settings** | Restores the window from the assigned asset (resolves POI/parent by name in the open scene). |
+| **Clear** | Clears the **Settings Asset** reference only (does not delete the asset file). |
+
 ### 3.1 Point of Interest (POI)
 
 | Control | Notes |
 |---------|--------|
-| **POI / Assign** | Transform used as the center of studio arrangements and as the aim target for auto-placed lights. Required for meaningful **Save Settings** / arrangement workflows. |
+| **Point of Interest** | Transform used as the center of studio arrangements and as the aim target for auto-placed lights. **Assign** / **Clear** beside the field. Required before **Create Lighting Setup** and for meaningful **Save Settings**. |
 
-### 3.2 Per-slot studio lights (list)
+### 3.2 Adding lights (toolbar)
+
+These buttons **add a new studio slot** and spawn a matching `Light` in the scene (wired into the rig):
+
+| Button | Creates |
+|--------|---------|
+| **Add Spot Light** | Spot light + slot |
+| **Add Point Light** | Point light + slot |
+| **Add Directional Light** | Directional light + slot |
+| **Add Area Light** | Area (`Rectangle`) light + slot |
+
+Use them when you want the tool to author lights for you; you can also bind existing scene lights via each row’s **Light** object field.
+
+### 3.3 Per-slot studio lights (list)
 
 Each slot row includes:
 
@@ -56,13 +83,13 @@ Each slot row includes:
 | **Mode** | `LightmapBakeType` (Realtime / Mixed / Baked as exposed by Unity). |
 | **Manual Offset** | Toggle: when **on**, captures current transform relative to POI; exposes **Position** / **Rotation** vector fields for manual placement. |
 
-### 3.3 Global Settings
+### 3.4 Global Settings
 
 | Control | Range | Notes |
 |---------|-------|--------|
-| **Intensity Scale** | 0–10 | Global multiplier for studio rig intensity. |
+| **Intensity Scale** | 0–10 | **Multiplies the intensity of every studio light** driven by this rig when values are applied (global brightness scaler for the setup). |
 
-### 3.4 Arrangement Settings
+### 3.5 Arrangement Settings
 
 | Control | Range | Notes |
 |---------|-------|--------|
@@ -74,9 +101,7 @@ Each slot row includes:
 | **POI Virtual Height** | −10–10 | Offsets the aim target vertically (lights aim higher/lower). |
 | **Show Arrangement Circle** | Toggle | Scene gizmo for the ring. |
 
-> **Note:** Random variation controls exist in code but may be commented out in your build; if you don’t see **Random Variation** / **Variation Amount**, they are disabled in source.
-
-### 3.5 Gizmo Display
+### 3.6 Gizmo Display
 
 | Control | Range | Notes |
 |---------|-------|--------|
@@ -85,7 +110,7 @@ Each slot row includes:
 | **Enable Rotation Gizmos** | Toggle | Rotation handles (when enabled). |
 | **Gizmo Opacity** | 0–1 | When gizmos are shown. |
 
-### 3.6 Gizmo Label Settings
+### 3.7 Gizmo Label Settings
 
 | Control | Range | Notes |
 |---------|-------|--------|
@@ -94,15 +119,55 @@ Each slot row includes:
 | **Label Color** | Color | Tint. |
 | **Bold Text** | Toggle | Font weight. |
 
-### 3.7 Live-Edit Existing Lights
+### 3.8 Live-Edit Existing Lights
 
 | Control | Notes |
 |---------|--------|
 | **Light Parent** | `GameObject` with `StudioLightingTarget` — assigns external hierarchy for live-edit. **Clear** removes assignment. Dialog may offer to add `StudioLightingTarget`. |
+| **Auto Arrange Lights** | Re-applies arrangement to the live-edit parent when valid. |
+| **Create Lighting Setup** | Builds the container and instantiates/configures lights from the current slot list (requires POI). |
+
+### Appendix A — Studio workflow checklist
+
+1. Assign **Settings Asset** (or create via **Save Settings**).  
+2. Assign **Point of Interest** (subject / stage center).  
+3. Use **Add … Light** or assign **Light** references on each slot.  
+4. Set **roles** (Key / Fill / Rim / Main / Custom) for organization.  
+5. Adjust **Intensity Scale** to scale all rig light intensities together.  
+6. Tune **Spread Factor**, **Radius**, **Radial Offset**, **Rotation Offset** for framing.  
+7. Use **Vertical Offset** and **POI Virtual Height** for height/aim.  
+8. Enable **Show Arrangement Circle** to verify the ring in Scene view.  
+9. Optional: **Manual Offset** on a slot to detach that light from auto layout.  
+10. Use **Live-Edit** parent with `StudioLightingTarget` when integrating external hierarchies.  
+
+### Appendix B — Gizmo & label matrix
+
+| Master | Child controls | Behavior |
+|--------|----------------|----------|
+| **Show Gizmos** off | — | Hides preview gizmos regardless of sub-toggles. |
+| **Show Gizmos** on | **Enable Position Gizmos**, **Enable Rotation Gizmos** | Sub-toggles only matter when master is on. |
+| **Show Gizmos** on | **Gizmo Opacity** 0–1 | Fades gizmo drawing. |
+| **Show Light Labels** | **Font Size** 8–32, **Label Color**, **Bold Text** | Scene view text; independent of gizmo mesh. |
+
+### Appendix C — Quick reference: Studio sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Intensity Scale | 0 | 10 |
+| Spread Factor | 0 | 3 |
+| Radius | 0 | 50 |
+| Radial Offset | −20 | 20 |
+| Rotation Offset | 0 | 360 |
+| Vertical Offset Adjustment | −10 | 10 |
+| POI Virtual Height | −10 | 10 |
+| Gizmo Opacity | 0 | 1 |
+| Font Size | 8 | 32 |
 
 ---
 
 ## 4) Light Groups (FX & Settings area)
+
+**Selected lights** in this context means lights that have **Edit** turned **on** in the Light Lab PRO scene list (the same “in edit” lights the window is driving). **Add Selected Light(s)** adds those edited lights into the chosen group—not arbitrary Unity selection from the Hierarchy unless it matches what LLP considers the active edit set.
 
 | Control | Notes |
 |---------|--------|
@@ -110,7 +175,7 @@ Each slot row includes:
 | **New Group Name** | Text field. |
 | **Create Group** | Adds a named group. |
 | **Rename / Delete** | Per-group maintenance. |
-| **Add Selected Light(s)** | Adds current selection to a group. |
+| **Add Selected Light(s)** | Adds lights that are **enabled for editing** in Light Lab PRO to this group. |
 | **Focus / Remove** | Per-light in group list. |
 
 ---
@@ -148,52 +213,90 @@ Each section may include a **Details & Instructions** foldout with rich text hel
 
 ---
 
-## 7) Presets section
+## 7) Presets section (per-light FX presets)
+
+Inside **FX & Settings**, the **Presets** foldout applies a **saved FX bundle** to the **currently edited light**. The preset choice is **filtered by light type** (directional vs point vs spot, etc.): you pick an asset that matches how that light is set up, and the tool attaches or updates the bundled effect components (gradual, strobe, sequencer, and other FX rows) according to what the preset stores.
 
 | Control | Notes |
 |---------|--------|
-| **Details & Instructions** | Expandable description + usage. |
-| **Selected preset / index** | Popup to choose preset asset (implementation-specific). |
+| **Details & Instructions** | Expandable description + usage for this foldout. |
+| **Preset popup / index** | Choose an **FX Settings**-style preset asset; **Apply** (or equivalent) writes those effects onto **this** light. |
+| **Create / save from light** | Where exposed, captures the current light’s FX configuration into a new or existing preset asset. |
+
+This is separate from the **global** preset row at the top of the window (whole-window profiles). Per-light **Presets** only targets the active light row.
 
 ---
 
-## 8) Effects section
+## 8) Effects section (FX & Settings)
 
-Component-driven. Common patterns in this project include **intensity/range animation**, **sequencer steps**, and **blur** where wired.
+Each block (**Gradual**, **Strobe**, **Step Sequencer**, etc.) appears when the corresponding component exists on the light—enable the effect with the blue **Enable** toggle on that row. **Max Blur** / **Blur Scale** are **not** part of these three effects; they belong to **PRO Cookies** (Texture tab blur settings).
 
-### 8.1 Representative slider ranges (from window bindings)
+### 8.1 Gradual Effect
 
-| Control | Range | Notes |
-|---------|-------|--------|
-| **Minimum / Maximum Intensity** | 0–50 | Bounds for animated intensity. |
-| **Minimum / Maximum Range** | 0–50 | Bounds for animated range. |
-| **Min / Max Intensity Speed** | 0.1–40 | Intensity change rate. |
-| **Min / Max Range Speed** | 0.1–10 | Range change rate. |
-| **Step Count** | 1–24 | Sequencer length. |
-| **Step: Intensity** | 0–10 | Per-step target. |
-| **Step: Range** | 0–100 | Per-step target. |
-| **Max Blur** | 0–20 | Where blur UI is exposed. |
-| **Blur Scale** | 0.1–5 | Blur scale. |
+Smoothly animates intensity and/or range between min/max bounds.
 
-> Exact availability depends on which effect components are present on the light.
+| Control | Notes |
+|---------|--------|
+| **Load Current Values** | Pulls current light values into the min/max fields. |
+| **Minimum / Maximum Intensity** | Slider bounds for intensity animation. |
+| **Minimum / Maximum Range** | Slider bounds for range animation. |
+| **Behavior** | **Forward**, **Reverse**, **PingPong**, or **Random** (see `GradualBehavior`). |
+| **Min / Max Intensity Speed** | How fast intensity moves (numeric fields; **Unconstrain** if shown). |
+| **Min / Max Range Speed** | How fast range moves (numeric fields; **Unconstrain** if shown). |
+| **Make Preset** | Saves this configuration into an FX preset asset. |
+
+### 8.2 Strobe Effect
+
+Snaps intensity and/or range between min and max on a timer (pulse-style).
+
+| Control | Notes |
+|---------|--------|
+| **Load Current Values** | Pulls current light values into the min/max fields. |
+| **Minimum / Maximum Intensity** | Endpoints of the strobe. |
+| **Minimum / Maximum Range** | Endpoints for range strobe. |
+| **Behavior** | **Loop** or **Random** (`StrobeBehavior`). |
+| **Min / Max Intensity Speed** / **Min / Max Range Speed** | Toggle timing between min/max (with **Unconstrain** where shown). |
+| **Make Preset** | Saves into an FX preset asset. |
+
+### 8.3 Step Sequencer
+
+Holds timed **steps**, each with duration, intensity, range, and color.
+
+| Control | Notes |
+|---------|--------|
+| **Step Count** | Number of steps (slider + field). |
+| **Behavior** | **Loop** or **Random** order (`StepSequencerBehavior`). |
+| **Per step** | **Duration**, **Intensity**, **Range**, **Color**. |
+| **Make Preset** | Saves into an FX preset asset. |
+
+### 8.4 Other notes
+
+- Slider ranges in the inspector may differ from defaults in code after you **Load Current Values** or edit curves.  
+- If a subsection is missing, the **MonoBehaviour** for that effect is not on the GameObject—add it or apply a preset that includes it.
 
 ---
 
 ## 9) Volumetrics section
 
-Often integrates **HDRP/URP fog** overrides when the project uses supported volumes.
+When **Volumetric Lighting Effect** is enabled, the window drives a **URP-style** fog override on a **Global Volume** profile (`VolumetricFogVolumeComponent`). If no global volume, profile, or override exists, you’ll see buttons to **Create Global Volume**, **Create & Assign Profile**, or **Add Volumetric Fog Override**—use those first.
 
-### 9.1 Fog-style overrides (when shown)
+### 9.1 Fog Override Settings (as shown in the UI)
 
 | Group | Controls |
 |-------|----------|
-| **Distances** | **Distance** — slider uses volume parameter min/max. |
-| **Ground** | **Enable Ground** — toggle. |
-| **Lighting** | **Density** — slider (parameter range). |
-| **Main Light** | **Enable Main Light Contribution**, **Anisotropy**, **Scattering** (each with appropriate ranges). |
-| **Additional Lights** | **Enable Additional Lights Contribution** — toggle. |
+| **Distances** | **Distance** (slider, volume min/max), **Base Height**, **Maximum Height** |
+| **Ground** | **Enable Ground**, **Ground Height** |
+| **Lighting** | **Density** (slider), **Attenuation Distance** |
+| **Main Light** | **Enable Main Light Contribution**, **Anisotropy**, **Scattering**, **Tint** |
+| **Additional Lights** | **Enable Additional Lights Contribution** |
 
-A **composition** toggle may appear for stacking fog with other effects (label varies).
+### 9.2 Per-light additional contribution
+
+| Control | Notes |
+|---------|--------|
+| **Add Volumetric Additional Light Component** | When checked, adds `VolumetricAdditionalLight` on this light; when unchecked, removes it. When present, the component’s inspector is drawn below for **Anisotropy**, **Scattering**, **Radius**, etc. |
+
+Requires the volumetrics package/scripts from Light Lab PRO and a compatible URP fog volume setup.
 
 ---
 
@@ -205,13 +308,24 @@ A **composition** toggle may appear for stacking fog with other effects (label v
 | **Change Type** | Popup | How transitions occur. |
 | **Switch Speed** | 0.1–50 | Rate of color change. |
 
+### Appendix A — Pattern, change type, and speed
+
+- **Pattern** selects **which colors** or **order** (implementation-specific list).  
+- **Change Type** selects **interpolation / step / hold** style transitions.  
+- **Switch Speed** scales how fast the script advances — combine with frame rate and light responsiveness for the desired look.
+
 ---
 
 ## 11) Sound
 
-Two common configurations appear in code paths:
+Light Lab PRO exposes two different audio features—do not confuse them:
 
-### 11.1 Audio Source style
+| Module | Direction of control |
+|--------|----------------------|
+| **Sound Effect** (`SoundEffectHandler`) | **Audio follows the light** — playback and optional **Sync with Light Intensity** mean the **sound reacts to the light’s intensity** (e.g. louder/quieter based on how bright the light is). |
+| **Sound Reactor** (`SoundReactor`) | **Light follows the audio** — the **light’s intensity (and color)** reacts to the **audio volume / amplitude** (RMS-style analysis). |
+
+### 11.1 Sound Effect (Audio Source style)
 
 | Control | Range | Notes |
 |---------|-------|--------|
@@ -219,18 +333,18 @@ Two common configurations appear in code paths:
 | **Loop** | Toggle | |
 | **Play On Awake** | Toggle | |
 | **Mute** | Toggle | |
-| **Sync with Light Intensity** | Toggle | |
+| **Sync with Light Intensity** | Toggle | **Sound driven by light** — audio level follows light intensity. |
 | **Compensation Volume** | 0–1 | When sync is used. |
 
-### 11.2 Reactive / debug style
+### 11.2 Sound Reactor (audio → light)
 
 | Control | Range | Notes |
 |---------|-------|--------|
 | **Debug Mode** | Toggle | Extra logging. |
-| **Intensity Multiplier** | 0–5 | Scales audio-driven response. |
-| **Base Intensity** | 0–2 | Baseline light intensity. |
-| **Color Change Speed** | 0–20 | |
-| **Threshold** | 0–4 | Trigger band for reactions. |
+| **Intensity Multiplier** | 0–5 | Scales how strongly the light responds to the signal. |
+| **Base Intensity** | 0–2 | Baseline light intensity when quiet. |
+| **Color Change Speed** | 0–20 | How fast color shifts with the signal. |
+| **Threshold** | 0–4 | Band above which the reactor kicks in. |
 
 ---
 
@@ -271,26 +385,55 @@ Top-level: **Details & Instructions** (description + numbered steps), then **Bas
 
 | Control | Notes |
 |---------|--------|
-| **Mode** | `LightmapBakeType`. |
-| **Render Mode** | `LightRenderMode` (Auto / Important / Not Important). |
-| **Culling Mask** | Layer mask. |
+| **Mode** | `LightmapBakeType` — how the light participates in lightmaps. **Realtime** = dynamic lighting; **Mixed** = participates in both realtime and baked lighting per project setup; **Baked** = contributes only to baked lighting. |
+| **Render Mode** | `LightRenderMode`: **Auto** (Unity chooses importance for culling), **Important** (always rendered in full quality where applicable), **Not Important** (vertex/lower-cost path where supported). |
+| **Culling Mask** | Which layers this light affects. |
 
 ### 13.4 Shadows
 
 | Control | Range | Notes |
 |---------|-------|--------|
-| **Shadows** | Enum | None / Hard / Soft (Unity naming). |
-| **Strength** | 0–1 | When shadows ≠ None. |
-| **Resolution** | Enum | **Built-In Render Pipeline only.** If **URP/HDRP** is active, a help box explains that `Light.shadowResolution` is not supported; control is hidden to avoid exceptions and IMGUI layout issues. |
-| **Bias** | Float | |
-| **Normal Bias** | Float | |
-| **Near Plane** | Float | |
+| **Shadows** | Enum | **None** / **Hard** / **Soft** (`LightShadows`). |
+| **Strength** | 0–1 | Opacity of the shadow when shadows are enabled. |
+| **Resolution** | Enum | **Built-In Render Pipeline only.** If **URP/HDRP** is active, a help box explains that `Light.shadowResolution` is not supported; control is hidden. |
+| **Bias** | Float | Moves the shadow map sampling position slightly along the light ray to reduce **shadow acne** (striped artifacts on surfaces). Too high pulls shadows away from contact points. |
+| **Normal Bias** | Float | Inset along the **surface normal** when sampling shadows—fights acne on curved or detailed meshes; too much can cause **peter-panning** (shadows detached from objects). |
+| **Near Plane** | Float | Near clip distance for the shadow map frustum. Lower values can add detail close to the light but may increase **shadow acne**; higher values clip nearby geometry from the shadow map. |
 
 ### 13.5 Backup
 
 | Control | Notes |
 |---------|--------|
 | **Backup Light** | Creates a serialized backup of the light (implementation-specific). |
+
+### Appendix A — Unity enums (Basic Settings)
+
+| Label in UI | Unity type | Typical values |
+|-------------|-------------|----------------|
+| **Light Type** | `LightType` | Directional, Point, Spot, Area (Unity version dependent). |
+| **Mode** | `LightmapBakeType` | Realtime, Mixed, Baked. |
+| **Render Mode** | `LightRenderMode` | Auto, Important, Not Important. |
+| **Shadows** | `LightShadows` | None, Hard, Soft. |
+| **Resolution** | `LightShadowResolution` | From, Near, Low, Medium, High, Very High, From Quality Settings (Built-In only). |
+
+### Appendix B — Basic Settings control inventory
+
+| Subsection | Controls |
+|------------|----------|
+| **Details & Instructions** | **Description**, **Instructions** help boxes. |
+| **General** | **Light Name** (read-only or rename flow), **Light Type**, **Range** (Point/Spot), **Inner / Outer Spot Angle** (Spot, 0–179). |
+| **Emission** | **Color**, **Intensity**, **Indirect Multiplier**. |
+| **Rendering** | **Mode**, **Render Mode**, **Culling Mask**. |
+| **Shadows** | **Shadows**, **Strength** (0–1), **Resolution** (Built-In only), **Bias**, **Normal Bias**, **Near Plane**. |
+| **Actions** | **Backup Light**. |
+
+### Appendix C — Pipeline compatibility (Basic / shadows)
+
+| Feature | Built-In | URP | HDRP |
+|---------|----------|-----|------|
+| **Light.shadowResolution** | Exposed in **Basic Settings → Shadows** | Hidden + info box | Hidden + info box |
+| **Standard Light fields** | Full | Full (with URP Light limits) | HDRP uses Light components + volume stack |
+| **Volumetrics / Fog UI** | Depends on project packages | Often URP Fog + volumes | HDRP Fog/Volumetrics |
 
 ---
 
@@ -342,11 +485,47 @@ When a day–night component is referenced:
 
 ## 16) PRO Cookies (advanced)
 
-Includes cookie assignment, optional **CRT**-style templates, and multi-layer **LightCookieMotion** when enabled.
+**PRO Cookies** is a **per-light** workflow on its own tab: pick a light in the list, press **Edit**, then choose **Texture**, **Animated**, or **Video**. Bottom actions are shared: **Remove Cookies from This Light**, **Add PRO Cookies Tracker**, **Cleanup Orphaned Tracker**, **Create PRO Cookies Preset from This Light**.
 
-### 16.1 Motion grid (representative fields)
+### 16.1 Scene list (per-light)
 
-Per texture layer **1–4** you may see:
+| Control | Notes |
+|---------|--------|
+| **Refresh Light List** / **Select All** / **Deselect All** | Same patterns as the main scene list. |
+| **Sort Lights By** | e.g. Name Ascending. |
+| **Per row** | Light name, status (e.g. **No Cookies**), **Edit** / **Close** for the row in focus. |
+
+### 16.2 Texture mode
+
+| Area | Notes |
+|------|--------|
+| **Cookie Material** | Optional material slot. |
+| **4-Layer Setup (2D Textures)** | Four texture slots with tint / picker. |
+| **Duplicated Cubemaps** | **Duplicate & Convert to Cubemap** — builds **CMap 1–4** cubemaps from the 2D layers for point lights. |
+| **Blur Settings** | **Max Blur** (0–20) and **Blur Scale** (0.1–5) — **only here** in PRO Cookies, not in Gradual/Strobe/Step Sequencer. |
+| **Cookie Motion Setup** | **LightCookieMotion** script field; **Add LightCookieMotion Script**; **Create/Update Cookie (Texture)**. |
+| **Cookie CRT** | Optional **Custom Render Texture** for advanced setups. |
+| **Built-In Cookie Settings** | Unity **Cookie** slot; tooltip notes size/offset rules for directional lights. |
+
+### 16.3 Animated mode
+
+| Control | Notes |
+|---------|--------|
+| Info box | Assign **Animated CRT** and edit the initialization material as needed. |
+| **Animated CRT** | `Custom Render Texture` reference; **Assign Animated Cookie**. |
+
+### 16.4 Video mode
+
+| Control | Notes |
+|---------|--------|
+| Info box | Pick a **VideoClip**, create a **VideoPlayer** GameObject, render to a **RenderTexture** (2D for Spot/Dir, **Cube** for Point), then assign as cookie. |
+| **Video Clip** | Source clip. |
+| **Create Video Player GameObject** | Sets up playback object. |
+| **Video RenderTexture** | Target RT; **Use This Video RT as Cookie**. |
+
+### 16.5 Motion grid (LightCookieMotion, layers 1–4)
+
+When **LightCookieMotion** is present, per-layer fields may include:
 
 | Field | Purpose |
 |-------|---------|
@@ -356,8 +535,6 @@ Per texture layer **1–4** you may see:
 | **Motion Mode NU / NV** | Forward vs PingPong on U/V. |
 | **PathN U / PathN V** | `AnimationCurve` paths. |
 | **TilingN UV / OffsetN UV** | UV transform. |
-
-**Max Blur** (0–20) and **Blur Scale** (0.1–5) appear in PRO cookie UI where layered blur is exposed.
 
 ---
 
@@ -395,8 +572,8 @@ If you publish this as a manual site:
 2. **Scene Lights** — sorting, cluster, focus.  
 3. **Studio Lighting** — POI, arrangement sliders, gizmos, live-edit.  
 4. **Presets** — global vs per-light, asset creation.  
-5. **Effects & Animation** — sequencing, motion, blur.  
-6. **Volumetrics & Fog** — pipeline notes.  
+5. **Effects & Animation** — gradual, strobe, step sequencer, motion.  
+6. **Volumetrics & Fog** — URP fog override + per-light additional component.  
 7. **Color / Sound / Materials** — reactive workflows.  
 8. **Basic Settings** — Unity light parity + pipeline caveats.  
 9. **PRO Cookies** — layers, motion curves, performance.  
@@ -404,31 +581,15 @@ If you publish this as a manual site:
 
 ---
 
-## 20) Appendix A — Unity enums surfaced in Basic Settings
+## 20) Appendix A — Unity enums (Basic Settings)
 
-| Label in UI | Unity type | Typical values |
-|-------------|-------------|----------------|
-| **Light Type** | `LightType` | Directional, Point, Spot, Area (Unity version dependent). |
-| **Mode** | `LightmapBakeType` | Realtime, Mixed, Baked. |
-| **Render Mode** | `LightRenderMode` | Auto, Important, Not Important. |
-| **Shadows** | `LightShadows` | None, Hard, Soft. |
-| **Resolution** | `LightShadowResolution` | From, Near, Low, Medium, High, Very High, From Quality Settings (Built-In only). |
-
-Use Unity’s manual for pipeline-specific limits (e.g. shadow filters in URP).
+*Consolidated into **§13 Basic Settings** → **Appendix A — Unity enums (Basic Settings)** so module docs stay in one place.*
 
 ---
 
 ## 21) Appendix B — Studio Lighting workflow (checklist)
 
-1. Assign **POI** (subject / stage center).  
-2. Add or pick **Light** references for each studio slot.  
-3. Set **roles** (Key / Fill / Rim / Main / Custom) for organization.  
-4. Adjust **Intensity Scale** before per-light tweaks.  
-5. Tune **Spread Factor**, **Radius**, **Radial Offset**, **Rotation Offset** for framing.  
-6. Use **Vertical Offset** and **POI Virtual Height** for height/aim.  
-7. Enable **Show Arrangement Circle** to verify the ring in Scene view.  
-8. Optional: **Manual Offset** on a slot to detach that light from auto layout.  
-9. Use **Live-Edit** parent with `StudioLightingTarget` when integrating external hierarchies.  
+*Consolidated into **§3 Studio Lighting tab** → **Appendix A — Studio workflow checklist**.*
 
 ---
 
@@ -449,18 +610,7 @@ Other properties are not listed in the cluster sync routine — treat cluster as
 
 ## 23) Appendix D — Basic Settings: full control inventory
 
-Foldouts under **Basic Settings**:
-
-| Subsection | Controls |
-|------------|----------|
-| **Details & Instructions** | **Description**, **Instructions** help boxes (static text from window). |
-| **General** | **Light Name** (read-only or rename flow), **Light Type**, **Range** (Point/Spot), **Inner / Outer Spot Angle** (Spot, 0–179). |
-| **Emission** | **Color**, **Intensity**, **Indirect Multiplier**. |
-| **Rendering** | **Mode**, **Render Mode**, **Culling Mask**. |
-| **Shadows** | **Shadows**, **Strength** (0–1), **Resolution** (Built-In only), **Bias**, **Normal Bias**, **Near Plane**. |
-| **Actions** | **Backup Light**. |
-
-Float fields without sliders in code are **unbounded** in the UI — clamp in your pipeline or via scripts.
+*Consolidated into **§13 Basic Settings** → **Appendix B — Basic Settings control inventory**.*
 
 ---
 
@@ -479,12 +629,7 @@ Float fields without sliders in code are **unbounded** in the UI — clamp in yo
 
 ## 25) Appendix F — Gizmo & label matrix
 
-| Master | Child controls | Behavior |
-|--------|----------------|----------|
-| **Show Gizmos** off | — | Hides preview gizmos regardless of sub-toggles. |
-| **Show Gizmos** on | **Enable Position Gizmos**, **Enable Rotation Gizmos** | Sub-toggles only matter when master is on. |
-| **Show Gizmos** on | **Gizmo Opacity** 0–1 | Fades gizmo drawing. |
-| **Show Light Labels** | **Font Size** 8–32, **Label Color**, **Bold Text** | Scene view text; independent of gizmo mesh. |
+*Consolidated into **§3 Studio Lighting tab** → **Appendix B — Gizmo & label matrix**.*
 
 ---
 
@@ -502,13 +647,7 @@ The **Effects** foldout reflects **components** on the GameObject. If a control 
 
 ## 27) Appendix H — Pipeline compatibility matrix
 
-| Feature | Built-In | URP | HDRP |
-|---------|----------|-----|------|
-| **Light.shadowResolution** | Exposed in **Basic Settings → Shadows** | Hidden + info box | Hidden + info box |
-| **Standard Light fields** | Full | Full (with URP Light limits) | HDRP uses Light components + volume stack |
-| **Volumetrics / Fog UI** | Depends on project packages | Often URP Fog + volumes | HDRP Fog/Volumetrics |
-
-Always verify **Graphics Settings → Scriptable Render Pipeline** to know which path is active.
+*Consolidated into **§13 Basic Settings** → **Appendix C — Pipeline compatibility (Basic / shadows)**.*
 
 ---
 
@@ -522,9 +661,6 @@ A: You can edit slots, but auto-arrangement and aim targets expect a POI; result
 
 **Q: Cluster vs Light Groups?**  
 A: **Cluster** syncs a **small set** of properties for lights in the same character group. **Light Groups** are a **scene-wide** organization list for batch operations — different data structures.
-
-**Q: Where did Random Variation go?**  
-A: It may be commented out in `LightLabProWindow.cs` (search `Random Variation`). Re-enable only if you accept layout/testing cost.
 
 ---
 
@@ -552,14 +688,16 @@ A: It may be commented out in `LightLabProWindow.cs` (search `Random Variation`)
 
 ## 31) Appendix L — PRO Cookies: UI regions (conceptual)
 
+See **§16 PRO Cookies** for the full Texture / Animated / Video breakdown. Summary:
+
 | Region | Typical contents |
 |--------|------------------|
-| **Cookie assignment** | Texture / cookie slot, import hints. |
-| **CRT / template** | Optional animated CRT-style block when enabled. |
-| **Layer motion** | Per-layer UV motion, tiling, curves (layers 1–4). |
-| **Blur** | **Max Blur**, **Blur Scale** when layered blur is active. |
+| **Per-light list** | Edit/Close, tracker/preset actions. |
+| **Texture** | 4-layer 2D, cubemap duplicate, **Blur Settings**, motion, built-in cookie. |
+| **Animated** | Animated CRT assignment. |
+| **Video** | VideoClip, VideoPlayer GO, RenderTexture → cookie. |
 
-Performance tip: fewer animated layers and lower blur scales reduce per-pixel work.
+Performance tip: fewer animated layers and lower **Blur Scale** reduce per-pixel work.
 
 ---
 
@@ -576,18 +714,15 @@ Performance tip: fewer animated layers and lower blur scales reduce per-pixel wo
 
 ## 33) Appendix N — Color Switcher: pattern vs change type
 
-- **Pattern** selects **which colors** or **order** (implementation-specific list).  
-- **Change Type** selects **interpolation / step / hold** style transitions.  
-- **Switch Speed** scales how fast the script advances — combine with frame rate and light responsiveness for desired look.
+*Consolidated into **§10 Color Switcher** → **Appendix A — Pattern, change type, and speed**.*
 
 ---
 
 ## 34) Appendix O — Sound: sync with lights
 
-When **Sync with Light Intensity** is enabled:
+**Sound Effect** path: when **Sync with Light Intensity** is on, **Compensation Volume** sets baseline loudness before mapping so audio follows the light without clipping.
 
-- **Compensation Volume** sets baseline loudness before mapping.  
-- Use this for **music-reactive** or **dialogue-reactive** lights without clipping audio.
+**Sound Reactor** path: see **§11** — the light follows audio level, not the other way around.
 
 ---
 
@@ -609,17 +744,7 @@ When **Sync with Light Intensity** is enabled:
 
 ## 37) Appendix R — Quick reference: slider ranges (Studio tab)
 
-| Slider | Min | Max |
-|--------|-----|-----|
-| Intensity Scale | 0 | 10 |
-| Spread Factor | 0 | 3 |
-| Radius | 0 | 50 |
-| Radial Offset | −20 | 20 |
-| Rotation Offset | 0 | 360 |
-| Vertical Offset Adjustment | −10 | 10 |
-| POI Virtual Height | −10 | 10 |
-| Gizmo Opacity | 0 | 1 |
-| Font Size | 8 | 32 |
+*Consolidated into **§3 Studio Lighting tab** → **Appendix C — Quick reference: Studio sliders**.*
 
 ---
 
@@ -636,15 +761,15 @@ When **Sync with Light Intensity** is enabled:
 | Step Count | 1 | 24 |
 | Step Intensity | 0 | 10 |
 | Step Range | 0 | 100 |
-| Max Blur | 0 | 20 |
-| Blur Scale | 0.1 | 5 |
 | Color Switch Speed | 0.1 | 50 |
 | Audio Volume / Compensation | 0 | 1 |
-| Intensity Multiplier (reactive) | 0 | 5 |
-| Base Intensity (reactive) | 0 | 2 |
-| Color Change Speed (reactive) | 0 | 20 |
-| Threshold (reactive) | 0 | 4 |
+| Intensity Multiplier (Sound Reactor) | 0 | 5 |
+| Base Intensity (Sound Reactor) | 0 | 2 |
+| Color Change Speed (Sound Reactor) | 0 | 20 |
+| Threshold (Sound Reactor) | 0 | 4 |
 | Shadow Strength | 0 | 1 |
+
+**Max Blur** / **Blur Scale** apply to **PRO Cookies → Texture** only (**§16**), not to Gradual / Strobe / Step Sequencer.
 
 ---
 
@@ -660,7 +785,7 @@ When **Sync with Light Intensity** is enabled:
 
 ## 40) Revision note
 
-This file was **restored** to a **settings reference** style after a tutorial-style rewrite. Without version control, **exact** byte-for-byte recovery of an older README is not guaranteed — this version is **rebuilt from `LightLabProWindow.cs` bindings** and expanded appendices. If you need a **perfect** match to an older file, use **Cursor Local History** or a backup copy.
+This manual is maintained against the **Light Lab PRO** editor UI (`LightLabProWindow.cs` and related scripts). Module-specific **Appendix A/B/C** subsections under **§3**, **§10**, and **§13** replace duplicated global appendix bodies where noted in **§20–§27** and **§33**, **§37**.
 
 ---
 
@@ -687,24 +812,24 @@ This file was **restored** to a **settings reference** style after a tutorial-st
 | 17 | Preset asset types |
 | 18 | Troubleshooting |
 | 19 | Suggested website structure |
-| 20 | Appendix A — Unity enums |
-| 21 | Appendix B — Studio checklist |
+| 20 | Appendix A — Unity enums (→ §13 App. A) |
+| 21 | Appendix B — Studio checklist (→ §3 App. A) |
 | 22 | Appendix C — Cluster sync |
-| 23 | Appendix D — Basic Settings inventory |
+| 23 | Appendix D — Basic inventory (→ §13 App. B) |
 | 24 | Appendix E — Sorting options |
-| 25 | Appendix F — Gizmo matrix |
+| 25 | Appendix F — Gizmo matrix (→ §3 App. B) |
 | 26 | Appendix G — Effects visibility |
-| 27 | Appendix H — Pipeline matrix |
+| 27 | Appendix H — Pipeline matrix (→ §13 App. C) |
 | 28 | Appendix I — FAQ |
 | 29 | Appendix J — Editor tips |
 | 30 | Appendix K — Glossary |
 | 31 | Appendix L — PRO Cookies regions |
 | 32 | Appendix M — Material Changer use |
-| 33 | Appendix N — Color Switcher |
+| 33 | Appendix N — Color Switcher (→ §10 App. A) |
 | 34 | Appendix O — Sound sync |
 | 35 | Appendix P — Day–Night preview |
 | 36 | Appendix Q — Asset hygiene |
-| 37 | Appendix R — Studio slider ranges |
+| 37 | Appendix R — Studio sliders (→ §3 App. C) |
 | 38 | Appendix S — Effects/color/sound ranges |
 | 39 | Appendix T — Related Unity windows |
 | 40 | Revision note |

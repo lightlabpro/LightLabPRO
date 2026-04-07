@@ -22,7 +22,46 @@
         <a href="#troubleshooting">Troubleshooting</a>
         <a href="#downloads">Downloads</a>
       </nav>
+      <div class="header-edit" role="group" aria-label="Local editing">
+        <button type="button" id="editModeToggle" class="btn-edit-toggle" aria-pressed="false" disabled>
+          Enable editing
+        </button>
+        <button type="button" id="saveReadmeEdits" class="btn-edit-save" hidden>
+          Save &amp; download files
+        </button>
+      </div>
       <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">☾</button>
+    </div>
+    <div id="editFormatToolbar" class="edit-format-toolbar" hidden role="toolbar" aria-label="Text formatting">
+      <div class="container edit-format-toolbar-inner">
+        <span class="edit-format-toolbar-hint">Selection tools</span>
+        <div class="edit-format-group" role="group" aria-label="Emphasis">
+          <button type="button" class="fmt-btn fmt-btn-strong" data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold">B</button>
+          <button type="button" class="fmt-btn fmt-btn-em" data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic">I</button>
+          <button type="button" class="fmt-btn fmt-btn-strike" data-cmd="strikeThrough" title="Strikethrough" aria-label="Strikethrough">S</button>
+          <button type="button" class="fmt-btn fmt-btn-under" data-cmd="underline" title="Underline (Ctrl+U)" aria-label="Underline">U</button>
+        </div>
+        <div class="edit-format-group" role="group" aria-label="Headings and paragraph">
+          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="h2" title="Heading 2">H2</button>
+          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="h3" title="Heading 3">H3</button>
+          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="p" title="Paragraph">¶</button>
+        </div>
+        <div class="edit-format-group" role="group" aria-label="Lists">
+          <button type="button" class="fmt-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+          <button type="button" class="fmt-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+        </div>
+        <div class="edit-format-group" role="group" aria-label="Blocks">
+          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="blockquote" title="Quote">“ Quote</button>
+          <button type="button" class="fmt-btn" data-fmt="code" title="Inline code">&lt;/&gt;</button>
+        </div>
+        <div class="edit-format-group" role="group" aria-label="Link">
+          <button type="button" class="fmt-btn" data-fmt="link" title="Insert link">Link</button>
+          <button type="button" class="fmt-btn" data-cmd="unlink" title="Remove link">Unlink</button>
+        </div>
+        <div class="edit-format-group" role="group" aria-label="Cleanup">
+          <button type="button" class="fmt-btn" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -65,25 +104,25 @@
         </div>
         <div class="modules-layout">
         <div class="cards" id="moduleCards">
-          <article class="card card-text" data-readme-sections="1" data-keywords="window overview open lighting settings light explorer render pipeline asset">
+          <article class="card card-text" data-readme-sections="1" data-keywords="window overview tabs open lighting settings light explorer render pipeline asset">
             <div class="card-body">
               <h3>Window Overview & Utilities</h3>
-              <p>Title bar, utilities, and main tabs.</p>
+              <p>Tab layout and bottom utility buttons.</p>
             </div>
           </article>
 
-          <article class="card card-text" data-readme-sections="2,22,24" data-keywords="scene lights refresh select all deselect sort cluster focus on off">
+          <article class="card card-text" data-readme-sections="2,22,24" data-keywords="scene lights refresh select all deselect sort cluster focus on off right click">
             <div class="card-body">
               <h3>Scene Lights & Cluster</h3>
-              <p>List, Edit, sort, cluster, and focus.</p>
+              <p>List, Edit, cluster (incl. right-click reset), sort, focus.</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="3,21,25,37" data-keywords="studio lighting baseline layout gizmos">
+          <article class="card" data-readme-sections="3" data-keywords="studio lighting baseline layout gizmos settings asset intensity scale">
             <img src="StudioLightingUI.png" alt="Studio Lighting tab interface" loading="lazy" />
             <div class="card-body">
               <h3>Studio Lighting</h3>
-              <p>POI, studio rigs, gizmos, and live-edit.</p>
+              <p>Settings asset, POI, add lights, rig layout, gizmos, live-edit.</p>
             </div>
           </article>
 
@@ -95,55 +134,55 @@
             </div>
           </article>
 
-          <article class="card" data-readme-sections="4" data-keywords="light groups grouping organization">
+          <article class="card" data-readme-sections="4" data-keywords="light groups grouping organization edit enabled">
             <img src="LightGroupsUI.png" alt="Light groups interface" loading="lazy" />
             <div class="card-body">
               <h3>Light Groups</h3>
-              <p>Create, rename, and batch-edit groups.</p>
+              <p>Groups of LLP “Edit” lights; batch add from edited lights.</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="13,20,23,27" data-keywords="fx settings basic settings intensity range shadows">
+          <article class="card" data-readme-sections="13" data-keywords="fx settings basic settings intensity range shadows lightmap bake type">
             <img src="FxAndSettingsBasicSettingsUI.png" alt="FX basic settings interface" loading="lazy" />
             <div class="card-body">
               <h3>FX &amp; Settings: Basic</h3>
-              <p>Color, intensity, range, shadows, and modes.</p>
+              <p>Emission, rendering modes, shadow bias, and pipeline notes.</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="6,7" data-keywords="fx settings presets section saved effect setups">
+          <article class="card" data-readme-sections="7" data-keywords="fx settings presets section saved effect setups per light type">
             <img src="FxAndSettingsPresetsUI.png" alt="FX and settings presets interface" loading="lazy" />
             <div class="card-body">
               <h3>FX Presets</h3>
-              <p>Apply saved FX bundles per light.</p>
+              <p>Apply a typed FX bundle to the edited light (per light type).</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="8,26,38" data-keywords="gradual effect smooth transition">
+          <article class="card" data-readme-sections="8,26" data-keywords="gradual effect smooth transition intensity range behavior">
             <img src="FxAndSettingsGradualEffectUI.png" alt="Gradual effect interface" loading="lazy" />
             <div class="card-body">
               <h3>Gradual Effect</h3>
-              <p>Smooth ramps, ping-pong, or random.</p>
+              <p>Min/max intensity &amp; range, behavior, speeds, presets.</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="8,26,38" data-keywords="strobe effect pulse flashing">
+          <article class="card" data-readme-sections="8,26" data-keywords="strobe effect pulse flashing loop">
             <img src="FxAndSettingsStrobeEffectUI.png" alt="Strobe effect interface" loading="lazy" />
             <div class="card-body">
               <h3>Strobe Effect</h3>
-              <p>Pulsing intensity or range.</p>
+              <p>Toggle between min/max intensity and range on a timer.</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="8,26,38" data-keywords="step sequencer timed states">
+          <article class="card" data-readme-sections="8,26" data-keywords="step sequencer timed states duration color">
             <img src="FxAndSettingsStepSequencerUI.png" alt="Step sequencer interface" loading="lazy" />
             <div class="card-body">
               <h3>Step Sequencer</h3>
-              <p>Timed steps for color, intensity, range.</p>
+              <p>Step count, duration, intensity, range, and color per step.</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="10,33" data-keywords="color switcher forward reverse random gradient">
+          <article class="card" data-readme-sections="10" data-keywords="color switcher forward reverse random gradient pattern">
             <img src="FxAndSettingsColorSwitcherUI.png" alt="Color switcher interface" loading="lazy" />
             <div class="card-body">
               <h3>Color Switcher</h3>
@@ -159,19 +198,19 @@
             </div>
           </article>
 
-          <article class="card" data-readme-sections="11,34" data-keywords="sound effect audio source">
+          <article class="card" data-readme-sections="11,34" data-keywords="sound effect audio source sync light intensity">
             <img src="FxAndSettingsSoundEffectUI.png" alt="Sound effect handler interface" loading="lazy" />
             <div class="card-body">
               <h3>Sound Effect</h3>
-              <p>Clip playback; optional intensity sync.</p>
+              <p>Audio follows the light (optional sync to intensity).</p>
             </div>
           </article>
 
-          <article class="card" data-readme-sections="11,34" data-keywords="sound reactor rms audio reactive">
+          <article class="card" data-readme-sections="11,34" data-keywords="sound reactor rms audio reactive amplitude">
             <img src="FxAndSettingsSoundReactorUI.png" alt="Sound reactor interface" loading="lazy" />
             <div class="card-body">
               <h3>Sound Reactor</h3>
-              <p>Audio → intensity and color.</p>
+              <p>Light follows audio volume/amplitude.</p>
             </div>
           </article>
 
@@ -319,6 +358,7 @@
 
   <script src="readme-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/turndown@7.2.0/dist/turndown.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

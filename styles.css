@@ -56,6 +56,7 @@ body {
   justify-content: space-between;
   min-height: 68px;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -88,6 +89,163 @@ body {
 
 .top-nav a:hover {
   color: var(--text);
+}
+
+.header-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btn-edit-toggle,
+.btn-edit-save {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-edit-toggle:hover:not(:disabled),
+.btn-edit-save:hover:not(:disabled),
+.btn-edit-toggle:focus-visible,
+.btn-edit-save:focus-visible {
+  background: color-mix(in oklab, var(--primary) 16%, var(--panel));
+  border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+  outline: none;
+}
+
+.btn-edit-toggle:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-edit-save {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+  color: var(--primary-strong);
+}
+
+body.edit-mode .btn-edit-toggle {
+  background: color-mix(in oklab, var(--primary) 22%, var(--panel));
+  border-color: color-mix(in oklab, var(--primary) 50%, var(--border));
+}
+
+body.edit-mode .readme-md[contenteditable="true"] {
+  outline: 2px dashed color-mix(in oklab, var(--primary) 65%, var(--border));
+  outline-offset: 4px;
+  border-radius: 10px;
+  min-height: 2.5rem;
+}
+
+body.edit-mode .readme-md[contenteditable="true"]:focus {
+  outline-style: solid;
+}
+
+body.edit-mode .readme-md a {
+  pointer-events: none;
+  cursor: text;
+}
+
+.edit-format-toolbar {
+  border-top: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel-soft) 90%, var(--bg));
+  padding: 0.45rem 0;
+}
+
+.edit-format-toolbar[hidden] {
+  display: none !important;
+}
+
+.edit-format-toolbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.edit-format-toolbar-hint {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-right: 0.25rem;
+}
+
+.edit-format-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding-right: 0.65rem;
+  border-right: 1px solid var(--border);
+}
+
+.edit-format-group:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.fmt-btn {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.28rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  min-height: 30px;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.fmt-btn:hover,
+.fmt-btn:focus-visible {
+  background: color-mix(in oklab, var(--primary) 14%, var(--panel));
+  border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
+  outline: none;
+}
+
+.fmt-btn:active {
+  transform: scale(0.98);
+}
+
+.fmt-btn-strong {
+  font-weight: 800;
+}
+
+.fmt-btn-em {
+  font-style: italic;
+}
+
+.fmt-btn-strike {
+  text-decoration: line-through;
+}
+
+.fmt-btn-under {
+  text-decoration: underline;
+}
+
+.fmt-btn.fmt-btn--active {
+  background: color-mix(in oklab, var(--primary) 30%, var(--panel));
+  border-color: color-mix(in oklab, var(--primary) 58%, var(--border));
+  color: var(--text);
+  box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--primary) 38%, transparent);
+}
+
+body.light .fmt-btn.fmt-btn--active {
+  background: color-mix(in oklab, var(--primary) 22%, var(--panel));
+  border-color: color-mix(in oklab, var(--primary) 50%, var(--border));
+  box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--primary) 35%, transparent);
 }
 
 .theme-toggle {
