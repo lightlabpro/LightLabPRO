@@ -332,7 +332,7 @@ The **Effects** foldout reflects **components** on the GameObject. If a control 
 | Step Intensity | 0 | 10 |
 | Step Range | 0 | 100 |
 
-**Max Blur** / **Blur Scale** apply only under **PRO Cookies → Texture** (**§16**), not to Gradual / Strobe / Step Sequencer.
+**Max Blur** / **Blur Scale** apply only under **PRO Cookies → Texture** (**§43**), not to Gradual / Strobe / Step Sequencer.
 
 ---
 
@@ -572,31 +572,65 @@ Subsections commonly include **Rotation Animator** and **Firefly Motion**.
 
 ---
 
-## 15) Day–Night cycle (inspector section in window)
+## 15) Day–Night Cycle tab (directional sun & sky)
 
-When a day–night component is referenced:
+The **Day–Night Cycle** tab edits a scene **`DayNightCycle`** component: it drives a **directional “sun” light** and a **procedural skybox** using a **`DayNightCycleConfig`** asset. Time is modeled as an internal **0–392°** cycle (not clock time): phases are **Sunrise → Day → Sunset → Night**, then the sun path **reverses** through night back toward sunrise.
 
-| Control | Range | Notes |
-|---------|-------|--------|
-| **Enable Editor Preview** | Toggle | |
-| **Auto Update In Editor** | Toggle | |
-| **Editor Update Interval** | Slider | Throttle for editor updates. |
-| **Current Phase** | Label | Readout. |
-| **Time Of Day** | Slider | Scrub phase. |
+### 15.1 Setup row (top of tab)
 
-**Configuration Settings** and other fields follow the attached script’s public API.
+| Control | Notes |
+|---------|--------|
+| **DayNightCycle Object** | `GameObject` that should hold **`DayNightCycle`**. The window auto-picks an existing one in the scene when empty. |
+| **Create DayNightCycle GameObject** | Creates a new object named `DayNightCycle` with the component and selects it. |
+| **Assign DayNightCycle Script** | Adds **`DayNightCycle`** to the **currently selected** Hierarchy object (or uses it if already there). |
+| **Create and Assign DayNightCycle Config** | Saves a new **`DayNightCycleConfig`** asset via dialog and assigns it to the component’s **config** field. Requires **`DayNightCycle`** first. |
+| **Create Directional Light** | Spawns a directional light and assigns it to **`directionalLight`** on the cycle (requires **`DayNightCycle`**). |
+| **Create Skybox Material** | Creates a **Skybox/Procedural** material under `Assets/Light Lab PRO/Day Night Cycle Tool/Skyboxes`, assigns it to **`skyboxMaterial`**, and sets **Render Settings → Skybox**. |
+
+### 15.2 Sub-tab: Directional Light and Sky
+
+Shown when **`DayNightCycle`** is present. Otherwise you see a warning to create/assign the script first.
+
+| Control / area | Notes |
+|----------------|--------|
+| **Configuration** | `DayNightCycleConfig` asset (**Create** menu: *Light Lab PRO / Directional* / Sun Cycle Config). Holds start time, **cycle speed**, per-phase sun color/intensity, skybox sun size, exposure, atmosphere, tints, ground colors, **Sun Disk** type, etc. |
+| **Directional Light** | The sun **`Light`** (directional). Rotation on **X** is driven from internal time; **Y** comes from **sun Y rotation** on the config. |
+| **Skybox Material** | Procedural skybox **`Material`**; shader properties `_SunSize`, `_Exposure`, `_SunSizeConvergence`, `_AtmosphereThickness`, `_SkyTint`, `_GroundColor`, `_SunDisk` are updated per phase. |
+| **Editor Preview Controls** | |
+| **Enable Editor Preview** | When on (and config + light valid), changes in the inspector can apply immediately (`OnValidate`). |
+| **Auto Update in Editor** | While **not** in Play Mode, advances **time of day** on a timer using **`editorUpdateInterval`**. |
+| **Editor Update Interval** | Slider **0.01–1** seconds between editor ticks (lower = smoother, more CPU). |
+| **Current Phase** | Read-only label: **Sunrise**, **Day**, **Sunset**, or **Night** (from script). |
+| **Time of Day** | Slider **0–392**. Landmarks (from tooltips): **0°** sunrise start, **41°** day, **98°** noon, **161°** sunset start, **196°** night, **392°** full cycle. |
+| **Apply Config Now** | Re-applies config and repaints Scene view. |
+| **Forward / Reverse** | Toggles **`isReversing`** (which leg of the cycle time is advancing on). |
+| **Configuration Settings** | Full **SerializedObject** drawer for the assigned **`DayNightCycleConfig`** (time, intensities, colors, sun size, exposure, extra skybox fields). Editing **hour / minute / second** there syncs **`timeOfDay`** via **`SetTimeFromHourMinuteSecond`**. |
+
+### 15.3 How the cycle behaves (runtime logic)
+
+- **`cycleSpeed`** scales **`Time.deltaTime`** when advancing **`timeOfDay`**.  
+- **0–196**: forward day arc; at **196** the script enters the **reversing** night leg (**196–392**). At **392**, time resets to **0** and forward resumes.  
+- **Phases** (internal): **Sunrise** 0–41, **Day** 41–161, **Sunset** 161–196, **Night** 196–392.  
+- **Light color/intensity** and **skybox** values use the **current phase’s** config values, with **short blends** at the end of each phase into the **next** phase (e.g. sunrise→day near 36–41°).  
+- **Play Mode**: **`UpdateTimeOfDay`** runs every frame. **Edit Mode**: optional **auto update** only when preview + auto-update are on.
 
 ### Appendix A — Editor preview cautions
 
-- **Auto Update In Editor** can incur cost in large scenes — increase **Editor Update Interval**.  
-- **Time Of Day** scrubbing is for **preview**; runtime scripts may use different time sources.  
-- **Current Phase** is a **readout** — treat as diagnostic, not authoritative gameplay state.
+- **Auto Update in Editor** in large scenes can be expensive — raise **Editor Update Interval**.  
+- **Time of Day** in the window is the script’s **internal angle**, not always your gameplay clock.  
+- **Current Phase** is a **diagnostic** readout.
+
+### Appendix B — Presets toolbar (global)
+
+Elsewhere on the window, **Day–Night / Directional Config** popups apply a **`DayNightCycleConfig`** to a directional light and ensure a **`DayNightCycle`** exists in the scene — same asset family as this tab.
 
 ---
 
-## 16) PRO Cookies (advanced)
+## 16) PRO Cookies — tab overview (shared)
 
-**PRO Cookies** is a **per-light** workflow on its own tab: pick a light in the list, press **Edit**, then choose **Texture**, **Animated**, or **Video**. Bottom actions are shared: **Remove Cookies from This Light**, **Add PRO Cookies Tracker**, **Cleanup Orphaned Tracker**, **Create PRO Cookies Preset from This Light**.
+Use this section for **any** PRO Cookies sub-tab: how you **open** the tool and what is **shared** across Texture / Animated / Video.
+
+**PRO Cookies** is **per-light**. On the **PRO Cookies** tab, pick a light, press **Edit**, then switch the **Texture / Animated / Video** sub-tab. Mode-specific controls are documented only in **§43** (Texture), **§44** (Animated), and **§45** (Video) so each module panel stays on-topic.
 
 ### 16.1 Scene list (per-light)
 
@@ -606,57 +640,22 @@ When a day–night component is referenced:
 | **Sort Lights By** | e.g. Name Ascending. |
 | **Per row** | Light name, status (e.g. **No Cookies**), **Edit** / **Close** for the row in focus. |
 
-### 16.2 Texture mode
+### 16.2 Shared bottom actions
 
-| Area | Notes |
-|------|--------|
-| **Cookie Material** | Optional material slot. |
-| **4-Layer Setup (2D Textures)** | Four texture slots with tint / picker. |
-| **Duplicated Cubemaps** | **Duplicate & Convert to Cubemap** — builds **CMap 1–4** cubemaps from the 2D layers for point lights. |
-| **Blur Settings** | **Max Blur** (0–20) and **Blur Scale** (0.1–5) — **only here** in PRO Cookies, not in Gradual/Strobe/Step Sequencer. |
-| **Cookie Motion Setup** | **LightCookieMotion** script field; **Add LightCookieMotion Script**; **Create/Update Cookie (Texture)**. |
-| **Cookie CRT** | Optional **Custom Render Texture** for advanced setups. |
-| **Built-In Cookie Settings** | Unity **Cookie** slot; tooltip notes size/offset rules for directional lights. |
+| Button | Purpose |
+|--------|---------|
+| **Remove Cookies from This Light** | Clears cookie setup for the active light. |
+| **Add PRO Cookies Tracker** | Adds/updates **`LightCookieTracker`** so settings can persist. |
+| **Cleanup Orphaned Tracker** | Removes stray tracker references. |
+| **Create PRO Cookies Preset from This Light** | Writes a **`ProCookiesPreset`** asset from the current light. |
 
-### 16.3 Animated mode
+### Appendix A — Where to read per mode
 
-| Control | Notes |
-|---------|--------|
-| Info box | Assign **Animated CRT** and edit the initialization material as needed. |
-| **Animated CRT** | `Custom Render Texture` reference; **Assign Animated Cookie**. |
-
-### 16.4 Video mode
-
-| Control | Notes |
-|---------|--------|
-| Info box | Pick a **VideoClip**, create a **VideoPlayer** GameObject, render to a **RenderTexture** (2D for Spot/Dir, **Cube** for Point), then assign as cookie. |
-| **Video Clip** | Source clip. |
-| **Create Video Player GameObject** | Sets up playback object. |
-| **Video RenderTexture** | Target RT; **Use This Video RT as Cookie**. |
-
-### 16.5 Motion grid (LightCookieMotion, layers 1–4)
-
-When **LightCookieMotion** is present, per-layer fields may include:
-
-| Field | Purpose |
-|-------|---------|
-| **Cycle Duration N** | `Vector2` — UV cycle time. |
-| **Magnitude N** | `Vector2` — motion strength. |
-| **Time Offset N** | `Vector2` — phase offset. |
-| **Motion Mode NU / NV** | Forward vs PingPong on U/V. |
-| **PathN U / PathN V** | `AnimationCurve` paths. |
-| **TilingN UV / OffsetN UV** | UV transform. |
-
-### Appendix A — UI regions (summary)
-
-| Region | Typical contents |
-|--------|------------------|
-| **Per-light list** | Edit/Close, tracker/preset actions. |
-| **Texture** | 4-layer 2D, cubemap duplicate, **Blur Settings**, motion, built-in cookie. |
-| **Animated** | Animated CRT assignment. |
-| **Video** | VideoClip, VideoPlayer GO, RenderTexture → cookie. |
-
-Performance tip: fewer animated layers and lower **Blur Scale** reduce per-pixel work.
+| Sub-tab | Section |
+|---------|---------|
+| **Texture** (layers, blur, motion, built-in cookie) | **§43** |
+| **Animated** (CRT) | **§44** |
+| **Video** (clip, player, render texture) | **§45** |
 
 ---
 
@@ -698,7 +697,7 @@ If you publish this as a manual site:
 6. **Volumetrics & Fog** — URP fog override + per-light additional component.  
 7. **Color / Sound / Materials** — reactive workflows.  
 8. **Basic Settings** — Unity light parity + pipeline caveats.  
-9. **PRO Cookies** — layers, motion curves, performance.  
+9. **PRO Cookies** — **§16** overview; **§43–§45** per mode (texture / animated / video).  
 10. **Troubleshooting & FAQ**  
 
 ---
@@ -788,7 +787,7 @@ A: **Cluster** syncs a **small set** of properties for lights in the same charac
 
 ## 31) Reference stub: PRO Cookies UI regions
 
-*Body moved to **§16 PRO Cookies → Appendix A**.*
+*Shared list and buttons: **§16**. Per sub-tab: **§43** (Texture), **§44** (Animated), **§45** (Video). Summary table: **§16 → Appendix A**.*
 
 ---
 
@@ -832,7 +831,7 @@ A: **Cluster** syncs a **small set** of properties for lights in the same charac
 
 ## 38) Reference stub: Combined slider quick reference
 
-*Split across modules: **§8 Effects → Appendix B**, **§10 Color Switcher → Appendix B**, **§11 Sound → Appendix A**, **§13 Basic Settings → Appendix D** (shadow strength). **Max Blur** / **Blur Scale** remain documented under **§16 PRO Cookies**.*
+*Split across modules: **§8 Effects → Appendix B**, **§10 Color Switcher → Appendix B**, **§11 Sound → Appendix A**, **§13 Basic Settings → Appendix D** (shadow strength). **Max Blur** / **Blur Scale**: **§43 PRO Cookies — Texture**.*
 
 ---
 
@@ -848,7 +847,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 
 ---
 
-## 41) Section index (1–42)
+## 41) Section index (1–46)
 
 | § | Title |
 |---|--------|
@@ -866,8 +865,8 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 12 | Material Changer |
 | 13 | Basic Settings |
 | 14 | Animation tab |
-| 15 | Day–Night cycle |
-| 16 | PRO Cookies |
+| 15 | Day–Night Cycle (directional sun & sky) |
+| 16 | PRO Cookies — tab overview (shared) |
 | 17 | Preset asset types |
 | 18 | Troubleshooting |
 | 19 | Suggested website structure |
@@ -882,17 +881,22 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 28 | Expanded FAQ |
 | 29 | Editor tips |
 | 30 | Glossary |
-| 31 | Reference stub → §16 App. A |
+| 31 | Reference stub → §16 / §43–§45 |
 | 32 | Reference stub → §12 App. A |
 | 33 | Reference stub → §10 App. A–B |
 | 34 | Reference stub → §11 App. B |
 | 35 | Reference stub → §15 App. A |
 | 36 | File & asset hygiene |
 | 37 | Reference stub → §3 App. C |
-| 38 | Reference stub (sliders split to §8/§10/§11/§13) |
+| 38 | Reference stub (sliders split; blur → §43) |
 | 39 | Reference stub → §1 App. A |
 | 40 | Revision note |
 | 41 | Section index (this table) |
+| 42 | Cross-references (scripts) |
+| 43 | PRO Cookies — Texture only |
+| 44 | PRO Cookies — Animated only |
+| 45 | PRO Cookies — Video only |
+| 46 | Day–Night — Moon Cycle sub-tab |
 
 ---
 
@@ -904,9 +908,99 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | Studio target | `StudioLightingTarget` (component) |
 | Light groups | `LightGroupsDataV2` and related editors |
 | Cookie motion | `LightCookieMotion` (fields referenced in PRO Cookies UI) |
-| Day–night | Component referenced by day–night foldout (scene-specific) |
+| Day–night sun & sky | `DayNightCycle`, `DayNightCycleConfig` — `Light Lab PRO/Day Night Cycle Tool/Scripts/` |
+| Moon cycle | `MoonCycleWithIndividualZenithFlip`, `MoonCycleConfig` — same folder |
 
 Use **Solution Explorer** / **Search in Files** in Unity for exact class filenames.
+
+---
+
+## 43) PRO Cookies — Texture mode only
+
+Use the **Texture** sub-tab after enabling **Edit** on a light (**§16** for the list and shared buttons).
+
+| Area | Notes |
+|------|--------|
+| **Cookie Material** | Optional material slot. |
+| **4-Layer Setup (2D Textures)** | Four texture slots with tint / picker. |
+| **Duplicated Cubemaps** | **Duplicate & Convert to Cubemap** — builds **CMap 1–4** cubemaps from the 2D layers (e.g. for point lights). |
+| **Blur Settings** | **Max Blur** (0–20) and **Blur Scale** (0.1–5). These sliders exist **here only** (not on Gradual / Strobe / Step Sequencer). |
+| **Cookie Motion Setup** | **`LightCookieMotion`** reference; **Add LightCookieMotion Script**; **Create/Update Cookie (Texture)**. |
+| **Cookie CRT** | Optional **Custom Render Texture** for advanced setups. |
+| **Built-In Cookie Settings** | Unity **Cookie** slot; tooltip covers size/offset rules for **directional** lights. |
+
+### Appendix A — LightCookieMotion fields (layers 1–4)
+
+When **`LightCookieMotion`** is present, per-layer fields can include:
+
+| Field | Purpose |
+|-------|---------|
+| **Cycle Duration N** | `Vector2` — UV cycle time. |
+| **Magnitude N** | `Vector2` — motion strength. |
+| **Time Offset N** | `Vector2` — phase offset. |
+| **Motion Mode NU / NV** | Forward vs PingPong on U/V. |
+| **PathN U / PathN V** | `AnimationCurve` paths. |
+| **TilingN UV / OffsetN UV** | UV transform. |
+
+Performance tip: fewer animated layers and lower **Blur Scale** reduce per-pixel work.
+
+---
+
+## 44) PRO Cookies — Animated mode only
+
+Use the **Animated** sub-tab (**§16** for list and shared actions). There is **no** Texture 4-layer or Video workflow on this screen.
+
+| Control | Notes |
+|---------|--------|
+| Info box | Assign **Animated CRT** and edit the initialization material (**m_InitMaterial**) as needed. |
+| **Animated CRT** | **Custom Render Texture** reference. |
+| **Assign Animated Cookie** | Applies the CRT-driven setup as the light’s cookie. |
+
+---
+
+## 45) PRO Cookies — Video mode only
+
+Use the **Video** sub-tab (**§16** for list and shared actions). There is **no** Texture layer UI or Animated CRT field here.
+
+| Control | Notes |
+|---------|--------|
+| Info box | Pick a **VideoClip**, create a **VideoPlayer** `GameObject`, render to a **RenderTexture** (**2D** for Spot/Directional, **Cube** for Point), then assign as cookie. |
+| **Video Clip** | Source **VideoClip**. |
+| **Create Video Player GameObject** | Creates the playback object in the scene. |
+| **Video RenderTexture** | Target **RenderTexture** asset/slot. |
+| **Use This Video RT as Cookie** | Assigns that RT as the light cookie. |
+
+---
+
+## 46) Day–Night Cycle — Moon Cycle sub-tab
+
+Open **Day–Night Cycle**, pick the same **`GameObject`** that holds **`DayNightCycle`**, then switch the sub-tab to **Moon Cycle**. The window expects **`MoonCycleWithIndividualZenithFlip`** on that object; if it is missing, use **Add Moon Cycle Script**. When present, the window embeds the component’s **default inspector** (`Editor.CreateEditor` + `OnInspectorGUI`).
+
+### 46.1 What the moon script does
+
+- Creates or finds a child **`MoonQuad`** (a quad primitive, collider stripped) and assigns a material using shader **`Custom/MoonPhaseHorizon`**.  
+- Registers the quad on **`MoonRenderFeature.sceneMoonQuad`** for pipeline integration.  
+- **Positions** the quad far in front of the camera along the **inverse** of the directional light’s forward (distance **`distanceFromCamera`**, plus **`moonPositionOffset`** in camera space). In the editor, **Scene view** camera is used when **Play Mode** is off and a Scene view exists.  
+- **Billboards** toward the camera with **yaw smoothing** and a **zenith guard**: when the view direction is nearly vertical, yaw is held from **`storedYaw`** to avoid sudden flips.  
+- **Scales** the quad by **`moonSize`**.  
+- **Play Mode visibility**: the renderer is **enabled** only when **`dayNightCycle.isReversing`** is true (moon shown during the script’s “night / reverse” leg). **Edit Mode**: if **`alwaysShowInEditor`** is on, the moon stays visible for layout work.  
+- Optional **`MoonCycleConfig`** profile: **`ApplyConfig`** copies appearance, transparency, positioning, and rotation/billboard flags from the asset onto the component (then material/transform refresh in editor via **`ApplyConfigImmediately`** / **`OnValidate`**). The config asset also defines **Zenith Flip Settings** fields; the runtime billboard uses built-in zenith handling and does not currently map every config zenith toggle onto behavior—treat those profile fields as reserved or future-facing unless a build wires them.
+
+### 46.2 Component field groups (inspector)
+
+| Header | Role |
+|--------|------|
+| **References** | **`DayNightCycle`**, **`Light`** (directional sun), **`moonTexture`**. Directional light defaults from **`dayNightCycle.directionalLight`** if empty. |
+| **Appearance Settings** | Size, color × **HDR intensity**, phase mask (**moonPhase**, feather, visibility, curve), shading direction/contrast/bias, glow. |
+| **Transparency Settings** | Alpha blend path vs opaque queue. |
+| **Positioning Settings** | Distance along sun axis, camera-space offset. |
+| **Rotation Options** | **Freeze** to fixed euler, or billboard with per-axis **freeze** flags and optional **fixed Y**. |
+| **Editor Visibility** | **Always show in editor** when not playing. |
+| **Profile** | **`MoonCycleConfig`** asset (**Create → Light Lab PRO → Moon Cycle Profile**). Toolbar presets elsewhere can apply moon profiles — see **§5** with moon-related keywords. |
+
+### Appendix A — Presets toolbar
+
+Use **Moon Cycle Profile** entries from the global presets area to assign a **`MoonCycleConfig`** to the scene moon component when available (**§5**).
 
 ---
 
