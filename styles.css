@@ -330,6 +330,82 @@ h1 span {
   color: var(--muted);
 }
 
+/* Hero disclaimer — stands out from normal panel copy */
+.hero-disclaimer {
+  position: relative;
+  border-color: color-mix(in oklab, var(--primary) 42%, var(--border));
+  background: color-mix(in oklab, var(--primary) 10%, var(--panel));
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent);
+}
+
+body.light .hero-disclaimer {
+  background: color-mix(in oklab, var(--primary) 7%, var(--panel));
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
+.hero-disclaimer-kicker {
+  display: inline-block;
+  margin-bottom: 0.55rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary) 88%, #1a3a8c),
+    color-mix(in oklab, var(--primary-strong) 75%, #0d1f4d)
+  );
+  box-shadow: 0 2px 10px color-mix(in oklab, var(--primary) 35%, transparent);
+}
+
+body.light .hero-disclaimer-kicker {
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary) 92%, #2040a0),
+    color-mix(in oklab, var(--primary-strong) 80%, #14306e)
+  );
+}
+
+.hero-disclaimer-text {
+  margin: 0 !important;
+  padding: 0.75rem 0.85rem 0.8rem;
+  border-radius: 10px;
+  border-left: 4px solid var(--primary);
+  background: color-mix(in oklab, var(--bg) 55%, var(--panel-soft));
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.58;
+}
+
+body.light .hero-disclaimer-text {
+  background: color-mix(in oklab, #fff 40%, var(--panel-soft));
+}
+
+.hero-disclaimer-lead {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.hero-disclaimer-sep {
+  display: block;
+  height: 0;
+  margin: 0 0 0.65rem;
+  border: 0;
+  border-top: 1px dashed color-mix(in oklab, var(--border) 80%, var(--primary));
+}
+
 .section {
   padding: 2.2rem 0;
 }
