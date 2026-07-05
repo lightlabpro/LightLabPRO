@@ -644,6 +644,28 @@ body {
   opacity: 0.9;
 }
 
+.footer-logo--light {
+  display: none;
+}
+
+:root[data-theme="light"] .footer-logo--dark {
+  display: none;
+}
+
+:root[data-theme="light"] .footer-logo--light {
+  display: inline-block;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .footer-logo--dark {
+    display: none;
+  }
+
+  :root:not([data-theme="dark"]) .footer-logo--light {
+    display: inline-block;
+  }
+}
+
 .footer-links {
   display: flex;
   justify-content: center;

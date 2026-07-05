@@ -544,6 +544,30 @@ img {
   max-width: 12rem;
 }
 
+.footer-logo--light {
+  display: none;
+}
+
+:root[data-theme="light"] .footer-logo--dark,
+:root[data-theme="light"] .footer-logo {
+  display: none;
+}
+
+:root[data-theme="light"] .footer-logo--light {
+  display: block;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .footer-logo--dark,
+  :root:not([data-theme="dark"]) .footer-logo {
+    display: none;
+  }
+
+  :root:not([data-theme="dark"]) .footer-logo--light {
+    display: block;
+  }
+}
+
 .footer-links {
   display: flex;
   flex-wrap: wrap;
