@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Light Lab PRO — Documentation</title>
+  <meta name="description" content="Tutorials and documentation for Light Lab PRO in Unity." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20260705-brand" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../">
+        <img
+          class="brand-logo"
+          src="../assets/brand/llp-banner-logo.png"
+          alt="Light Lab PRO"
+          width="160"
+          height="24"
+        />
+      </a>
+      <div class="header-search">
+        <label class="sr-only" for="searchInput">Search documentation</label>
+        <input
+          id="searchInput"
+          class="search-input"
+          type="search"
+          autocomplete="off"
+          placeholder="Search docs…"
+        />
+        <button type="button" id="searchClear" class="search-clear" aria-label="Clear search" hidden>×</button>
+      </div>
+      <nav class="header-nav" aria-label="Site sections">
+        <a href="../">Home</a>
+        <a href="#intro">Intro</a>
+        <a href="#modules">Modules</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#downloads">Downloads</a>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" class="theme-btn" data-theme="light" aria-pressed="false">Light</button>
+        <button type="button" class="theme-btn" data-theme="dark" aria-pressed="false">Dark</button>
+        <button type="button" class="theme-btn is-active" data-theme="auto" aria-pressed="true">Auto</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Module navigation">
+      <div class="sidebar-scroll">
+        <p class="sidebar-kicker">On this site</p>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link sidebar-link--page" href="#intro">Getting started</a>
+          <a class="sidebar-link sidebar-link--page" href="#video">Video overview</a>
+          <p class="sidebar-group-title">Modules</p>
+          <div id="moduleCards" class="sidebar-modules"></div>
+          <a class="sidebar-link sidebar-link--page" href="#troubleshooting">Troubleshooting</a>
+          <a class="sidebar-link sidebar-link--page" href="#downloads">Reference files</a>
+        </nav>
+      </div>
+    </aside>
+
+    <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
+      Menu
+    </button>
+    <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
+
+    <main id="top" class="docs-main">
+      <section class="doc-page" id="intro">
+        <p class="page-eyebrow">Documentation</p>
+        <h1 class="page-title">Light Lab PRO</h1>
+        <p class="page-lead">Guides, module references, and troubleshooting for the Light Lab PRO Unity editor window.</p>
+        <div id="heroReadmeIntro" class="prose prose-hero"></div>
+        <aside class="callout callout--note" role="note">
+          <p class="callout-title">Note</p>
+          <p>This guide was generated with AI assistance to help a solo developer maintain documentation. Please report inaccuracies or suggest improvements.</p>
+        </aside>
+      </section>
+
+      <section class="doc-page" id="video">
+        <h2 class="page-heading">Video overview</h2>
+        <p class="page-lead">Watch a walkthrough of Light Lab PRO features and workflows.</p>
+        <div class="video-player">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/GSIqRS2XYx4"
+            title="Light Lab PRO video overview"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+
+      <section class="doc-page doc-page--module" id="modules">
+        <p class="page-eyebrow">Module reference</p>
+        <h2 class="page-heading" id="docTitle">Select a module</h2>
+        <p class="page-lead module-hint">Choose a topic from the sidebar to load its documentation.</p>
+
+        <div class="module-doc">
+          <div id="docThumbWrap" class="module-screenshot" hidden>
+            <button type="button" id="docImageOpen" class="module-screenshot-btn" aria-label="Open full-size screenshot">
+              <img id="docImage" alt="" loading="lazy" />
+            </button>
+            <p class="module-screenshot-caption">Click to enlarge</p>
+          </div>
+          <article id="docReadmeBody" class="prose module-prose">
+            <p><em>Loading documentation…</em></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="doc-page" id="troubleshooting">
+        <h2 class="page-heading">Troubleshooting</h2>
+        <div id="troubleshootingReadme" class="prose"></div>
+      </section>
+
+      <section class="doc-page" id="downloads">
+        <h2 class="page-heading">Reference files</h2>
+        <p class="page-lead">Download the full guide in other formats.</p>
+        <div class="link-cards">
+          <a class="link-card" href="README_LightLabPRO_Features_Tutorial.md">
+            <span class="link-card-title">Markdown guide</span>
+            <span class="link-card-desc">Full README source</span>
+          </a>
+          <a class="link-card" href="Light Lab PRO.pdf">
+            <span class="link-card-title">PDF guide</span>
+            <span class="link-card-desc">Print-friendly export</span>
+          </a>
+          <a class="link-card" href="Light Lab PRO.docx">
+            <span class="link-card-title">DOCX guide</span>
+            <span class="link-card-desc">Editable document</span>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="imageLightbox" class="lightbox" hidden aria-hidden="true">
+    <div class="lightbox-backdrop" data-lightbox-close tabindex="-1" aria-hidden="true"></div>
+    <div class="lightbox-inner" role="dialog" aria-modal="true" aria-labelledby="lightboxCaption">
+      <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close full-size view">×</button>
+      <img id="lightboxImage" class="lightbox-img" src="" alt="" />
+      <p id="lightboxCaption" class="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <img
+      class="footer-logo"
+      src="../assets/brand/llp-logo-white.png"
+      alt="Light Lab PRO"
+      width="180"
+      height="26"
+    />
+    <nav class="footer-links" aria-label="Footer">
+      <a href="../">Home</a>
+      <a href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939">Asset Store</a>
+      <a href="mailto:info@lightlabpro.com">Contact</a>
+    </nav>
+    <p>Light Lab PRO Documentation</p>
+  </footer>
+
+  <template id="moduleCardTemplate">
+    <button type="button" class="sidebar-link sidebar-link--module card" data-readme-sections="" data-keywords="">
+      <span class="sidebar-link-title"></span>
+      <span class="sidebar-link-desc"></span>
+      <img class="card-thumb" alt="" loading="lazy" hidden />
+    </button>
+  </template>
+
+  <script src="readme-data.js?v=20260705-brand"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="modules.js?v=20260705-brand"></script>
+  <script src="script.js?v=20260705-brand"></script>
+</body>
+</html>

@@ -3,159 +3,358 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Light Lab PRO — Documentation</title>
-  <meta name="description" content="Tutorials and documentation for Light Lab PRO in Unity." />
+  <title>Light Lab PRO | Lighting Tool for Unity</title>
+  <meta name="description" content="Revolutionize your scene lighting workflow with Light Lab PRO — studio lighting, presets, FX, PRO Cookies, animation, and day/night cycles for Unity." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260705-redesign" />
+  <link rel="stylesheet" href="landing.css?v=20260705-brand" />
 </head>
 <body>
   <header class="site-header">
-    <div class="header-inner">
+    <div class="container header-inner">
       <a class="brand" href="#top">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-text">Light Lab PRO</span>
-      </a>
-      <div class="header-search">
-        <label class="sr-only" for="searchInput">Search documentation</label>
-        <input
-          id="searchInput"
-          class="search-input"
-          type="search"
-          autocomplete="off"
-          placeholder="Search docs…"
+        <img
+          class="brand-logo"
+          src="assets/brand/llp-banner-logo.png"
+          alt="Light Lab PRO"
+          width="180"
+          height="26"
         />
-        <button type="button" id="searchClear" class="search-clear" aria-label="Clear search" hidden>×</button>
-      </div>
-      <nav class="header-nav" aria-label="Site sections">
-        <a href="#intro">Intro</a>
-        <a href="#modules">Modules</a>
-        <a href="#troubleshooting">Troubleshooting</a>
-        <a href="#downloads">Downloads</a>
+      </a>
+      <nav class="header-nav" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="docs/">Documentation</a>
+        <a href="#contact">Contact</a>
       </nav>
-      <div class="theme-switch" role="group" aria-label="Theme">
-        <button type="button" class="theme-btn" data-theme="light" aria-pressed="false">Light</button>
-        <button type="button" class="theme-btn" data-theme="dark" aria-pressed="false">Dark</button>
-        <button type="button" class="theme-btn is-active" data-theme="auto" aria-pressed="true">Auto</button>
+      <div class="header-actions">
+        <div class="theme-switch" role="group" aria-label="Theme">
+          <button type="button" class="theme-btn" data-theme="light" aria-pressed="false">Light</button>
+          <button type="button" class="theme-btn" data-theme="dark" aria-pressed="false">Dark</button>
+          <button type="button" class="theme-btn is-active" data-theme="auto" aria-pressed="true">Auto</button>
+        </div>
+        <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileNav">Menu</button>
       </div>
     </div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+      <a href="#features">Features</a>
+      <a href="docs/">Documentation</a>
+      <a href="#contact">Contact</a>
+      <a href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939">Asset Store</a>
+    </nav>
   </header>
 
-  <div class="docs-shell">
-    <aside class="sidebar" id="sidebar" aria-label="Module navigation">
-      <div class="sidebar-scroll">
-        <p class="sidebar-kicker">On this site</p>
-        <nav class="sidebar-nav">
-          <a class="sidebar-link sidebar-link--page" href="#intro">Getting started</a>
-          <a class="sidebar-link sidebar-link--page" href="#video">Video overview</a>
-          <p class="sidebar-group-title">Modules</p>
-          <div id="moduleCards" class="sidebar-modules"></div>
-          <a class="sidebar-link sidebar-link--page" href="#troubleshooting">Troubleshooting</a>
-          <a class="sidebar-link sidebar-link--page" href="#downloads">Reference files</a>
-        </nav>
-      </div>
-    </aside>
-
-    <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
-      Menu
-    </button>
-    <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
-
-    <main id="top" class="docs-main">
-      <section class="doc-page" id="intro">
-        <p class="page-eyebrow">Documentation</p>
-        <h1 class="page-title">Light Lab PRO</h1>
-        <p class="page-lead">Guides, module references, and troubleshooting for the Light Lab PRO Unity editor window.</p>
-        <div id="heroReadmeIntro" class="prose prose-hero"></div>
-        <aside class="callout callout--note" role="note">
-          <p class="callout-title">Note</p>
-          <p>This guide was generated with AI assistance to help a solo developer maintain documentation. Please report inaccuracies or suggest improvements.</p>
-        </aside>
-      </section>
-
-      <section class="doc-page" id="video">
-        <h2 class="page-heading">Video overview</h2>
-        <p class="page-lead">Watch a walkthrough of Light Lab PRO features and workflows.</p>
-        <div class="video-player">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/GSIqRS2XYx4"
-            title="Light Lab PRO video overview"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            loading="lazy"
-          ></iframe>
-        </div>
-      </section>
-
-      <section class="doc-page doc-page--module" id="modules">
-        <p class="page-eyebrow">Module reference</p>
-        <h2 class="page-heading" id="docTitle">Select a module</h2>
-        <p class="page-lead module-hint">Choose a topic from the sidebar to load its documentation.</p>
-
-        <div class="module-doc">
-          <div id="docThumbWrap" class="module-screenshot" hidden>
-            <button type="button" id="docImageOpen" class="module-screenshot-btn" aria-label="Open full-size screenshot">
-              <img id="docImage" alt="" loading="lazy" />
-            </button>
-            <p class="module-screenshot-caption">Click to enlarge</p>
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Unity lighting tool</p>
+          <h1>Experience the power of lighting</h1>
+          <p class="hero-lead">
+            Revolutionize your scene lighting workflow with Light Lab PRO — a Unity editor window for managing lights,
+            presets, effects, cookies, animation, and full day/night cycles.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="btn btn-primary"
+              href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+              Buy on Unity Asset Store
+            </a>
+            <a class="btn btn-secondary" href="docs/">Read the documentation</a>
           </div>
-          <article id="docReadmeBody" class="prose module-prose">
-            <p><em>Loading documentation…</em></p>
+          <div class="hero-badges">
+            <span class="badge">Unity 6 &amp; URP ready</span>
+            <span class="badge">Studio lighting</span>
+            <span class="badge">FX &amp; animation</span>
+            <span class="badge">Day / night cycle</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-panel">
+            <img
+              src="docs/StudioLightingUI.png"
+              alt="Light Lab PRO studio lighting interface in the Unity editor"
+              width="1200"
+              height="675"
+              loading="eager"
+            />
+          </div>
+          <div class="hero-glow" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <p class="eyebrow">What is Light Lab PRO?</p>
+          <h2>A complete lighting toolkit inside Unity</h2>
+          <p>
+            Light Lab PRO helps you manage lighting in games, film, visualization, and 3D applications with studio rigs,
+            reusable presets, reactive effects, animated cookies, and time-of-day control.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div>
+              <h3>Studio Lighting</h3>
+              <p>
+                Design a full studio rig around a point of interest with ring-style controls, live gizmos, labels, and
+                flexible key/fill/rim layouts.
+              </p>
+              <ul>
+                <li>POI-centric layout with live gizmos and labels</li>
+                <li>Spread, arc, random variation, and arrangement guides</li>
+                <li>Scene and selection toolbars for quick updates</li>
+              </ul>
+              <div class="feature-actions">
+                <a
+                  class="btn btn-primary"
+                  href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+                  Buy on Unity Asset Store
+                </a>
+              </div>
+            </div>
+            <div class="feature-media">
+              <img src="docs/StudioLightingUI.png" alt="Studio Lighting tab interface" loading="lazy" />
+            </div>
+          </article>
+
+          <article class="feature-card reverse">
+            <div>
+              <h3>Presets</h3>
+              <p>
+                Assign a preset asset to a light and update type, color, intensity, range, shadows, effects, and cookies
+                instantly across your project.
+              </p>
+              <ul>
+                <li>One preset can drive many lights with perfect consistency</li>
+                <li>Swap moods by reassigning assets, not hunting properties</li>
+                <li>Non-destructive iteration with version-controlled assets</li>
+              </ul>
+              <div class="feature-actions">
+                <a
+                  class="btn btn-primary"
+                  href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+                  Buy on Unity Asset Store
+                </a>
+              </div>
+            </div>
+            <div class="feature-media">
+              <img src="docs/PresetsTabUI.png" alt="Presets tab interface" loading="lazy" />
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <div>
+              <h3>FX &amp; Settings</h3>
+              <p>
+                Edit lights in context with scene lists, basic settings, color switching, sound-driven effects, sequencers,
+                volumetrics, and material changes.
+              </p>
+              <ul>
+                <li>Gradual, strobe, and step sequencer effects</li>
+                <li>Sound Effect Handler and Sound Reactor integration</li>
+                <li>Color Switcher, volumetrics, and Material Changer</li>
+              </ul>
+              <div class="feature-actions">
+                <a
+                  class="btn btn-primary"
+                  href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+                  Buy on Unity Asset Store
+                </a>
+              </div>
+            </div>
+            <div class="feature-media">
+              <img src="docs/FxAndSettingsGradualEffectUI.png" alt="FX and settings interface" loading="lazy" />
+            </div>
+          </article>
+
+          <article class="feature-card reverse">
+            <div>
+              <h3>PRO Cookies</h3>
+              <p>
+                Break up light with texture, animated shader, or video cookies — perfect for gobos, firelight, TV spill,
+                and complex projected motion.
+              </p>
+              <div class="cookie-grid">
+                <div class="cookie-card">
+                  <h3>Texture</h3>
+                  <p>Pan, rotate, scale, and animate static gobos with believable motion.</p>
+                </div>
+                <div class="cookie-card">
+                  <h3>Animated</h3>
+                  <p>Drive cookies from animated shaders for caustics, flicker, and looping patterns.</p>
+                </div>
+                <div class="cookie-card">
+                  <h3>Video</h3>
+                  <p>Project real footage for TVs, clubs, city reflections, and cinematic spill.</p>
+                </div>
+              </div>
+              <div class="feature-actions">
+                <a
+                  class="btn btn-primary"
+                  href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+                  Buy on Unity Asset Store
+                </a>
+              </div>
+            </div>
+            <div class="feature-media">
+              <img src="docs/ProCookiesAnimatedTabUI.png" alt="PRO Cookies animated tab interface" loading="lazy" />
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <div>
+              <h3>Animation</h3>
+              <p>
+                Bring lights to life with Rotator Mode for sweeps and spins, or Firefly Mode for organic wandering motion
+                inside a generated volume.
+              </p>
+              <ul>
+                <li>Forward, ping-pong, and random rotation modes</li>
+                <li>World/local axes with speed, jitter, and range controls</li>
+                <li>Firefly motion areas with automatic setup</li>
+              </ul>
+              <div class="feature-actions">
+                <a
+                  class="btn btn-primary"
+                  href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+                  Buy on Unity Asset Store
+                </a>
+              </div>
+            </div>
+            <div class="feature-media">
+              <img src="docs/AnimationTabFireflyUI.png" alt="Animation firefly tab interface" loading="lazy" />
+            </div>
+          </article>
+
+          <article class="feature-card reverse">
+            <div>
+              <h3>Day / Night Cycle</h3>
+              <p>
+                Drive a full sky cycle with editor-friendly time controls, directional sun color, and a dedicated moon
+                render feature for clean URP nights.
+              </p>
+              <ul>
+                <li>Scrub time with a normalized slider and preview in Edit Mode</li>
+                <li>Directional light color and intensity per time of day</li>
+                <li>Moon renderer for controllable night visualization</li>
+              </ul>
+              <div class="feature-actions">
+                <a
+                  class="btn btn-primary"
+                  href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+                  Buy on Unity Asset Store
+                </a>
+              </div>
+            </div>
+            <div class="feature-media">
+              <img src="docs/DayNightCycleDirectionalUI01.png" alt="Day-night cycle interface" loading="lazy" />
+            </div>
           </article>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="doc-page" id="troubleshooting">
-        <h2 class="page-heading">Troubleshooting</h2>
-        <div id="troubleshootingReadme" class="prose"></div>
-      </section>
-
-      <section class="doc-page" id="downloads">
-        <h2 class="page-heading">Reference files</h2>
-        <p class="page-lead">Download the full guide in other formats.</p>
-        <div class="link-cards">
-          <a class="link-card" href="README_LightLabPRO_Features_Tutorial.md">
-            <span class="link-card-title">Markdown guide</span>
-            <span class="link-card-desc">Full README source</span>
-          </a>
-          <a class="link-card" href="Light Lab PRO.pdf">
-            <span class="link-card-title">PDF guide</span>
-            <span class="link-card-desc">Print-friendly export</span>
-          </a>
-          <a class="link-card" href="Light Lab PRO.docx">
-            <span class="link-card-title">DOCX guide</span>
-            <span class="link-card-desc">Editable document</span>
-          </a>
+    <section class="split-band">
+      <div class="container split-band-inner">
+        <div>
+          <p class="eyebrow">Documentation</p>
+          <h2>Learn every module in detail</h2>
+          <p>
+            The full tutorial site covers each tab, effect, appendix, and troubleshooting note — with screenshots,
+            searchable modules, and a video walkthrough.
+          </p>
         </div>
-      </section>
-    </main>
-  </div>
+        <a class="btn btn-secondary" href="docs/">Open documentation</a>
+      </div>
+    </section>
 
-  <div id="imageLightbox" class="lightbox" hidden aria-hidden="true">
-    <div class="lightbox-backdrop" data-lightbox-close tabindex="-1" aria-hidden="true"></div>
-    <div class="lightbox-inner" role="dialog" aria-modal="true" aria-labelledby="lightboxCaption">
-      <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close full-size view">×</button>
-      <img id="lightboxImage" class="lightbox-img" src="" alt="" />
-      <p id="lightboxCaption" class="lightbox-caption"></p>
+    <section class="cta-band">
+      <div class="container">
+        <div class="cta-panel">
+          <div>
+            <p class="eyebrow">Get started</p>
+            <h2>Build better-lit scenes faster</h2>
+            <p>
+              Add Light Lab PRO to your Unity project and streamline light management, creative effects, and cinematic
+              time-of-day workflows from one editor window.
+            </p>
+          </div>
+          <div class="cta-actions">
+            <a
+              class="btn btn-primary"
+              href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="assets/brand/unity-logo.png" alt="" width="76" height="25" />
+              Buy on Unity Asset Store
+            </a>
+            <a class="btn btn-secondary" href="docs/">View docs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <img
+          class="footer-logo"
+          src="assets/brand/llp-logo-white.png"
+          alt="Light Lab PRO"
+          width="200"
+          height="28"
+        />
+        <p>
+          A powerful tool that simplifies light management in 3D scenes with effects, presets, animation, and time-of-day
+          settings for Unity creators.
+        </p>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#top">Home</a>
+        <a href="docs/">Documentation</a>
+        <a href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939">Asset Store</a>
+        <a href="mailto:info@lightlabpro.com">info@lightlabpro.com</a>
+      </nav>
     </div>
-  </div>
-
-  <footer class="site-footer">
-    <p>Light Lab PRO Documentation</p>
+    <div class="container footer-meta">
+      <p>© Light Lab PRO</p>
+    </div>
   </footer>
 
-  <template id="moduleCardTemplate">
-    <button type="button" class="sidebar-link sidebar-link--module card" data-readme-sections="" data-keywords="">
-      <span class="sidebar-link-title"></span>
-      <span class="sidebar-link-desc"></span>
-      <img class="card-thumb" alt="" loading="lazy" hidden />
-    </button>
-  </template>
-
-  <script src="readme-data.js?v=20260705-redesign"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="modules.js?v=20260705-redesign"></script>
-  <script src="script.js?v=20260705-redesign"></script>
+  <script src="landing.js?v=20260705-brand"></script>
 </body>
 </html>
