@@ -3,347 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Light Lab PRO — Tutorials &amp; Documentation</title>
+  <title>Light Lab PRO — Documentation</title>
   <meta name="description" content="Tutorials and documentation for Light Lab PRO in Unity." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20260705-redesign" />
 </head>
 <body>
   <header class="site-header">
-    <div class="container header-row">
+    <div class="header-inner">
       <a class="brand" href="#top">
-        <span class="brand-dot"></span>
-        <span>Light Lab PRO</span>
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">Light Lab PRO</span>
       </a>
-      <nav class="top-nav">
+      <div class="header-search">
+        <label class="sr-only" for="searchInput">Search documentation</label>
+        <input
+          id="searchInput"
+          class="search-input"
+          type="search"
+          autocomplete="off"
+          placeholder="Search docs…"
+        />
+        <button type="button" id="searchClear" class="search-clear" aria-label="Clear search" hidden>×</button>
+      </div>
+      <nav class="header-nav" aria-label="Site sections">
+        <a href="#intro">Intro</a>
         <a href="#modules">Modules</a>
         <a href="#troubleshooting">Troubleshooting</a>
         <a href="#downloads">Downloads</a>
       </nav>
-      <div class="header-edit" role="group" aria-label="Local editing">
-        <button type="button" id="editModeToggle" class="btn-edit-toggle" aria-pressed="false" disabled>
-          Enable editing
-        </button>
-        <button type="button" id="saveReadmeEdits" class="btn-edit-save" hidden>
-          Save &amp; download files
-        </button>
-      </div>
-      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">☾</button>
-    </div>
-    <div id="editFormatToolbar" class="edit-format-toolbar" hidden role="toolbar" aria-label="Text formatting">
-      <div class="container edit-format-toolbar-inner">
-        <span class="edit-format-toolbar-hint">Selection tools</span>
-        <div class="edit-format-group" role="group" aria-label="Emphasis">
-          <button type="button" class="fmt-btn fmt-btn-strong" data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold">B</button>
-          <button type="button" class="fmt-btn fmt-btn-em" data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic">I</button>
-          <button type="button" class="fmt-btn fmt-btn-strike" data-cmd="strikeThrough" title="Strikethrough" aria-label="Strikethrough">S</button>
-          <button type="button" class="fmt-btn fmt-btn-under" data-cmd="underline" title="Underline (Ctrl+U)" aria-label="Underline">U</button>
-        </div>
-        <div class="edit-format-group" role="group" aria-label="Headings and paragraph">
-          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="h2" title="Heading 2">H2</button>
-          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="h3" title="Heading 3">H3</button>
-          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="p" title="Paragraph">¶</button>
-        </div>
-        <div class="edit-format-group" role="group" aria-label="Lists">
-          <button type="button" class="fmt-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
-          <button type="button" class="fmt-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
-        </div>
-        <div class="edit-format-group" role="group" aria-label="Blocks">
-          <button type="button" class="fmt-btn" data-cmd="formatBlock" data-val="blockquote" title="Quote">“ Quote</button>
-          <button type="button" class="fmt-btn" data-fmt="code" title="Inline code">&lt;/&gt;</button>
-        </div>
-        <div class="edit-format-group" role="group" aria-label="Link">
-          <button type="button" class="fmt-btn" data-fmt="link" title="Insert link">Link</button>
-          <button type="button" class="fmt-btn" data-cmd="unlink" title="Remove link">Unlink</button>
-        </div>
-        <div class="edit-format-group" role="group" aria-label="Cleanup">
-          <button type="button" class="fmt-btn" data-cmd="removeFormat" title="Clear formatting">Clear</button>
-        </div>
+      <div class="theme-switch" role="group" aria-label="Theme">
+        <button type="button" class="theme-btn" data-theme="light" aria-pressed="false">Light</button>
+        <button type="button" class="theme-btn" data-theme="dark" aria-pressed="false">Dark</button>
+        <button type="button" class="theme-btn is-active" data-theme="auto" aria-pressed="true">Auto</button>
       </div>
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <div id="heroReadmeIntro" class="readme-md readme-md-hero"></div>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#modules">Start Tutorial</a>
-            <a class="btn btn-secondary" href="#modules">Explore Features</a>
-          </div>
-        </div>
-        <aside class="hero-panel hero-disclaimer" role="note" aria-label="Disclaimer about this guide">
-          <span class="hero-disclaimer-kicker">Disclaimer</span>
-          <p class="hero-disclaimer-text">
-            <span class="hero-disclaimer-lead">Module guides, screenshots, and troubleshooting—everything below.</span>
-            <span class="hero-disclaimer-sep" aria-hidden="true"></span>
-            The entire guide has been generated by AI to aid in writing and editing as it is a project made by a single developer, so please report any issues or suggest improvements.
-          </p>
+  <div class="docs-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Module navigation">
+      <div class="sidebar-scroll">
+        <p class="sidebar-kicker">On this site</p>
+        <nav class="sidebar-nav">
+          <a class="sidebar-link sidebar-link--page" href="#intro">Getting started</a>
+          <a class="sidebar-link sidebar-link--page" href="#video">Video overview</a>
+          <p class="sidebar-group-title">Modules</p>
+          <div id="moduleCards" class="sidebar-modules"></div>
+          <a class="sidebar-link sidebar-link--page" href="#troubleshooting">Troubleshooting</a>
+          <a class="sidebar-link sidebar-link--page" href="#downloads">Reference files</a>
+        </nav>
+      </div>
+    </aside>
+
+    <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
+      Menu
+    </button>
+    <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
+
+    <main id="top" class="docs-main">
+      <section class="doc-page" id="intro">
+        <p class="page-eyebrow">Documentation</p>
+        <h1 class="page-title">Light Lab PRO</h1>
+        <p class="page-lead">Guides, module references, and troubleshooting for the Light Lab PRO Unity editor window.</p>
+        <div id="heroReadmeIntro" class="prose prose-hero"></div>
+        <aside class="callout callout--note" role="note">
+          <p class="callout-title">Note</p>
+          <p>This guide was generated with AI assistance to help a solo developer maintain documentation. Please report inaccuracies or suggest improvements.</p>
         </aside>
-      </div>
-    </section>
+      </section>
 
-    <section class="section section-soft" id="modules">
-      <div class="container">
-        <div class="section-head modules-section-head">
-          <div>
-            <h2>Feature Modules</h2>
-            <p class="subtle">Choose a module to load its documentation.</p>
-          </div>
-          <div class="search-wrap">
-            <input
-              id="searchInput"
-              class="search"
-              type="text"
-              autocomplete="off"
-              placeholder="Search modules, effects, or terms..."
-              aria-label="Search modules, effects, or terms"
-            />
-            <button type="button" id="searchClear" class="search-clear" aria-label="Clear search" hidden>
-              ×
+      <section class="doc-page" id="video">
+        <h2 class="page-heading">Video overview</h2>
+        <p class="page-lead">Watch a walkthrough of Light Lab PRO features and workflows.</p>
+        <div class="video-player">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/GSIqRS2XYx4"
+            title="Light Lab PRO video overview"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+
+      <section class="doc-page doc-page--module" id="modules">
+        <p class="page-eyebrow">Module reference</p>
+        <h2 class="page-heading" id="docTitle">Select a module</h2>
+        <p class="page-lead module-hint">Choose a topic from the sidebar to load its documentation.</p>
+
+        <div class="module-doc">
+          <div id="docThumbWrap" class="module-screenshot" hidden>
+            <button type="button" id="docImageOpen" class="module-screenshot-btn" aria-label="Open full-size screenshot">
+              <img id="docImage" alt="" loading="lazy" />
             </button>
+            <p class="module-screenshot-caption">Click to enlarge</p>
           </div>
-        </div>
-        <div class="modules-layout">
-        <div class="cards" id="moduleCards">
-          <article class="card card-text" data-readme-sections="1" data-keywords="window overview tabs open lighting settings light explorer render pipeline asset">
-            <div class="card-body">
-              <h3>Window Overview & Utilities</h3>
-              <p>Tab layout and bottom utility buttons.</p>
-            </div>
-          </article>
-
-          <article class="card card-text" data-readme-sections="2" data-keywords="scene lights refresh select all deselect sort cluster focus on off right click">
-            <div class="card-body">
-              <h3>Scene Lights & Cluster</h3>
-              <p>List, Edit, cluster (incl. right-click reset), sort, focus.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="3" data-keywords="studio lighting baseline layout gizmos settings asset intensity scale">
-            <img src="StudioLightingUI.png" alt="Studio Lighting tab interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Studio Lighting</h3>
-              <p>Settings asset, POI, add lights, rig layout, gizmos, live-edit.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="5,7,17" data-keywords="presets global fx animation pro cookies">
-            <img src="PresetsTabUI.png" alt="Presets tab interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Presets</h3>
-              <p>Global and per-type preset loaders.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="4" data-keywords="light groups grouping organization edit enabled">
-            <img src="LightGroupsUI.png" alt="Light groups interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Light Groups</h3>
-              <p>Groups of LLP “Edit” lights; batch add from edited lights.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="13" data-keywords="fx settings basic settings intensity range shadows lightmap bake type">
-            <img src="FxAndSettingsBasicSettingsUI.png" alt="FX basic settings interface" loading="lazy" />
-            <div class="card-body">
-              <h3>FX &amp; Settings: Basic</h3>
-              <p>Emission, rendering modes, shadow bias, and pipeline notes.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="7" data-keywords="fx settings presets section saved effect setups per light type">
-            <img src="FxAndSettingsPresetsUI.png" alt="FX and settings presets interface" loading="lazy" />
-            <div class="card-body">
-              <h3>FX Presets</h3>
-              <p>Apply a typed FX bundle to the edited light (per light type).</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="47" data-keywords="gradual effect smooth transition intensity range behavior">
-            <img src="FxAndSettingsGradualEffectUI.png" alt="Gradual effect interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Gradual Effect</h3>
-              <p>Min/max intensity &amp; range, behavior, speeds, presets.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="48" data-keywords="strobe effect pulse flashing loop">
-            <img src="FxAndSettingsStrobeEffectUI.png" alt="Strobe effect interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Strobe Effect</h3>
-              <p>Toggle between min/max intensity and range on a timer.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="49" data-keywords="step sequencer timed states duration color">
-            <img src="FxAndSettingsStepSequencerUI.png" alt="Step sequencer interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Step Sequencer</h3>
-              <p>Step count, duration, intensity, range, and color per step.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="10" data-keywords="color switcher forward reverse random gradient pattern">
-            <img src="FxAndSettingsColorSwitcherUI.png" alt="Color switcher interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Color Switcher</h3>
-              <p>Palette cycles, instant or blended.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="12" data-keywords="material changer realtime emission albedo">
-            <img src="FxAndSettingsMaterialChangerUI.png" alt="Material changer interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Material Changer</h3>
-              <p>Albedo/emission driven by the light.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="50" data-keywords="sound effect audio source sync light intensity">
-            <img src="FxAndSettingsSoundEffectUI.png" alt="Sound effect handler interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Sound Effect</h3>
-              <p>Audio follows the light (optional sync to intensity).</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="51" data-keywords="sound reactor rms audio reactive amplitude">
-            <img src="FxAndSettingsSoundReactorUI.png" alt="Sound reactor interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Sound Reactor</h3>
-              <p>Light follows audio volume/amplitude.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="9" data-keywords="volumetrics urp fog additional light">
-            <img src="FxAndSettingsVolumetricsUI.png" alt="Volumetrics controls interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Volumetrics (URP)</h3>
-              <p>URP fog and per-light contribution.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="43" data-keywords="pro cookies texture layers blur motion">
-            <img src="ProCookiesTextureTabUI.png" alt="PRO Cookies texture tab interface" loading="lazy" />
-            <div class="card-body">
-              <h3>PRO Cookies: Texture</h3>
-              <p>Four layers, tint, blur, motion.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="44" data-keywords="pro cookies animated custom render texture crt">
-            <img src="ProCookiesAnimatedTabUI.png" alt="PRO Cookies animated tab interface" loading="lazy" />
-            <div class="card-body">
-              <h3>PRO Cookies: Animated</h3>
-              <p>Animated render textures as cookies.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="45" data-keywords="pro cookies video clip render texture">
-            <img src="ProCookiesVideoTabUI.png" alt="PRO Cookies video tab interface" loading="lazy" />
-            <div class="card-body">
-              <h3>PRO Cookies: Video</h3>
-              <p>Video → render texture cookie.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="52" data-keywords="animation firefly movement">
-            <img src="AnimationTabFireflyUI.png" alt="Animation firefly tab interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Animation: Firefly</h3>
-              <p>Drift paths, avoid obstacles, jitter.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="53" data-keywords="animation rotation axis pingpong random">
-            <img src="AnimationTabRotatorUI.png" alt="Animation rotation tab interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Animation: Rotation</h3>
-              <p>Axis rotation; ping-pong or random.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="54" data-keywords="day night directional cycle skybox">
-            <img src="DayNightCycleDirectionalUI01.png" alt="Day-night directional controls screenshot one" loading="lazy" />
-            <div class="card-body">
-              <h3>Day-Night: Directional A</h3>
-              <p>Phases and sun arc.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="55" data-keywords="day night sun colors intensity phases">
-            <img src="DayNightCycleDirectionalUI02.png" alt="Day-night directional controls screenshot two" loading="lazy" />
-            <div class="card-body">
-              <h3>Day-Night: Directional B</h3>
-              <p>Per-phase color and intensity.</p>
-            </div>
-          </article>
-
-          <article class="card" data-readme-sections="46,5" data-keywords="moon cycle profile skybox moon quad billboard">
-            <img src="DayNightCycleMoonCycleUI.png" alt="Day-night moon cycle interface" loading="lazy" />
-            <div class="card-body">
-              <h3>Day-Night: Moon</h3>
-              <p>Moon texture, glow, and orbit.</p>
-            </div>
+          <article id="docReadmeBody" class="prose module-prose">
+            <p><em>Loading documentation…</em></p>
           </article>
         </div>
-        <div class="doc-panel-column">
-          <div
-            id="docOverlayBackdrop"
-            class="doc-overlay-backdrop"
-            hidden
-            aria-hidden="true"
-          ></div>
-          <aside class="doc-panel" id="docPanel" aria-live="polite">
-            <div class="doc-panel-head">
-              <button
-                type="button"
-                id="docPanelClose"
-                class="doc-panel-close"
-                aria-label="Close documentation"
-              >
-                ×
-              </button>
-              <p class="doc-kicker">Module Documentation</p>
-              <h3 id="docTitle">Select a module</h3>
-            </div>
-            <div class="doc-panel-body">
-              <div id="docReadmeWrap" class="doc-panel-readme-wrap">
-                <div id="docThumbWrap" class="doc-thumb-float" hidden>
-                  <button type="button" id="docImageOpen" class="doc-thumb-btn" aria-label="Open full-size screenshot">
-                    <img id="docImage" alt="" loading="lazy" />
-                  </button>
-                </div>
-                <article id="docReadmeBody" class="readme-md doc-readme-article"></article>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="section container" id="troubleshooting">
-      <h2>Troubleshooting</h2>
-      <div id="troubleshootingReadme" class="readme-md readme-md-wide"></div>
-    </section>
+      <section class="doc-page" id="troubleshooting">
+        <h2 class="page-heading">Troubleshooting</h2>
+        <div id="troubleshootingReadme" class="prose"></div>
+      </section>
 
-    <section class="section section-soft" id="downloads">
-      <div class="container downloads">
-        <h2>Reference Files</h2>
-        <p>Need the full settings and values documentation? Open the included docs directly:</p>
-        <div class="download-links">
-          <a class="btn btn-secondary" href="README_LightLabPRO_Features_Tutorial.md">Markdown Guide</a>
-          <a class="btn btn-secondary" href="Light Lab PRO.pdf">PDF Guide</a>
-          <a class="btn btn-secondary" href="Light Lab PRO.docx">DOCX Guide</a>
+      <section class="doc-page" id="downloads">
+        <h2 class="page-heading">Reference files</h2>
+        <p class="page-lead">Download the full guide in other formats.</p>
+        <div class="link-cards">
+          <a class="link-card" href="README_LightLabPRO_Features_Tutorial.md">
+            <span class="link-card-title">Markdown guide</span>
+            <span class="link-card-desc">Full README source</span>
+          </a>
+          <a class="link-card" href="Light Lab PRO.pdf">
+            <span class="link-card-title">PDF guide</span>
+            <span class="link-card-desc">Print-friendly export</span>
+          </a>
+          <a class="link-card" href="Light Lab PRO.docx">
+            <span class="link-card-title">DOCX guide</span>
+            <span class="link-card-desc">Editable document</span>
+          </a>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
+  </div>
 
   <div id="imageLightbox" class="lightbox" hidden aria-hidden="true">
     <div class="lightbox-backdrop" data-lightbox-close tabindex="-1" aria-hidden="true"></div>
@@ -355,15 +142,20 @@
   </div>
 
   <footer class="site-footer">
-    <div class="container footer-row">
-      <p>Light Lab PRO Tutorial Hub</p>
-      <a href="#top">Back to top</a>
-    </div>
+    <p>Light Lab PRO Documentation</p>
   </footer>
 
-  <script src="readme-data.js?v=20260705-pages-deploy"></script>
+  <template id="moduleCardTemplate">
+    <button type="button" class="sidebar-link sidebar-link--module card" data-readme-sections="" data-keywords="">
+      <span class="sidebar-link-title"></span>
+      <span class="sidebar-link-desc"></span>
+      <img class="card-thumb" alt="" loading="lazy" hidden />
+    </button>
+  </template>
+
+  <script src="readme-data.js?v=20260705-redesign"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/turndown@7.2.0/dist/turndown.js"></script>
-  <script src="script.js?v=20260705-pages-deploy"></script>
+  <script src="modules.js?v=20260705-redesign"></script>
+  <script src="script.js?v=20260705-redesign"></script>
 </body>
 </html>
