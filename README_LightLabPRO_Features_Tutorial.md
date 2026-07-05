@@ -847,7 +847,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 
 ---
 
-## 41) Section index (1–46)
+## 41) Section index (1–55)
 
 | § | Title |
 |---|--------|
@@ -897,6 +897,15 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 44 | PRO Cookies — Animated only |
 | 45 | PRO Cookies — Video only |
 | 46 | Day–Night — Moon Cycle sub-tab |
+| 47 | Gradual Effect (module view) |
+| 48 | Strobe Effect (module view) |
+| 49 | Step Sequencer (module view) |
+| 50 | Sound Effect (module view) |
+| 51 | Sound Reactor (module view) |
+| 52 | Animation: Firefly Motion (module view) |
+| 53 | Animation: Rotation Animator (module view) |
+| 54 | Day–Night: Directional A — setup & sun arc |
+| 55 | Day–Night: Directional B — phases & config |
 
 ---
 
@@ -917,7 +926,26 @@ Use **Solution Explorer** / **Search in Files** in Unity for exact class filenam
 
 ## 43) PRO Cookies — Texture mode only
 
-Use the **Texture** sub-tab after enabling **Edit** on a light (**§16** for the list and shared buttons).
+On the **PRO Cookies** tab, pick a light, press **Edit**, then open the **Texture** sub-tab.
+
+### Shared scene list
+
+| Control | Notes |
+|---------|--------|
+| **Refresh Light List** / **Select All** / **Deselect All** | Same patterns as the main scene list. |
+| **Sort Lights By** | e.g. Name Ascending. |
+| **Per row** | Light name, status (e.g. **No Cookies**), **Edit** / **Close** for the row in focus. |
+
+### Shared bottom actions
+
+| Button | Purpose |
+|--------|---------|
+| **Remove Cookies from This Light** | Clears cookie setup for the active light. |
+| **Add PRO Cookies Tracker** | Adds/updates **`LightCookieTracker`** so settings can persist. |
+| **Cleanup Orphaned Tracker** | Removes stray tracker references. |
+| **Create PRO Cookies Preset from This Light** | Writes a **`ProCookiesPreset`** asset from the current light. |
+
+### Texture mode controls
 
 | Area | Notes |
 |------|--------|
@@ -948,7 +976,26 @@ Performance tip: fewer animated layers and lower **Blur Scale** reduce per-pixel
 
 ## 44) PRO Cookies — Animated mode only
 
-Use the **Animated** sub-tab (**§16** for list and shared actions). There is **no** Texture 4-layer or Video workflow on this screen.
+On the **PRO Cookies** tab, pick a light, press **Edit**, then open the **Animated** sub-tab. There is **no** Texture 4-layer or Video workflow on this screen.
+
+### Shared scene list
+
+| Control | Notes |
+|---------|--------|
+| **Refresh Light List** / **Select All** / **Deselect All** | Same patterns as the main scene list. |
+| **Sort Lights By** | e.g. Name Ascending. |
+| **Per row** | Light name, status (e.g. **No Cookies**), **Edit** / **Close** for the row in focus. |
+
+### Shared bottom actions
+
+| Button | Purpose |
+|--------|---------|
+| **Remove Cookies from This Light** | Clears cookie setup for the active light. |
+| **Add PRO Cookies Tracker** | Adds/updates **`LightCookieTracker`** so settings can persist. |
+| **Cleanup Orphaned Tracker** | Removes stray tracker references. |
+| **Create PRO Cookies Preset from This Light** | Writes a **`ProCookiesPreset`** asset from the current light. |
+
+### Animated mode controls
 
 | Control | Notes |
 |---------|--------|
@@ -960,7 +1007,26 @@ Use the **Animated** sub-tab (**§16** for list and shared actions). There is **
 
 ## 45) PRO Cookies — Video mode only
 
-Use the **Video** sub-tab (**§16** for list and shared actions). There is **no** Texture layer UI or Animated CRT field here.
+On the **PRO Cookies** tab, pick a light, press **Edit**, then open the **Video** sub-tab. There is **no** Texture layer UI or Animated CRT field here.
+
+### Shared scene list
+
+| Control | Notes |
+|---------|--------|
+| **Refresh Light List** / **Select All** / **Deselect All** | Same patterns as the main scene list. |
+| **Sort Lights By** | e.g. Name Ascending. |
+| **Per row** | Light name, status (e.g. **No Cookies**), **Edit** / **Close** for the row in focus. |
+
+### Shared bottom actions
+
+| Button | Purpose |
+|--------|---------|
+| **Remove Cookies from This Light** | Clears cookie setup for the active light. |
+| **Add PRO Cookies Tracker** | Adds/updates **`LightCookieTracker`** so settings can persist. |
+| **Cleanup Orphaned Tracker** | Removes stray tracker references. |
+| **Create PRO Cookies Preset from This Light** | Writes a **`ProCookiesPreset`** asset from the current light. |
+
+### Video mode controls
 
 | Control | Notes |
 |---------|--------|
@@ -1001,6 +1067,306 @@ Open **Day–Night Cycle**, pick the same **`GameObject`** that holds **`DayNigh
 ### Appendix A — Presets toolbar
 
 Use **Moon Cycle Profile** entries from the global presets area to assign a **`MoonCycleConfig`** to the scene moon component when available (**§5**).
+
+---
+
+## 47) Gradual Effect (module view)
+
+In **FX & Settings**, enable **Gradual Effect** with the blue **Enable** toggle on that row. The **`GradualEffect`** component must be on the light (add it manually or apply an FX preset that includes gradual). **Max Blur** / **Blur Scale** are **not** part of this effect—they belong to **PRO Cookies → Texture** (**§43**).
+
+Smoothly animates intensity and/or range between min/max bounds.
+
+| Control | Notes |
+|---------|--------|
+| **Load Current Values** | Pulls current light values into the min/max fields. |
+| **Minimum / Maximum Intensity** | Slider bounds for intensity animation (0–50 in UI). |
+| **Minimum / Maximum Range** | Slider bounds for range animation (0–50 in UI). |
+| **Behavior** | **Forward**, **Reverse**, **PingPong**, or **Random** (`GradualBehavior`). |
+| **Min / Max Intensity Speed** | How fast intensity moves (0.1–40; **Unconstrain** toggles constant vs random speed). |
+| **Min / Max Range Speed** | How fast range moves (0.1–10; **Unconstrain** where shown). |
+| **Make Preset** | Saves this configuration into an FX preset asset. |
+
+If the foldout is missing, the **`GradualEffect`** behaviour is not on the GameObject—enable **Edit** on the light, toggle **Enable**, or apply a preset first.
+
+### Appendix A — When Gradual controls appear
+
+| Situation | What to check |
+|-----------|----------------|
+| Foldout missing | **`GradualEffect`** not attached, or light not in **Edit** mode. |
+| Sliders look wrong after edits | Use **Load Current Values** to sync bounds with the live light. |
+| No motion in Play Mode | Confirm the component is enabled and min ≠ max for the channel you expect to animate. |
+
+### Appendix B — Quick reference: Gradual sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Min/Max Intensity (bounds) | 0 | 50 |
+| Min/Max Range (bounds) | 0 | 50 |
+| Min Intensity Speed | 0.1 | 40 |
+| Max Intensity Speed | 0.1 | 40 |
+| Min Range Speed | 0.1 | 10 |
+| Max Range Speed | 0.1 | 10 |
+
+---
+
+## 48) Strobe Effect (module view)
+
+In **FX & Settings**, enable **Strobe Effect** with the blue **Enable** toggle. The **`StrobeEffect`** component must be on the light. **Max Blur** / **Blur Scale** are **not** part of this effect—they belong to **PRO Cookies → Texture** (**§43**).
+
+Snaps intensity and/or range between min and max on a timer (pulse-style).
+
+| Control | Notes |
+|---------|--------|
+| **Load Current Values** | Pulls current light values into the min/max fields. |
+| **Minimum / Maximum Intensity** | Endpoints of the strobe (0–50). |
+| **Minimum / Maximum Range** | Endpoints for range strobe (0–50). |
+| **Behavior** | **Loop** (alternate min/max) or **Random** (`StrobeBehavior`). |
+| **Min / Max Intensity Speed** / **Min / Max Range Speed** | Toggle timing between min/max (0.1–40 intensity, 0.1–10 range; **Unconstrain** where shown). |
+| **Make Preset** | Saves into an FX preset asset. |
+
+### Appendix A — When Strobe controls appear
+
+| Situation | What to check |
+|-----------|----------------|
+| Foldout missing | **`StrobeEffect`** not attached, or light not in **Edit** mode. |
+| Strobe feels too fast/slow | Speed fields control **toggle rate** (cycles per second style), not smooth fade—compare with **Gradual Effect** if you need ramps. |
+| Random vs Loop | **Loop** alternates endpoints; **Random** picks a random value in the min/max band each pulse. |
+
+### Appendix B — Quick reference: Strobe sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Min/Max Intensity (bounds) | 0 | 50 |
+| Min/Max Range (bounds) | 0 | 50 |
+| Min Intensity Speed | 0.1 | 40 |
+| Max Intensity Speed | 0.1 | 40 |
+| Min Range Speed | 0.1 | 10 |
+| Max Range Speed | 0.1 | 10 |
+
+---
+
+## 49) Step Sequencer (module view)
+
+In **FX & Settings**, enable **Step Sequencer** with the blue **Enable** toggle. The **`LightStepSequencer`** component must be on the light. **Max Blur** / **Blur Scale** are **not** part of this effect—they belong to **PRO Cookies → Texture** (**§43**).
+
+Holds timed **steps**, each with duration, intensity, range, and color.
+
+| Control | Notes |
+|---------|--------|
+| **Step Count** | Number of steps (slider + field, 1–24). |
+| **Behavior** | **Loop** (advance in order) or **Random** order (`StepSequencerBehavior`). |
+| **Per step** | **Duration**, **Intensity** (0–10), **Range** (0–100), **Color**. |
+| **Make Preset** | Saves into an FX preset asset. |
+
+### Appendix A — When Step Sequencer controls appear
+
+| Situation | What to check |
+|-----------|----------------|
+| Foldout missing | **`LightStepSequencer`** not attached, or light not in **Edit** mode. |
+| Steps do nothing | Ensure **Step Count** > 0 and each step has **Duration** > 0. |
+| Colors ignored | Confirm the target **`Light`** on the component matches the edited light. |
+
+### Appendix B — Quick reference: Step Sequencer sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Step Count | 1 | 24 |
+| Step Intensity | 0 | 10 |
+| Step Range | 0 | 100 |
+
+---
+
+## 50) Sound Effect (module view)
+
+**Sound Effect** (`SoundEffectHandler`): **Audio follows the light**. Playback uses an **`AudioSource`** on the same GameObject; optional **Sync with Light Intensity** maps audio volume from the light’s brightness (not the other way around).
+
+| Control | Range | Notes |
+|---------|-------|--------|
+| **Volume** | 0–1 | Baseline **`AudioSource`** volume when sync is off. |
+| **Loop** | Toggle | |
+| **Play On Awake** | Toggle | |
+| **Mute** | Toggle | |
+| **Sync with Light Intensity** | Toggle | **Sound driven by light** — volume follows light intensity. |
+| **Compensation Volume** | 0–1 | Baseline loudness added before the intensity mapping when sync is on. |
+
+### Appendix A — Quick reference: Sound Effect sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Volume | 0 | 1 |
+| Compensation Volume | 0 | 1 |
+
+### Appendix B — Sync and compensation
+
+When **Sync with Light Intensity** is on, **`SoundEffectHandler`** remaps volume from the linked light each frame. **Compensation Volume** sets a floor so quiet lights are not completely silent and bright lights do not clip at 1.0. Turn sync off to drive volume only from the **Volume** field.
+
+---
+
+## 51) Sound Reactor (module view)
+
+**Sound Reactor** (`SoundReactor`): **Light follows the audio**. RMS-style sampling from an **`AudioSource`** drives **`targetLight`** intensity and color—not audio volume.
+
+| Control | Range | Notes |
+|---------|-------|--------|
+| **Debug Mode** | Toggle | Extra logging in the Console. |
+| **Intensity Multiplier** | 0–5 | Scales how strongly intensity responds to normalized amplitude. |
+| **Base Intensity** | 0–2 | Baseline light intensity when the signal is quiet. |
+| **Color Change Speed** | 0–20 | How fast color shifts between **baseColor** and **reactionColor** with the signal. |
+| **Threshold** | 0–4 | Normalized band above which color/intensity reaction ramps up. |
+
+Underlying component fields (when expanded on the GameObject) also include **thresholdMultiplier**, **thresholdFalloff**, **intensitySmoothTime**, and **sampleWindow** for tuning responsiveness.
+
+### Appendix A — Quick reference: Sound Reactor sliders
+
+| Slider | Min | Max |
+|--------|-----|-----|
+| Intensity Multiplier | 0 | 5 |
+| Base Intensity | 0 | 2 |
+| Color Change Speed | 0 | 20 |
+| Threshold | 0 | 4 |
+
+### Appendix B — Direction of control
+
+The reactor **never** changes **`AudioSource`** volume. Assign a playing clip on the same object (or link **`audioSource`**), then adjust **Base Intensity**, **Intensity Multiplier**, and **Threshold** so the light “listens” to the signal. For audio that follows a light instead, use **Sound Effect** (**§50**).
+
+---
+
+## 52) Animation: Firefly Motion (module view)
+
+On the **Animation** tab, select a light in the list, expand **Firefly Motion**, and use **Enable** to add **`LightFireflyAnimator`**. The light drifts inside a spherical **Motion Area**, picks new waypoints, and jitters with Perlin noise while optionally avoiding obstacles.
+
+| Control | Range (typical) | Notes |
+|---------|-----------------|--------|
+| **Enable** | Toggle | Adds/removes **`LightFireflyAnimator`**. |
+| **Generate Motion Area** | Button | Creates a sibling **`SphereCollider`** volume named `{LightName} Firefly Motion Area`. |
+| **Motion Area** | Object reference | **`motionAreaObject`** — bounds for drift. |
+| **Motion Area Radius** | Float | Edits the sphere collider radius when assigned. |
+| **Min / Max Speed** | Float | Travel speed bounds (`speedMin` / `speedMax`). |
+| **Min / Max Jitter** | Float | Perlin noise frequency bounds. |
+| **Min / Max Jitter Scale** | Float | Magnitude multiplier for flutter. |
+| **Avoid Distance** | Float | Clearance from obstacles (`avoidSphereRadius` on component). |
+| **Seed** | Int | Reproducible paths; randomized when the component is first added. |
+| **Make Preset** | Button | Saves an **Animation Settings** preset asset. |
+
+**Motion Area Parent** may appear in preset/toolbar context — assigns parent for generated objects.
+
+### Appendix A — Firefly workflow tips
+
+| Tip | Detail |
+|-----|--------|
+| **Generate first** | Use **Generate Motion Area**, then tweak **Motion Area Radius** to fit your set piece. |
+| **Obstacle avoidance** | Raise **Avoid Distance** if the light clips geometry; the script sphere-casts along travel direction. |
+| **Reproducibility** | Note **Seed** when sharing presets—identical seeds yield identical paths. |
+| **Disable cleanly** | Turning **Enable** off removes the animator and optionally destroys the motion area object. |
+
+---
+
+## 53) Animation: Rotation Animator (module view)
+
+On the **Animation** tab, select a light, expand **Rotation Animator**, and use **Enable** to add **`LightRotationAnimator`**. Rotates enabled axes in **Forward**, **PingPong**, or **Random** mode.
+
+| Control | Notes |
+|---------|--------|
+| **Enable** | Toggle — adds/removes **`LightRotationAnimator`**. |
+| **Use World Space** | Rotate in world vs local space. |
+| **Rotation Type** | **Forward**, **PingPong**, or **Random**. |
+| **Rotate on X / Y / Z Axis** | Per-axis enable flags. |
+| **Forward mode** | **Rotation Speed X / Y / Z** — degrees per second per enabled axis. |
+| **PingPong mode** | **Rotation Speed** + **PingPong Range** (start/end angles) per enabled axis. |
+| **Random mode** | **Rotation Speed** + **Jitter Amount** per enabled axis. |
+| **Make Preset** | Saves an **Animation Settings** preset asset. |
+
+### Appendix A — Rotation type behavior
+
+| Type | Behavior |
+|------|----------|
+| **Forward** | Continuous spin at each enabled axis speed. |
+| **PingPong** | Oscillates between **PingPong Range** min/max angles per axis. |
+| **Random** | Applies noisy offsets (**Jitter Amount**) on top of base rotation speeds. |
+
+Combine **Use World Space** with axis toggles when you need a rig to orbit scene axes instead of the light’s local transform.
+
+---
+
+## 54) Day–Night: Directional A — setup & sun arc (module view)
+
+The **Day–Night Cycle** tab wires a scene **`DayNightCycle`** component: a directional **sun** light and **procedural skybox** driven by a **`DayNightCycleConfig`** asset. Time is an internal **0–392°** arc (not clock time): **Sunrise → Day → Sunset → Night**, then the path **reverses** through night back toward sunrise.
+
+### Setup row (top of tab)
+
+| Control | Notes |
+|---------|--------|
+| **DayNightCycle Object** | `GameObject` that should hold **`DayNightCycle`**. Auto-picked when empty. |
+| **Create DayNightCycle GameObject** | Creates `DayNightCycle` with the component. |
+| **Assign DayNightCycle Script** | Adds **`DayNightCycle`** to the selected Hierarchy object. |
+| **Create and Assign DayNightCycle Config** | Saves a new **`DayNightCycleConfig`** asset and assigns it (requires **`DayNightCycle`** first). |
+| **Create Directional Light** | Spawns a directional light and assigns **`directionalLight`**. |
+| **Create Skybox Material** | Creates **Skybox/Procedural** material under `Assets/Light Lab PRO/Day Night Cycle Tool/Skyboxes` and assigns **Render Settings → Skybox**. |
+
+### Sub-tab: Directional Light and Sky (preview & arc)
+
+| Control / area | Notes |
+|----------------|--------|
+| **Configuration** | Asset slot for **`DayNightCycleConfig`** (per-phase values edited in **Directional B**). |
+| **Directional Light** / **Skybox Material** | References updated by the setup row and config apply. |
+| **Enable Editor Preview** | When on, inspector edits can apply immediately (`OnValidate`). |
+| **Auto Update in Editor** | While **not** playing, advances **time of day** on **`editorUpdateInterval`**. |
+| **Editor Update Interval** | **0.01–1** s between editor ticks. |
+| **Current Phase** | Read-only: **Sunrise**, **Day**, **Sunset**, or **Night**. |
+| **Time of Day** | Slider **0–392**. Landmarks: **0°** sunrise, **41°** day, **98°** noon, **161°** sunset start, **196°** night, **392°** full cycle. |
+| **Apply Config Now** | Re-applies config and repaints Scene view. |
+| **Forward / Reverse** | Toggles **`isReversing`** (which leg of the cycle is advancing). |
+
+Sun **X rotation** follows internal time from about **-8°** at sunrise toward **188°** before the night reverse leg; **Y rotation** uses **`sunYRotation`** on the config asset.
+
+### Appendix A — Editor preview cautions
+
+- **Auto Update in Editor** in large scenes can be expensive — raise **Editor Update Interval**.  
+- **Time of Day** is the script’s **internal angle**, not always your gameplay clock.  
+- **Current Phase** is a **diagnostic** readout.
+
+---
+
+## 55) Day–Night: Directional B — phases & config (module view)
+
+With **`DayNightCycle`** assigned, the **Configuration Settings** block exposes the full **`DayNightCycleConfig`** asset: per-phase sun color/intensity, skybox exposure, atmosphere, tints, and ground colors. Changes here define how the cycle **looks** at each phase; **Directional A** controls **when** you are in each phase via **Time of Day**.
+
+### Configuration Settings (`DayNightCycleConfig`)
+
+| Group | Fields |
+|-------|--------|
+| **Time Settings** | **Hour / Minute / Second** (starting clock, synced to **`timeOfDay`**), **`cycleSpeed`**. |
+| **Sun Rotation** | **`sunYRotation`** — compass offset for the sun path. |
+| **Intensity Settings** | **Sunrise / Day / Sunset / Night** directional intensities. |
+| **Color Settings** | **Sunrise / Day / Sunset / Night** directional colors. |
+| **Sun Size Settings** | Per-phase **`_SunSize`** skybox values. |
+| **Exposure Settings** | Per-phase skybox **exposure**. |
+| **Additional Skybox Settings** | **Sun Disk** type (**None / Simple / HighQuality**), **Sun Size Convergence**, **Atmosphere Thickness**, **Sky Tint**, **Ground Color** — each keyed to sunrise/day/sunset/night. |
+
+Editing **hour / minute / second** in the asset calls **`SetTimeFromHourMinuteSecond`** and updates **`timeOfDay`** on the component.
+
+### How the cycle behaves (runtime logic)
+
+- **`cycleSpeed`** scales **`Time.deltaTime`** when advancing **`timeOfDay`**.  
+- **0–196**: forward day arc; at **196** the script enters the **reversing** night leg (**196–392**). At **392**, time resets to **0** and forward resumes.  
+- **Phases** (internal): **Sunrise** 0–41, **Day** 41–161, **Sunset** 161–196, **Night** 196–392.  
+- **Light color/intensity** and **skybox** values use the **current phase’s** config values, with **short blends** at phase boundaries (e.g. sunrise→day near 36–41°).  
+- **Play Mode**: **`UpdateTimeOfDay`** runs every frame. **Edit Mode**: optional **auto update** only when preview + auto-update are on.
+
+### Appendix A — Phase blend landmarks
+
+| Phase | Internal angle (approx.) | Config keys used |
+|-------|--------------------------|------------------|
+| **Sunrise** | 0° – 41° | `sunrise*` fields |
+| **Day** | 41° – 161° | `day*` fields |
+| **Sunset** | 161° – 196° | `sunset*` fields |
+| **Night** | 196° – 392° (reverse leg) | `night*` fields |
+
+Tune adjacent phases so blends at 36–41°, 156–161°, etc. do not pop.
+
+### Appendix B — Presets toolbar (global)
+
+Use **Day–Night / Directional Config** popups on the main window (**§5**) to assign a saved **`DayNightCycleConfig`** to the scene **`DayNightCycle`** — same asset family as this tab.
 
 ---
 
