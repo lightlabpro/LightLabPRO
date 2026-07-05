@@ -42,6 +42,94 @@ const moduleImages = {
   }
 };
 
+/** Authoritative per-module README section IDs (overrides stale HTML attributes). */
+const MODULE_SECTION_IDS = {
+  "Gradual Effect": ["47"],
+  "Strobe Effect": ["48"],
+  "Step Sequencer": ["49"],
+  "Sound Effect": ["50"],
+  "Sound Reactor": ["51"],
+  "Animation: Firefly": ["52"],
+  "Animation: Rotation": ["53"],
+  "Day-Night: Directional A": ["54"],
+  "Day-Night: Directional B": ["55"],
+  "Day-Night: Moon": ["46", "5"],
+  "PRO Cookies: Texture": ["43"],
+  "PRO Cookies: Animated": ["44"],
+  "PRO Cookies: Video": ["45"],
+};
+
+/** Fallback slicers when a dedicated section is missing or combined legacy text is loaded. */
+const MODULE_LEGACY_SLICE = {
+  "Gradual Effect": {
+    from: "8",
+    subsections: ["8.1"],
+    appendices: ["Appendix A — When effect", "Appendix B — Quick reference"],
+    excludeAppendixRows: ["Step Count", "Step Intensity", "Step Range"],
+    forbidden: ["## 8) Effects", "8.2 Strobe", "8.3 Step Sequencer", "Strobe Effect (module view)"],
+  },
+  "Strobe Effect": {
+    from: "8",
+    subsections: ["8.2"],
+    appendices: ["Appendix A — When effect", "Appendix B — Quick reference"],
+    excludeAppendixRows: ["Step Count", "Step Intensity", "Step Range"],
+    forbidden: ["8.1 Gradual", "8.3 Step Sequencer", "Gradual Effect (module view)"],
+  },
+  "Step Sequencer": {
+    from: "8",
+    subsections: ["8.3"],
+    appendices: ["Appendix A — When effect", "Appendix B — Quick reference"],
+    excludeAppendixRows: [
+      "Min Intensity Speed",
+      "Max Intensity Speed",
+      "Min Range Speed",
+      "Max Range Speed",
+    ],
+    forbidden: ["8.1 Gradual", "8.2 Strobe", "Gradual Effect (module view)", "Strobe Effect (module view)"],
+  },
+  "Sound Effect": {
+    from: "11",
+    subsections: ["11.1"],
+    appendices: ["Appendix A — Quick reference", "Appendix B — Sync"],
+    excludeAppendixRows: [
+      "Intensity Multiplier (Sound Reactor)",
+      "Base Intensity (Sound Reactor)",
+      "Color Change Speed (Sound Reactor)",
+      "Threshold (Sound Reactor)",
+    ],
+    forbidden: ["11.2 Sound Reactor", "Sound Reactor (module view)"],
+  },
+  "Sound Reactor": {
+    from: "11",
+    subsections: ["11.2"],
+    appendices: ["Appendix A — Quick reference", "Appendix B — Sync"],
+    excludeAppendixRows: ["Audio Volume / Compensation"],
+    forbidden: ["11.1 Sound Effect", "Sound Effect (module view)"],
+  },
+  "Animation: Firefly": {
+    from: "14",
+    subsections: ["14.2"],
+    forbidden: ["14.1 Rotation", "Rotation Animator (module view)"],
+  },
+  "Animation: Rotation": {
+    from: "14",
+    subsections: ["14.1"],
+    forbidden: ["14.2 Firefly", "Firefly Motion (module view)"],
+  },
+  "PRO Cookies: Texture": {
+    from: "43",
+    forbidden: ["Animated mode controls", "Video mode controls", "PRO Cookies — Animated", "PRO Cookies — Video"],
+  },
+  "PRO Cookies: Animated": {
+    from: "44",
+    forbidden: ["Texture mode controls", "Video mode controls", "PRO Cookies — Texture", "PRO Cookies — Video"],
+  },
+  "PRO Cookies: Video": {
+    from: "45",
+    forbidden: ["Texture mode controls", "Animated mode controls", "PRO Cookies — Texture", "PRO Cookies — Animated"],
+  },
+};
+
 if (typeof marked !== "undefined" && marked.setOptions) {
   marked.setOptions({ gfm: true, breaks: false });
 }
@@ -89,6 +177,114 @@ function parseReadmeSections(md) {
     byNum[num] = md.slice(start, end).trim();
   }
   return byNum;
+}
+
+function splitMarkdownByH3(md) {
+  const intro = [];
+  const parts = [];
+  let current = null;
+
+  for (const line of String(md || "").split("\n")) {
+    if (/^### /.test(line)) {
+      if (current) parts.push(current);
+      current = { heading: line.slice(4).trim(), lines: [line] };
+    } else if (current) {
+      current.lines.push(line);
+    } else {
+      intro.push(line);
+    }
+  }
+  if (current) parts.push(current);
+
+  return { intro: intro.join("\n").trim(), parts };
+}
+
+function subsectionHeadingMatches(heading, id) {
+  return heading === id || heading.startsWith(`${id} `);
+}
+
+function filterMarkdownTableRows(md, excludeSubstrings) {
+  if (!excludeSubstrings?.length) return md;
+  return md
+    .split("\n")
+    .filter((line) => {
+      if (!line.trim().startsWith("|")) return true;
+      if (/^\|\s*-/.test(line)) return true;
+      return !excludeSubstrings.some((needle) => line.includes(needle));
+    })
+    .join("\n");
+}
+
+function extractModuleFromLegacySection(sectionMd, config) {
+  const {
+    subsections = [],
+    appendices = [],
+    excludeAppendixRows = [],
+    includeIntro = false,
+  } = config;
+  const { intro, parts } = splitMarkdownByH3(sectionMd);
+  const chunks = [];
+
+  if (includeIntro && intro) {
+    chunks.push(intro);
+  }
+
+  for (const part of parts) {
+    const keepSub = subsections.some((id) => subsectionHeadingMatches(part.heading, id));
+    const keepApp = appendices.some((label) => part.heading.includes(label));
+    if (!keepSub && !keepApp) continue;
+
+    let text = part.lines.join("\n");
+    if (keepApp && excludeAppendixRows.length) {
+      text = filterMarkdownTableRows(text, excludeAppendixRows);
+    }
+    chunks.push(text.trim());
+  }
+
+  return chunks.filter(Boolean).join("\n\n");
+}
+
+function moduleDocLooksWrong(title, md) {
+  const cfg = MODULE_LEGACY_SLICE[title];
+  if (!cfg?.forbidden?.length || !md) return false;
+  return cfg.forbidden.some((needle) => md.includes(needle));
+}
+
+function getCardTitle(card) {
+  return card.querySelector("h3")?.textContent?.trim() || "Module";
+}
+
+function getCardSectionIds(card) {
+  const title = getCardTitle(card);
+  if (MODULE_SECTION_IDS[title]) {
+    return MODULE_SECTION_IDS[title].slice();
+  }
+  return (card.getAttribute("data-readme-sections") || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function getModuleDocMarkdown(title, sectionIds, by) {
+  const parts = sectionIds.map((id) => by[id]).filter(Boolean);
+  let combined = parts.join("\n\n---\n\n");
+
+  if (combined && !moduleDocLooksWrong(title, combined)) {
+    return combined;
+  }
+
+  const legacy = MODULE_LEGACY_SLICE[title];
+  if (legacy?.from && by[legacy.from]) {
+    if (legacy.subsections?.length || legacy.appendices?.length) {
+      return extractModuleFromLegacySection(by[legacy.from], legacy);
+    }
+    const legacyMd = by[legacy.from];
+    if (!moduleDocLooksWrong(title, legacyMd)) {
+      return legacyMd;
+    }
+  }
+
+  return combined;
 }
 
 function getReadmeMarkdown() {
@@ -419,10 +615,7 @@ async function saveReadmeFromEditables() {
   }
 
   if (docReadmeBody && activeModuleCard) {
-    const sectionIds = (activeModuleCard.getAttribute("data-readme-sections") || "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const sectionIds = getCardSectionIds(activeModuleCard);
     if (sectionIds.length) {
       const docMd = td.turndown(docReadmeBody).trim();
       const blocks = docMd.split(/\n---\n/).map((s) => s.trim());
@@ -540,20 +733,16 @@ function selectCard(card, options = {}) {
   cards.forEach((c) => c.classList.remove("active"));
   card.classList.add("active");
 
-  const title = card.querySelector("h3")?.textContent?.trim() || "Module";
+  const title = getCardTitle(card);
   const cardImage = card.querySelector("img");
   const mappedImage = moduleImages[title];
-  const sectionIds = (card.getAttribute("data-readme-sections") || "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const sectionIds = getCardSectionIds(card);
 
   docTitle.textContent = title;
 
   const by = window.__readmeBySection;
   if (by && docReadmeBody) {
-    const parts = sectionIds.map((id) => by[id]).filter(Boolean);
-    const combined = parts.join("\n\n---\n\n");
+    const combined = getModuleDocMarkdown(title, sectionIds, by);
     docReadmeBody.innerHTML = combined
       ? renderMarkdown(combined)
       : "<p><em>No README sections mapped for this card.</em></p>";
