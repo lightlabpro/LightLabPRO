@@ -136,6 +136,28 @@ img {
   object-fit: contain;
 }
 
+.brand-logo--light {
+  display: none;
+}
+
+:root[data-theme="light"] .brand-logo--dark {
+  display: none;
+}
+
+:root[data-theme="light"] .brand-logo--light {
+  display: block;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .brand-logo--dark {
+    display: none;
+  }
+
+  :root:not([data-theme="dark"]) .brand-logo--light {
+    display: block;
+  }
+}
+
 .header-nav {
   display: none;
   align-items: center;

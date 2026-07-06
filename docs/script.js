@@ -390,12 +390,14 @@ function openSidebarMobile() {
   sidebar?.classList.add("is-open");
   sidebarToggle?.setAttribute("aria-expanded", "true");
   if (sidebarBackdrop) sidebarBackdrop.hidden = false;
+  body.classList.add("sidebar-open");
 }
 
 function closeSidebarMobile() {
   sidebar?.classList.remove("is-open");
   sidebarToggle?.setAttribute("aria-expanded", "false");
   if (sidebarBackdrop) sidebarBackdrop.hidden = true;
+  body.classList.remove("sidebar-open");
 }
 
 function openLightbox() {
@@ -442,6 +444,10 @@ sidebarToggle?.addEventListener("click", () => {
 });
 
 sidebarBackdrop?.addEventListener("click", closeSidebarMobile);
+
+sidebar?.querySelectorAll(".sidebar-link--page").forEach((link) => {
+  link.addEventListener("click", closeSidebarMobile);
+});
 
 docImageOpen?.addEventListener("click", (event) => {
   event.stopPropagation();

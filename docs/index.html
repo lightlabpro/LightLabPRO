@@ -8,18 +8,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260705-brand" />
+  <link rel="stylesheet" href="styles.css?v=20260706-mobile" />
 </head>
 <body>
-  <header class="site-header">
+  <header class="site-header" id="siteHeader">
     <div class="header-inner">
       <a class="brand" href="../">
         <img
-          class="brand-logo"
-          src="../assets/brand/llp-banner-logo.png"
+          class="brand-logo brand-logo--dark"
+          src="../assets/brand/llp-logo-white.png"
           alt="Light Lab PRO"
           width="160"
           height="24"
+        />
+        <img
+          class="brand-logo brand-logo--light"
+          src="../assets/brand/llp-banner-logo.png"
+          alt=""
+          width="160"
+          height="24"
+          aria-hidden="true"
         />
       </a>
       <div class="header-search">
@@ -46,7 +54,15 @@
         <button type="button" class="theme-btn is-active" data-theme="auto" aria-pressed="true">Auto</button>
       </div>
     </div>
+
+    <div class="mobile-nav-bar">
+      <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
+        Menu
+      </button>
+    </div>
   </header>
+
+  <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
 
   <div class="docs-shell">
     <aside class="sidebar" id="sidebar" aria-label="Module navigation">
@@ -62,11 +78,6 @@
         </nav>
       </div>
     </aside>
-
-    <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
-      Menu
-    </button>
-    <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
 
     <main id="top" class="docs-main">
       <section class="doc-page" id="intro">
@@ -179,9 +190,9 @@
     </button>
   </template>
 
-  <script src="readme-data.js?v=20260705-brand"></script>
+  <script src="readme-data.js?v=20260706-mobile"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="modules.js?v=20260705-brand"></script>
-  <script src="script.js?v=20260705-brand"></script>
+  <script src="modules.js?v=20260706-mobile"></script>
+  <script src="script.js?v=20260706-mobile"></script>
 </body>
 </html>

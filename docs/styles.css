@@ -19,6 +19,8 @@
   --callout-bg: rgba(56, 139, 253, 0.1);
   --callout-border: rgba(56, 139, 253, 0.35);
   --header-h: 3.5rem;
+  --mobile-bar-h: 0px;
+  --header-offset: var(--header-h);
   --sidebar-w: 17.5rem;
   --radius: 0.5rem;
   --radius-lg: 0.75rem;
@@ -147,6 +149,28 @@ body {
   object-fit: contain;
 }
 
+.brand-logo--light {
+  display: none;
+}
+
+:root[data-theme="light"] .brand-logo--dark {
+  display: none;
+}
+
+:root[data-theme="light"] .brand-logo--light {
+  display: block;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .brand-logo--dark {
+    display: none;
+  }
+
+  :root:not([data-theme="dark"]) .brand-logo--light {
+    display: block;
+  }
+}
+
 .brand-mark {
   width: 1.35rem;
   height: 1.35rem;
@@ -240,17 +264,21 @@ body {
   color: var(--accent-text);
 }
 
+.mobile-nav-bar {
+  display: none;
+}
+
 /* Docs shell — Vue / Starlight sidebar layout */
 .docs-shell {
   display: grid;
   grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-  min-height: calc(100vh - var(--header-h));
+  min-height: calc(100vh - var(--header-offset));
 }
 
 .sidebar {
   position: sticky;
-  top: var(--header-h);
-  height: calc(100vh - var(--header-h));
+  top: var(--header-offset);
+  height: calc(100vh - var(--header-offset));
   border-right: 1px solid var(--border);
   background: var(--bg-elevated);
   overflow: hidden;
@@ -259,7 +287,10 @@ body {
 .sidebar-scroll {
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1.25rem 0.75rem 2rem;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .sidebar-kicker,
@@ -332,6 +363,31 @@ body {
   display: none;
 }
 
+.sidebar-toggle {
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius);
+  padding: 0.55rem 1rem;
+  background: var(--bg-subtle);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg-elevated);
+  color: var(--accent-text);
+}
+
+body.sidebar-open {
+  overflow: hidden;
+}
+
 /* Main content */
 .docs-main {
   min-width: 0;
@@ -341,7 +397,7 @@ body {
 .doc-page {
   max-width: var(--content-max);
   margin: 0 auto 3.5rem;
-  scroll-margin-top: calc(var(--header-h) + 1rem);
+  scroll-margin-top: calc(var(--header-offset) + 1rem);
 }
 
 .page-eyebrow {
@@ -367,7 +423,7 @@ body {
   line-height: 1.25;
   font-weight: 700;
   letter-spacing: -0.02em;
-  scroll-margin-top: calc(var(--header-h) + 1rem);
+  scroll-margin-top: calc(var(--header-offset) + 1rem);
 }
 
 .page-lead,
@@ -484,14 +540,14 @@ body {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.3;
-  scroll-margin-top: calc(var(--header-h) + 1rem);
+  scroll-margin-top: calc(var(--header-offset) + 1rem);
 }
 
 .prose h3 {
   margin: 1.5rem 0 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
-  scroll-margin-top: calc(var(--header-h) + 1rem);
+  scroll-margin-top: calc(var(--header-offset) + 1rem);
 }
 
 .prose p,
@@ -749,50 +805,59 @@ body.lightbox-open {
 }
 
 @media (max-width: 899px) {
+  :root {
+    --mobile-bar-h: 2.85rem;
+    --header-offset: calc(var(--header-h) + var(--mobile-bar-h));
+  }
+
+  .site-header {
+    height: auto;
+  }
+
+  .mobile-nav-bar {
+    display: block;
+    padding: 0.45rem 1rem 0.55rem;
+    border-top: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+  }
+
   .docs-shell {
     grid-template-columns: 1fr;
   }
 
   .sidebar {
     position: fixed;
-    top: var(--header-h);
+    top: var(--header-offset);
     left: 0;
-    width: min(var(--sidebar-w), 88vw);
-    z-index: 40;
-    transform: translateX(-105%);
-    transition: transform 0.22s ease;
+    bottom: 0;
+    width: min(var(--sidebar-w), 100%);
+    max-width: 100%;
+    height: auto;
+    z-index: 60;
+    transform: translateX(-100%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.22s ease, visibility 0.22s ease;
     box-shadow: var(--shadow-sm);
   }
 
   .sidebar.is-open {
     transform: translateX(0);
-  }
-
-  .sidebar-toggle {
-    display: inline-flex;
-    position: fixed;
-    bottom: 1rem;
-    left: 1rem;
-    z-index: 45;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.55rem 1rem;
-    background: var(--bg-elevated);
-    color: var(--text);
-    font: inherit;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .sidebar-backdrop {
     display: block;
     position: fixed;
-    inset: 0;
-    top: var(--header-h);
-    z-index: 35;
-    background: rgba(0, 0, 0, 0.45);
+    inset: var(--header-offset) 0 0 0;
+    z-index: 55;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
   }
 
   .sidebar-backdrop[hidden] {
