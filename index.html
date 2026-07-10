@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="landing.css?v=20260706-mobile" />
+  <link rel="stylesheet" href="landing.css?v=20260709-scratched-red2" />
 </head>
 <body>
   <header class="site-header">
@@ -34,6 +34,7 @@
       <nav class="header-nav" aria-label="Primary">
         <a href="#features">Features</a>
         <a href="#workflow">Workflow</a>
+        <a href="#roadmap">Roadmap</a>
         <a href="docs/">Docs</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -51,6 +52,7 @@
     <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
       <a href="#features">Features</a>
       <a href="#workflow">Workflow</a>
+      <a href="#roadmap">Roadmap</a>
       <a href="docs/">Docs</a>
       <a href="#contact">Contact</a>
       <a href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939">Unity Asset Store</a>
@@ -67,9 +69,9 @@
           </div>
 
           <p class="hero-mode">
-            <span>Human</span>
-            <span>Scene</span>
-            <span>Light</span>
+            <span>Rig</span>
+            <span>Mood</span>
+            <span>Ship</span>
           </p>
 
           <h1>Build better-lit Unity scenes without losing creative flow.</h1>
@@ -197,36 +199,122 @@
       </div>
     </section>
 
-    <section class="section showcase-section" id="workflow">
-      <div class="container showcase-grid">
-        <div class="showcase-copy">
-          <p class="section-kicker">Workflow</p>
-          <h2>Designed for lighting passes, not menu hunting.</h2>
-          <p>
-            Start with a rig, save the look, then layer movement, audio reaction, cookies, or day/night timing as the shot
-            needs it. The documentation site stays one click away when you need the exact control behavior.
-          </p>
+    <section class="workflow-pin" id="workflow" aria-label="Workflow">
+      <div class="workflow-sticky">
+        <div class="workflow-stage">
+          <aside class="workflow-intro">
+            <div class="workflow-intro__center">
+              <p class="section-kicker">Workflow</p>
+              <h2>Designed for lighting passes, not menu hunting.</h2>
+              <p class="workflow-intro__lead">
+                Start with a rig, save the look, then layer movement, cookies, or day/night timing as the shot needs it.
+              </p>
+            </div>
 
-          <div class="workflow-list">
-            <div>
-              <span>01</span>
-              <p>Pick the scene lights or studio setup you want to control.</p>
+            <ol class="workflow-list">
+              <li><span>01</span><p>Pick the scene lights or studio setup you want to control.</p></li>
+              <li><span>02</span><p>Choose a module: presets, FX, cookies, animation, or day/night.</p></li>
+              <li><span>03</span><p>Tune the mood and reuse the setup across scenes or projects.</p></li>
+            </ol>
+          </aside>
+
+          <div class="workflow-stack" id="workflowStack">
+            <figure class="workflow-window workflow-window--1">
+              <img src="docs/StudioLightingUI.png" alt="Studio Lighting module interface" loading="lazy" />
+              <figcaption>Studio Lighting</figcaption>
+            </figure>
+            <figure class="workflow-window workflow-window--2">
+              <img src="docs/LightGroupsUI.png" alt="Scene lights and cluster interface" loading="lazy" />
+              <figcaption>Scene Lights</figcaption>
+            </figure>
+            <figure class="workflow-window workflow-window--3">
+              <img src="docs/PresetsTabUI.png" alt="Presets module interface" loading="lazy" />
+              <figcaption>Presets</figcaption>
+            </figure>
+            <figure class="workflow-window workflow-window--4">
+              <img src="docs/FxAndSettingsGradualEffectUI.png" alt="FX and Settings gradual effect interface" loading="lazy" />
+              <figcaption>FX &amp; Settings</figcaption>
+            </figure>
+            <figure class="workflow-window workflow-window--5">
+              <img src="docs/ProCookiesAnimatedTabUI.png" alt="PRO Cookies animated tab interface" loading="lazy" />
+              <figcaption>PRO Cookies</figcaption>
+            </figure>
+            <figure class="workflow-window workflow-window--6">
+              <img src="docs/AnimationTabRotatorUI.png" alt="Animation rotator interface" loading="lazy" />
+              <figcaption>Animation</figcaption>
+            </figure>
+            <figure class="workflow-window workflow-window--7">
+              <img src="docs/DayNightCycleDirectionalUI01.png" alt="Day and night cycle interface" loading="lazy" />
+              <figcaption>Day / Night Cycle</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hscroll-pin roadmap-pin" id="roadmap" aria-label="Product roadmap">
+      <div class="hscroll-sticky roadmap-sticky">
+        <div class="hscroll-stage roadmap-stage">
+          <aside class="roadmap-intro">
+            <div class="roadmap-intro__center">
+              <div class="roadmap-intro__pill">
+                <p class="section-kicker">Roadmap</p>
+                <h2>What we're building next</h2>
+              </div>
+              <div class="roadmap-intro__beam" aria-hidden="true"></div>
             </div>
-            <div>
-              <span>02</span>
-              <p>Choose a module: presets, FX, cookies, animation, or day/night.</p>
+            <p class="roadmap-intro__lead">
+              Hover a point for details. Updates on
+              <a href="https://discord.gg/GgXHsHGZ3" target="_blank" rel="noopener noreferrer">Discord</a>.
+            </p>
+          </aside>
+
+          <div class="roadmap-rail" id="roadmapRich">
+            <div class="roadmap-labels" id="roadmapLabels"></div>
+
+            <div class="hscroll-scroll roadmap-scroll" id="roadmapScroll">
+            <div class="hscroll-track roadmap-track" id="roadmapTrack">
+              <div class="roadmap-timeline" id="roadmapTimeline">
+                <svg class="roadmap-canvas" id="roadmapCanvas" aria-hidden="true">
+              <defs>
+                <linearGradient id="branch-in-progress" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2" />
+                  <stop offset="100%" stop-color="#22d3ee" stop-opacity="1" />
+                </linearGradient>
+                <linearGradient id="branch-planned" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.2" />
+                  <stop offset="100%" stop-color="#a78bfa" stop-opacity="1" />
+                </linearGradient>
+                <linearGradient id="branch-scratched" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ef4444" stop-opacity="0.2" />
+                  <stop offset="100%" stop-color="#ef4444" stop-opacity="1" />
+                </linearGradient>
+                <linearGradient id="branch-completed" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.2" />
+                  <stop offset="100%" stop-color="#34d399" stop-opacity="1" />
+                </linearGradient>
+                <filter id="branch-glow" x="-30%" y="-80%" width="160%" height="260%">
+                  <feGaussianBlur stdDeviation="5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+                </svg>
+                <div class="roadmap-points" id="roadmapPoints"></div>
+              </div>
             </div>
-            <div>
-              <span>03</span>
-              <p>Tune the mood and reuse the setup across scenes or projects.</p>
             </div>
           </div>
         </div>
 
-        <div class="image-stack">
-          <img src="docs/FxAndSettingsGradualEffectUI.png" alt="FX and Settings module interface" loading="lazy" />
-          <img src="docs/ProCookiesAnimatedTabUI.png" alt="PRO Cookies animated tab interface" loading="lazy" />
-        </div>
+        <div class="roadmap-simple" id="roadmapSimple" hidden></div>
+
+        <p class="hscroll-hint roadmap-scroll-hint" aria-hidden="true">
+          <span>Scroll to explore</span>
+          <span class="hscroll-hint__arrow">→</span>
+        </p>
       </div>
     </section>
 
@@ -249,15 +337,15 @@
           class="footer-logo footer-logo--dark"
           src="assets/brand/llp-logo-white.png"
           alt="Light Lab PRO"
-          width="200"
-          height="28"
+          width="642"
+          height="90"
         />
         <img
           class="footer-logo footer-logo--light"
           src="assets/brand/llp-banner-logo.png"
           alt=""
-          width="200"
-          height="28"
+          width="1200"
+          height="176"
           aria-hidden="true"
         />
         <p>Scene lighting tools for Unity creators who want faster setup and cleaner creative control.</p>
@@ -265,6 +353,7 @@
 
       <nav class="footer-links" aria-label="Footer">
         <a href="#features">Features</a>
+        <a href="#roadmap">Roadmap</a>
         <a href="docs/">Docs</a>
         <a href="https://assetstore.unity.com/packages/tools/utilities/light-lab-pro-beta-280939">Asset Store</a>
         <a href="mailto:info@lightlabpro.com">Contact</a>
@@ -275,6 +364,7 @@
     </div>
   </footer>
 
-  <script src="landing.js?v=20260705-clean"></script>
+  <script src="roadmap-data.js?v=20260709-discord-sync"></script>
+  <script src="landing.js?v=20260709-scratched-red2"></script>
 </body>
 </html>
