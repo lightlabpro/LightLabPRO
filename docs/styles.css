@@ -400,6 +400,10 @@ body.sidebar-open {
   scroll-margin-top: calc(var(--header-offset) + 1rem);
 }
 
+.doc-page[hidden] {
+  display: none !important;
+}
+
 .page-eyebrow {
   margin: 0 0 0.35rem;
   font-size: 0.8rem;

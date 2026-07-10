@@ -7,7 +7,6 @@ const docTitle = document.getElementById("docTitle");
 const docReadmeBody = document.getElementById("docReadmeBody");
 const docThumbWrap = document.getElementById("docThumbWrap");
 const docImage = document.getElementById("docImage");
-const heroReadmeIntro = document.getElementById("heroReadmeIntro");
 const troubleshootingReadme = document.getElementById("troubleshootingReadme");
 const imageLightbox = document.getElementById("imageLightbox");
 const lightboxImage = document.getElementById("lightboxImage");
@@ -19,9 +18,11 @@ const sidebarBackdrop = document.getElementById("sidebarBackdrop");
 const themeButtons = Array.from(document.querySelectorAll(".theme-btn"));
 
 const README_URL = "README_LightLabPRO_Features_Tutorial.md";
+const DOC_SECTIONS = ["intro", "video", "modules", "troubleshooting", "downloads"];
 
 let cards = [];
 let activeModuleCard = null;
+let activeSection = "intro";
 
 const moduleImages = {
   "Window Overview & Utilities": {
@@ -281,8 +282,38 @@ function buildModuleCards() {
 function showReadmeError(message) {
   const html = `<p class="readme-error"><strong>Could not load README.</strong> ${message}</p>`;
   if (docReadmeBody) docReadmeBody.innerHTML = html;
-  if (heroReadmeIntro) heroReadmeIntro.innerHTML = html;
   if (troubleshootingReadme) troubleshootingReadme.innerHTML = "";
+}
+
+function getSectionFromHash() {
+  const hash = location.hash.replace(/^#/, "");
+  return DOC_SECTIONS.includes(hash) ? hash : "intro";
+}
+
+function updateSectionNav(sectionId) {
+  document.querySelectorAll(".sidebar-link--page").forEach((link) => {
+    const href = link.getAttribute("href") || "";
+    const isActive = href === `#${sectionId}`;
+    link.classList.toggle("active", isActive);
+    if (isActive) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+}
+
+function showSection(sectionId, options = {}) {
+  if (!DOC_SECTIONS.includes(sectionId)) return;
+  activeSection = sectionId;
+  DOC_SECTIONS.forEach((id) => {
+    const section = document.getElementById(id);
+    if (section) section.hidden = id !== sectionId;
+  });
+  updateSectionNav(sectionId);
+  if (options.updateHash !== false && location.hash !== `#${sectionId}`) {
+    history.replaceState(null, "", `#${sectionId}`);
+  }
+  if (options.scroll !== false) {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 async function loadReadme() {
@@ -303,20 +334,17 @@ async function loadReadme() {
   window.__readmeBySection = parseReadmeSections(md);
   const by = window.__readmeBySection;
 
-  if (heroReadmeIntro && by.preamble) {
-    heroReadmeIntro.innerHTML = renderMarkdown(by.preamble);
-  }
   if (troubleshootingReadme && by["18"]) {
     troubleshootingReadme.innerHTML = renderMarkdown(by["18"]);
   }
-  if (cards[0]) {
-    selectCard(cards[0], { scroll: false });
+  const initialSection = getSectionFromHash();
+  showSection(initialSection, { scroll: false, updateHash: false });
+  if (initialSection === "modules" && cards[0]) {
+    selectCard(cards[0], { scroll: false, showSection: false });
   }
 }
 
 function selectCard(card, options = {}) {
-  const scroll = options.scroll !== false;
-
   activeModuleCard = card;
   cards.forEach((c) => c.classList.remove("active"));
   card.classList.add("active");
@@ -354,8 +382,8 @@ function selectCard(card, options = {}) {
 
   closeSidebarMobile();
 
-  if (scroll) {
-    document.getElementById("modules")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (options.showSection !== false) {
+    showSection("modules", { scroll: options.scroll !== false });
   }
 }
 
@@ -446,7 +474,19 @@ sidebarToggle?.addEventListener("click", () => {
 sidebarBackdrop?.addEventListener("click", closeSidebarMobile);
 
 sidebar?.querySelectorAll(".sidebar-link--page").forEach((link) => {
-  link.addEventListener("click", closeSidebarMobile);
+  link.addEventListener("click", (event) => {
+    const href = link.getAttribute("href") || "";
+    if (!href.startsWith("#")) return;
+    const sectionId = href.slice(1);
+    if (!DOC_SECTIONS.includes(sectionId)) return;
+    event.preventDefault();
+    showSection(sectionId);
+    closeSidebarMobile();
+  });
+});
+
+window.addEventListener("hashchange", () => {
+  showSection(getSectionFromHash(), { scroll: true, updateHash: false });
 });
 
 docImageOpen?.addEventListener("click", (event) => {
@@ -473,5 +513,6 @@ document.addEventListener("DOMContentLoaded", () => {
     card.addEventListener("click", () => selectCard(card));
   });
   updateSearchClearVisibility();
+  showSection(getSectionFromHash(), { scroll: false, updateHash: false });
   loadReadme();
 });
