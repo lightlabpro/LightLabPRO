@@ -693,9 +693,9 @@ body.sidebar-open {
 
 .footer-logo {
   display: inline-block;
-  height: 2rem;
-  width: auto;
-  max-width: 12rem;
+  width: min(9.5rem, 100%);
+  height: auto;
+  object-fit: contain;
   margin-bottom: 0.5rem;
   opacity: 0.9;
 }
