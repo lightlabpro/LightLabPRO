@@ -6,7 +6,17 @@ The **Light Lab PRO** editor window has two main areas to learn first: the **tab
 
 ### Tab layout
 
-Use the horizontal tabs at the top of the window to switch workflows. Typical tabs include **Studio Lighting**, **Presets**, **FX & Settings**, **PRO Cookies**, **Animation**, and **Day–Night Cycle** (exact names match your build). Each tab shows a different tool surface; per-light options appear after you enable **Edit** on a light in the scene list.
+Use the horizontal tabs at the top of the window to switch workflows. Current tabs (v1.0.0 / Unity 6.3 URP):
+
+1. **Studio Lighting** — POI-based studio rigs  
+2. **Presets** — Atmosphere Scene Presets (HQ / Stylized) plus Global / FX / Animation / PRO Cookies presets  
+3. **FX & Settings** — per-light effects, groups, and basic settings  
+4. **Volumetrics** — dedicated **Raymarch** and **Froxel** fog (see **§58**)  
+5. **PRO Cookies** — texture / animated / video cookies  
+6. **Animation** — Firefly and Rotation  
+7. **Day–Night Cycle** — directional sky, **Moon Manager**, Lightmap Blending, **Cycle Manager** (see **§15**, **§57**, **§60**)
+
+The window header also exposes **VR Mode** for Quest / PCVR quality LOD (see **§61**). Per-light options appear after you enable **Edit** on a light in the scene list.
 
 ### Bottom buttons
 
@@ -336,11 +346,16 @@ The **Effects** foldout reflects **components** on the GameObject. If a control 
 
 ---
 
-## 9) Volumetrics section
+## 9) Volumetrics section (FX foldout + dedicated tab)
 
-When **Volumetric Lighting Effect** is enabled, the window drives a **URP-style** fog override on a **Global Volume** profile (`VolumetricFogVolumeComponent`). If no global volume, profile, or override exists, you’ll see buttons to **Create Global Volume**, **Create & Assign Profile**, or **Add Volumetric Fog Override**—use those first.
+Light Lab PRO exposes volumetrics in two places:
 
-### 9.1 Fog Override Settings (as shown in the UI)
+1. **Volumetrics tab** (primary) — **Raymarch** and **Froxel** subtabs, cloud-shadow foldout, and SSMS. Full workflow: **§58**.  
+2. **FX & Settings** per-light foldout — legacy / quick path that still drives a **URP** fog override on a **Global Volume** (`VolumetricFogVolumeComponent`) and optional `VolumetricAdditionalLight`.
+
+If no global volume, profile, or override exists, use **Create Global Volume**, **Create & Assign Profile**, or **Add Volumetric Fog Override** first.
+
+### 9.1 Fog Override Settings (FX foldout)
 
 | Group | Controls |
 |-------|----------|
@@ -356,15 +371,15 @@ When **Volumetric Lighting Effect** is enabled, the window drives a **URP-style*
 |---------|--------|
 | **Add Volumetric Additional Light Component** | When checked, adds `VolumetricAdditionalLight` on this light; when unchecked, removes it. When present, the component’s inspector is drawn below for **Anisotropy**, **Scattering**, **Radius**, etc. |
 
-Requires the volumetrics package/scripts from Light Lab PRO and a compatible URP fog volume setup.
+Requires the LLP volumetrics stack and a compatible URP fog volume setup. Prefer the **Volumetrics** tab for shafts, froxel, and sky cloud god rays.
 
 ### Appendix A — Pipeline & volume context
 
 | Topic | Notes |
 |-------|--------|
-| **SRP** | Confirm **Graphics Settings → Scriptable Render Pipeline** (URP vs HDRP vs Built-In). |
-| **Volumetrics UI** | This foldout expects a **Global Volume**, profile, and **Volumetric Fog** override compatible with the LLP `VolumetricFogVolumeComponent`. |
-| **Shadow resolution** | **Basic Settings → Shadows → Resolution** is **Built-In only**; URP/HDRP use pipeline-specific shadow settings. |
+| **SRP** | Confirm **Graphics Settings → Scriptable Render Pipeline** is **URP** (Unity 6.3). |
+| **Volumetrics UI** | Expects a **Global Volume**, profile, and **Volumetric Fog** override compatible with LLP `VolumetricFogVolumeComponent` / volume-grid features. |
+| **Shadow resolution** | **Basic Settings → Shadows → Resolution** is **Built-In only**; URP uses pipeline-specific shadow settings. Main-light shadows must be on for directional object shafts. |
 
 ---
 
@@ -574,7 +589,18 @@ Subsections commonly include **Rotation Animator** and **Firefly Motion**.
 
 ## 15) Day–Night Cycle tab (directional sun & sky)
 
-The **Day–Night Cycle** tab edits a scene **`DayNightCycle`** component: it drives a **directional “sun” light** and a **procedural skybox** using a **`DayNightCycleConfig`** asset. Time is modeled as an internal **0–392°** cycle (not clock time): phases are **Sunrise → Day → Sunset → Night**, then the sun path **reverses** through night back toward sunrise.
+The **Day–Night Cycle** tab edits a scene **`DayNightCycle`** component: it drives a **directional “sun” light** and an LLP skybox (clear / stylized clouds / HQ clouds) using a **`DayNightCycleConfig`** asset.
+
+**Time model (current product):** author **hour / minute / second** on the config; the window shows the active phase (**Sunrise → Day → Sunset → Night**). An internal angle may still appear in older captures — prefer clock fields and the phase readout. **Cycle Manager** (**§57**) can own **cycle speed** while Active and must not snap the clock when rolling looks.
+
+**Sub-tabs:**
+
+| Sub-tab | Role |
+|---------|------|
+| **Directional Light and Sky** | Sun, sky material, phase colors/exposure, celestial |
+| **Moon Manager** | Phase/mask/shadow moon controls — **§60** (replaces the older Moon Cycle quad docs) |
+| **Lightmap Blending** | Baked day/night lightmap blends — **§62** |
+| **Cycle Manager** | Per-phase weighted Atmosphere look playlist — **§57** |
 
 ### 15.1 Setup row (top of tab)
 
@@ -847,7 +873,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 
 ---
 
-## 41) Section index (1–55)
+## 41) Section index (1–62)
 
 | § | Title |
 |---|--------|
@@ -859,7 +885,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 6 | Per-light foldout order |
 | 7 | Presets section |
 | 8 | Effects section |
-| 9 | Volumetrics |
+| 9 | Volumetrics (FX foldout + tab pointer) |
 | 10 | Color Switcher |
 | 11 | Sound |
 | 12 | Material Changer |
@@ -896,7 +922,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 43 | PRO Cookies — Texture only |
 | 44 | PRO Cookies — Animated only |
 | 45 | PRO Cookies — Video only |
-| 46 | Day–Night — Moon Cycle sub-tab |
+| 46 | Day–Night — Moon Manager sub-tab |
 | 47 | Gradual Effect (module view) |
 | 48 | Strobe Effect (module view) |
 | 49 | Step Sequencer (module view) |
@@ -906,6 +932,13 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 53 | Animation: Rotation Animator (module view) |
 | 54 | Day–Night: Directional A — setup & sun arc |
 | 55 | Day–Night: Directional B — phases & config |
+| 56 | Atmosphere Scene Presets |
+| 57 | Cycle Manager |
+| 58 | Volumetrics tab — Raymarch & Froxel |
+| 59 | HQ & Stylized clouds |
+| 60 | Moon Manager (detail) |
+| 61 | VR Mode |
+| 62 | Lightmap Blending |
 
 ---
 
@@ -1038,35 +1071,34 @@ On the **PRO Cookies** tab, pick a light, press **Edit**, then open the **Video*
 
 ---
 
-## 46) Day–Night Cycle — Moon Cycle sub-tab
+## 46) Day–Night Cycle — Moon Manager sub-tab
 
-Open **Day–Night Cycle**, pick the same **`GameObject`** that holds **`DayNightCycle`**, then switch the sub-tab to **Moon Cycle**. The window expects **`MoonCycleWithIndividualZenithFlip`** on that object; if it is missing, use **Add Moon Cycle Script**. When present, the window embeds the component’s **default inspector** (`Editor.CreateEditor` + `OnInspectorGUI`).
+Open **Day–Night Cycle**, select the **`GameObject`** that holds **`DayNightCycle`**, then switch the sub-tab to **Moon Manager** (older builds labeled this **Moon Cycle**).
 
-### 46.1 What the moon script does
+Full modern control reference: **§60**. This section remains the module deep-link target used by the docs sidebar.
 
-- Creates or finds a child **`MoonQuad`** (a quad primitive, collider stripped) and assigns a material using shader **`Custom/MoonPhaseHorizon`**.  
-- Registers the quad on **`MoonRenderFeature.sceneMoonQuad`** for pipeline integration.  
-- **Positions** the quad far in front of the camera along the **inverse** of the directional light’s forward (distance **`distanceFromCamera`**, plus **`moonPositionOffset`** in camera space). In the editor, **Scene view** camera is used when **Play Mode** is off and a Scene view exists.  
-- **Billboards** toward the camera with **yaw smoothing** and a **zenith guard**: when the view direction is nearly vertical, yaw is held from **`storedYaw`** to avoid sudden flips.  
-- **Scales** the quad by **`moonSize`**.  
-- **Play Mode visibility**: the renderer is **enabled** only when **`dayNightCycle.isReversing`** is true (moon shown during the script’s “night / reverse” leg). **Edit Mode**: if **`alwaysShowInEditor`** is on, the moon stays visible for layout work.  
-- Optional **`MoonCycleConfig`** profile: **`ApplyConfig`** copies appearance, transparency, positioning, and rotation/billboard flags from the asset onto the component (then material/transform refresh in editor via **`ApplyConfigImmediately`** / **`OnValidate`**). The config asset also defines **Zenith Flip Settings** fields; the runtime billboard uses built-in zenith handling and does not currently map every config zenith toggle onto behavior—treat those profile fields as reserved or future-facing unless a build wires them.
+### 46.1 What Moon Manager drives
 
-### 46.2 Component field groups (inspector)
+- Sky / moon rendering through the active LLP skybox path (not a separate game-camera HUD).  
+- **Moon Phase**, feathers, visibility/mask opacity, dark brightness, and curve for crescent shaping.  
+- **Shadow Size / Feather / Offset / Opacity** for soft inner cutouts (HQ recipes often use Mask modes).  
+- **HDR Intensity**, color, size, glow anisotropy/intensity.  
+- **Editor Visibility** (e.g. **Night Only** on HQ looks).  
+- Optional **`MoonCycleConfig`** / moon profile assets applied from Atmosphere Scene Presets or the Presets tab.
 
-| Header | Role |
+### 46.2 Field groups (typical)
+
+| Group | Role |
 |--------|------|
-| **References** | **`DayNightCycle`**, **`Light`** (directional sun), **`moonTexture`**. Directional light defaults from **`dayNightCycle.directionalLight`** if empty. |
-| **Appearance Settings** | Size, color × **HDR intensity**, phase mask (**moonPhase**, feather, visibility, curve), shading direction/contrast/bias, glow. |
-| **Transparency Settings** | Alpha blend path vs opaque queue. |
-| **Positioning Settings** | Distance along sun axis, camera-space offset. |
-| **Rotation Options** | **Freeze** to fixed euler, or billboard with per-axis **freeze** flags and optional **fixed Y**. |
-| **Editor Visibility** | **Always show in editor** when not playing. |
-| **Profile** | **`MoonCycleConfig`** asset (**Create → Light Lab PRO → Moon Cycle Profile**). Toolbar presets elsewhere can apply moon profiles — see **§5** with moon-related keywords. |
+| **Appearance** | Size, color, HDR intensity, phase, feathers, mask opacity, curve, offsets |
+| **Shadow / fill** | Shadow size, feather, opacity, dark brightness, offset — Recipe A/B style looks |
+| **Glow** | Size, anisotropy, intensity |
+| **Visibility** | Night-only vs always-show editor behavior |
+| **Profile** | Moon config asset assigned by Atmosphere Enable or manual load |
 
-### Appendix A — Presets toolbar
+### Appendix A — Presets
 
-Use **Moon Cycle Profile** entries from the global presets area to assign a **`MoonCycleConfig`** to the scene moon component when available (**§5**).
+Atmosphere Scene Presets stamp moon values per look × phase. Manual moon profiles may still appear under global/typed presets (**§5**, **§56**).
 
 ---
 
@@ -1370,4 +1402,175 @@ Use **Day–Night / Directional Config** popups on the main window (**§5**) to 
 
 ---
 
-*© Light Lab PRO — documentation generated to match editor control names/ranges in `LightLabProWindow.cs`. Reconcile with in-editor tooltips for behavior nuances.*
+## 56) Atmosphere Scene Presets
+
+Open **Presets** → **Atmosphere Presets**. The catalog is organized as **Look × Time of Day** (Sunrise / Day / Sunset / Night) in two style tabs: **HQ** and **Stylized**.
+
+### What an Atmosphere Scene Preset contains
+
+| Asset | Role |
+|-------|------|
+| DayNight config | Sun, sky, exposure, celestial hours envelope (user-owned dawn/dusk hours are not overwritten by Enable) |
+| Volume profile | Fog / grade / post for that look × phase |
+| Moon config | Moon Manager stamp for the phase |
+| Thumbnail | Grid preview |
+
+### Catalog actions (Presets tab only)
+
+| Control | Notes |
+|---------|--------|
+| **Enable** | Applies the selected look × phase to the live scene (sky style, volumes, clouds, moon, grade). Does **not** snap Lightmap Blending ownership rules or rewrite celestial dawn/dusk hours. |
+| **Seed Catalog…** | Creates missing factory Look × TOD presets and restores factory values (confirmation dialog). |
+| **Refresh Presets** | Same factory restore path, reloads the grid, re-applies the currently enabled preset. |
+
+Do not use legacy `Light Lab PRO/Atmosphere/...` menu items for seed/rebuild — those were removed on purpose.
+
+### HQ looks (factory)
+
+Clear Crisp, Misty, Rainy, Hazy, Snowy, Ash, Crimson, Fair Day, Coastal, Stormfront, Nuclear.
+
+### Stylized looks (factory)
+
+Weather set (Clear, Clear Sky, Partly Cloudy, Cloudy, Overcast, Windy, Humid, Storm Break, …) plus creative looks (Ember, Violet Hour, Noir, Biolume, Scarlet, Ghostlight, …). Stylized grades use **Neutral** tonemapping (not ACES); Night phases typically include vignette.
+
+### Tips
+
+- Prefer **Enable** from the Presets grid over hand-wiring every volume field.  
+- Pair with **Cycle Manager** (**§57**) for automatic look rolls across phases.  
+- Pair with **Volumetrics** (**§58**) and sky cloud modes (**§59**) already stamped by many factory looks.
+
+---
+
+## 57) Cycle Manager
+
+Open **Day–Night Cycle** → **Cycle Manager**. This scene component (`AtmosphereCycleManager`) builds a weighted playlist of Atmosphere Scene Presets per time phase.
+
+### Behavior
+
+| Rule | Detail |
+|------|--------|
+| **Roll timing** | On **phase enter** only — pick among included cards matching that `timePhase` by relative probability |
+| **Clock** | Never snaps `timeOfDay` on rolls (unlike Presets **Enable**, which may align the clock) |
+| **Speed** | While manager **isActive**, `DayNightCycle.ResolveCycleSpeed()` uses **manager.cycleSpeed** — does not write that speed onto shared catalog DayNight configs |
+| **Transitions** | Continuously lerps **active → upcoming** look across the whole phase (phase-progress smoothstep); holds config visuals while Active |
+| **Sun size** | Does **not** blend `_SunSize` / sun-size convergence (avoids sun+moon double disc) |
+| **Debug** | Optional Play Mode HUD (`showPhaseDebug`) for phase / looks / blend |
+
+### UI
+
+- Collapsible **Include** + **probability** cards per Atmosphere Scene Preset  
+- **Active** toggle owns cycle speed while running  
+- Sacred rule: Cycle Manager only **references** catalog presets — it does not Seed or rewrite factory assets
+
+---
+
+## 58) Volumetrics tab — Raymarch & Froxel
+
+Open the dedicated **Volumetrics** tab (not only the FX foldout in **§9**).
+
+### Subtabs
+
+| Subtab | Role |
+|--------|------|
+| **Raymarch** | Classic URP volumetric fog path — main + point/spot contribution, object shafts via live shadow atlas, sky **cloud god rays** |
+| **Froxel** | Volume-grid inject (`LLPVolumeGrid` compute) — directional object shafts + cloud shafts; optional **SSMS** multiple-scattering veil |
+
+### Shared ideas
+
+- Per-light contribution toggles and `VolumetricAdditionalLight` where applicable  
+- **Cloud shadows** foldout — sky cloud transmittance into fog (`LLP_CloudShadowTransmittance`)  
+- Main-light **shadows must be enabled** for directional object shafts  
+- Froxel compute binds its own shadow atlas / matrices (graphics `SetGlobalTexture` alone is not enough)
+
+### Setup checklist
+
+1. URP renderer features for LLP volumetrics present  
+2. Global Volume with Volumetric Fog (density &gt; 0)  
+3. Choose Raymarch or Froxel for the shot  
+4. Enable main light contribution + shadows for shafts  
+5. Optionally enable cloud-shadow / god-ray controls when using HQ or stylized cloudy skies
+
+---
+
+## 59) HQ & Stylized clouds
+
+LLP ships three procedural sky paths (materials under Day Night Cycle Tool / Skyboxes):
+
+| Mode | Look |
+|------|------|
+| Clear | Atmosphere without FBM / HQ march |
+| **Stylized** | Painterly flat **Cloud Color** FBM; moon → clouds → soft sun attenuation |
+| **HQ** | In-skybox volumetric march (`ApplyHQClouds`) behind opaques; wind pushed by HQ cloud feature |
+
+### HQ notes
+
+- Prefer in-skybox composite (behind opaque geometry)  
+- Sun/moon drawn **after** clouds with cloud transmittance — avoid hard “bullseye” clamp rings  
+- Sun Rays gated on real cloud cover
+
+### Stylized notes
+
+- Factory opacities sit near painterly ranges (~0.7–1.0), not HQ volumetric opacities  
+- Soft local Beer attenuation through thin cover — not a hard sun block
+
+Atmosphere Scene Presets (**§56**) stamp the matching sky style and cloud deck per look × phase.
+
+---
+
+## 60) Moon Manager (detail)
+
+Primary UI: **Day–Night Cycle → Moon Manager** (module view also **§46**).
+
+### Modes (HQ vs stylized)
+
+| Control | Typical HQ | Notes |
+|---------|------------|-------|
+| Phase Visibility Mode | Mask | Soft crescent from phase + mask |
+| Shadow Opacity Mode | Mask | Soft inner shadow cutouts |
+| Show at Night Only | NightOnly | Editor visibility |
+
+Different factory looks use different recipes (phase-driven crescent vs soft inner shadow with phase ≈ 1 vs shadow size 0). Prefer enabling the Atmosphere preset over hand-copying values.
+
+### Common fields
+
+Moon Size, HDR Intensity, Moon Color, Moon Phase, Phase Feather / Edge Feather, Phase Visibility / Mask Opacity, Phase Dark Brightness, Phase Curve / Offset, Shadow Size / Feather / Opacity / Offset, Glow Size / Anisotropy / Intensity, Shading Contrast.
+
+Celestial night visibility (stars / aurora / nebula fade) is owned by **DayNightCycle** dawn/dusk hour fields — Atmosphere Enable must not overwrite those hours.
+
+---
+
+## 61) VR Mode
+
+Header toggle: **VR Mode: ON / OFF**.
+
+VR Mode is a **quality profile** (`_LLP_VR_QUALITY`), not what enables XR. Use OpenXR / Quest Link separately for stereo.
+
+### Defaults when ON
+
+- VR quality LOD on sky (HQ clouds / celestial kept on cheaper paths)  
+- Volumetrics **off** by default — enable **Enable Volumetrics (VR)** in the header when needed (raymarch path; froxel stays off)  
+- Main-light shadows stay available for fog object shafts  
+- Lower render scale (e.g. ~0.6)
+
+### Tips
+
+- Re-toggle VR Mode after changing sky type so material keywords re-apply  
+- Prefer a development build for real Quest FPS; Editor + Link Game view mirrors Left Eye at high resolution
+
+---
+
+## 62) Lightmap Blending
+
+Open **Day–Night Cycle → Lightmap Blending**.
+
+Blends baked lighting across day/night (or multi-bake) setups so static GI can follow the cycle without fully realtime GI. Atmosphere Enable does not seize Lightmap Blending ownership — author blends separately from look Enable.
+
+Typical workflow:
+
+1. Bake lightmaps for the phases you need  
+2. Assign blend sources in the Lightmap Blending UI  
+3. Let DayNight phase progress drive the blend while Atmosphere presets handle sky/fog/moon
+
+---
+
+*© Light Lab PRO — documentation updated for Unity 6.3 URP / v1.0.0 (`LightLabProWindow.cs`). Reconcile with in-editor tooltips for behavior nuances.*

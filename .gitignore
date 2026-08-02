@@ -15,3 +15,10 @@ npm-debug.log*
 
 # Optional local tooling
 node_modules/
+
+# Local product dumps (never publish into Pages repo)
+/Light Lab PRO/
+/*.cs
+/Discord-Logo.zip
+/assets/Discord-Logo.zip
+/docs/Discord-Logo.zip

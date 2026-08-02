@@ -1,11 +1,11 @@
-/** Roadmap items sourced from Discord #llp-roadmap */
+/** Roadmap items — synced to shipped LLP Unity 6.3 product (2026-08) */
 window.LLP_ROADMAP = [
   // In Progress
   {
-    date: "2026-07-06",
-    dateLabel: "Jul 6, 2026",
+    date: "2026-08-02",
+    dateLabel: "Aug 2, 2026",
     module: "General",
-    title: "Updating for Unity 6.5",
+    title: "Unity 6.5 compatibility pass",
     status: "in-progress",
   },
   {
@@ -17,20 +17,6 @@ window.LLP_ROADMAP = [
   },
 
   // Planned
-  {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Volumes / Post Processing",
-    title: "Volume profile updater (for day/night cycle)",
-    status: "planned",
-  },
-  {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Volumes / Post Processing",
-    title: "Post Processing Presets (for day/night cycle and non day/night cycle)",
-    status: "planned",
-  },
   {
     date: "2026-07-09",
     dateLabel: "Jul 9, 2026",
@@ -83,27 +69,6 @@ window.LLP_ROADMAP = [
     status: "scratched",
   },
   {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Day / Night Cycle",
-    title: "Add Lightmap Phases",
-    status: "scratched",
-  },
-  {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Day / Night Cycle",
-    title: "Add different skybox shaders and materials for dynamic weather",
-    status: "scratched",
-  },
-  {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Day / Night Cycle",
-    title: "Improve Skybox shader so it reflects a real sky with planets and/or stars",
-    status: "scratched",
-  },
-  {
     date: "2025-07-25",
     dateLabel: "Jul 25, 2025",
     module: "Light Animator",
@@ -112,6 +77,111 @@ window.LLP_ROADMAP = [
   },
 
   // Completed
+  {
+    date: "2026-08-02",
+    dateLabel: "Aug 2, 2026",
+    module: "Day / Night Cycle",
+    title: "Cycle Manager — per-phase weighted Atmosphere looks with continuous blend",
+    status: "completed",
+  },
+  {
+    date: "2026-08-01",
+    dateLabel: "Aug 1, 2026",
+    module: "Volumetrics",
+    title: "Froxel fog with directional object shafts and sky cloud god rays",
+    status: "completed",
+  },
+  {
+    date: "2026-08-01",
+    dateLabel: "Aug 1, 2026",
+    module: "Volumetrics",
+    title: "Raymarch volumetrics — object shafts + sky cloud shadows / god rays",
+    status: "completed",
+  },
+  {
+    date: "2026-08-01",
+    dateLabel: "Aug 1, 2026",
+    module: "Day / Night Cycle",
+    title: "HQ volumetric clouds (in-skybox march) with sun/moon through-clouds",
+    status: "completed",
+  },
+  {
+    date: "2026-08-01",
+    dateLabel: "Aug 1, 2026",
+    module: "Day / Night Cycle",
+    title: "Stylized FBM sky clouds (painterly Cloud Color)",
+    status: "completed",
+  },
+  {
+    date: "2026-07-20",
+    dateLabel: "Jul 20, 2026",
+    module: "Presets",
+    title: "Atmosphere Scene Preset library (HQ + Stylized look × TOD) with Seed Catalog",
+    status: "completed",
+  },
+  {
+    date: "2026-07-20",
+    dateLabel: "Jul 20, 2026",
+    module: "Volumes / Post Processing",
+    title: "Volume / post profiles tied to Atmosphere Scene Presets and day/night phases",
+    status: "completed",
+  },
+  {
+    date: "2026-07-18",
+    dateLabel: "Jul 18, 2026",
+    module: "Day / Night Cycle",
+    title: "Moon Manager — phase/mask/shadow fill modes for HQ and stylized moons",
+    status: "completed",
+  },
+  {
+    date: "2026-07-18",
+    dateLabel: "Jul 18, 2026",
+    module: "Day / Night Cycle",
+    title: "Celestial night sky — stars, aurora, and nebula controls",
+    status: "completed",
+  },
+  {
+    date: "2026-07-15",
+    dateLabel: "Jul 15, 2026",
+    module: "General",
+    title: "VR Mode quality profile for Quest / PCVR",
+    status: "completed",
+  },
+  {
+    date: "2026-07-09",
+    dateLabel: "Jul 9, 2026",
+    module: "Day / Night Cycle",
+    title: "HQ and Stylized skybox shaders for dynamic weather looks",
+    status: "completed",
+  },
+  {
+    date: "2026-07-09",
+    dateLabel: "Jul 9, 2026",
+    module: "Day / Night Cycle",
+    title: "Skybox improvements — stars, planets/moon, and night celestial visibility",
+    status: "completed",
+  },
+  {
+    date: "2026-07-09",
+    dateLabel: "Jul 9, 2026",
+    module: "Day / Night Cycle",
+    title: "Lightmap Blending",
+    status: "completed",
+  },
+  {
+    date: "2026-07-09",
+    dateLabel: "Jul 9, 2026",
+    module: "Day / Night Cycle",
+    title: "Modify time sliders to tie time to directional light position & rotation",
+    status: "completed",
+  },
+  {
+    date: "2026-07-06",
+    dateLabel: "Jul 6, 2026",
+    module: "General",
+    title: "Unity 6.3 (URP) product line — v1.0.0 editor window",
+    status: "completed",
+  },
   {
     date: "2026-07-05",
     dateLabel: "Jul 5, 2026",
@@ -173,27 +243,6 @@ window.LLP_ROADMAP = [
     dateLabel: "Jul 5, 2026",
     module: "Studio Lighting",
     title: "Overall improvements for Lighting Composition",
-    status: "completed",
-  },
-  {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Day / Night Cycle",
-    title: "Modify time sliders to tie time to directional light position & rotation",
-    status: "completed",
-  },
-  {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Day / Night Cycle",
-    title: "Lightmap Blending",
-    status: "completed",
-  },
-  {
-    date: "2026-07-09",
-    dateLabel: "Jul 9, 2026",
-    module: "Day / Night Cycle",
-    title: "Skybox Shader improvements",
     status: "completed",
   },
   {
