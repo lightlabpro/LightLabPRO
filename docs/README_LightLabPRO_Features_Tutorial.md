@@ -1934,6 +1934,10 @@ When **ON**, **Enable Volumetrics (VR)** appears. Default is off. When enabled, 
 
 **Day–Night Cycle → Lightmap Blending**. Requires **`DayNightBakedLighting`** on the cycle object (**Add Baked Lighting Component** if missing). Atmosphere Enable does not take over this tab.
 
+**Baking can take a very long time.** Multi Bake runs Unity’s lightmapper once per hour (04:00, 12:00, 18:00, 22:00). **Bake All 4 Hours** is four full bakes in a row — leave the Editor running until it finishes. **Tint** does not bake lightmaps.
+
+The Lightmap Blending tab shows this as a warning, and Bake / Bake All ask for confirmation before starting.
+
 | Control | Notes |
 |---------|--------|
 | **Baked Lighting Config** | `DayNightBakedLightingConfig` asset |
@@ -1945,13 +1949,13 @@ When **ON**, **Enable Volumetrics (VR)** appears. Default is off. When enabled, 
 
 ### Multi Bake
 
-Positions the directional at 04:00, 12:00, 18:00, 22:00, bakes, then blends the two nearest snapshots on the GPU during playback (no stepping).
+Positions the directional at 04:00, 12:00, 18:00, 22:00, bakes, then blends the two nearest snapshots on the GPU during playback (no stepping). **Each bake can take a very long time**; **Bake All 4 Hours** runs all four sequentially.
 
 | Control | Notes |
 |---------|--------|
 | **Output Folder** | `Assets/Light Lab PRO/Day Night Cycle Tool/Baked Lightmaps/<SceneName>` |
-| **Bake All 4 Hours** | Sequential snapshot bakes |
-| Per hour | Snapshot asset, **Preview** (sets clock), **Bake** |
+| **Bake All 4 Hours** | Sequential snapshot bakes — **four full Unity lightmap bakes**; can take a very long time |
+| Per hour | Snapshot asset, **Preview** (sets clock), **Bake** (one lightmap bake; can also take a very long time) |
 
 ### Tint
 

@@ -226,7 +226,7 @@ window.LLP_MODULES = [
     imageAlt: "Lightmap Blending with Scene Lighting Settings",
     images: [
       { src: "DayNightCycleUIv2LightmapBlending.v2.a.jpg", caption: "Baked GI Mode None — runtime preview and lighting settings" },
-      { src: "DayNightCycleUIv2LightmapBlending.v2.b.jpg", caption: "Multi Bake — four hour snapshots and Bake All" },
+      { src: "DayNightCycleUIv2LightmapBlending.v2.b.jpg", caption: "Multi Bake — four hour snapshots. Baking (especially Bake All 4 Hours) can take a very long time" },
       { src: "DayNightCycleUIv2LightmapBlending.v2.c.jpg", caption: "Tint mode — GPU material tints at 04:00 / 12:00 / 18:00 / 22:00" },
     ],
   },
