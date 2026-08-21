@@ -40,6 +40,8 @@ const MODULE_SECTION_IDS = {
   "PRO Cookies: Texture": ["43"],
   "PRO Cookies: Animated": ["44"],
   "PRO Cookies: Video": ["45"],
+  "Physically Based Sky": ["63", "59", "1"],
+  "Volumetric Clouds (URP)": ["64", "59", "54"],
 };
 
 const MODULE_LEGACY_SLICE = {

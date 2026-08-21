@@ -48,6 +48,26 @@ The footer also shows **© 2026 Light Lab PRO** and **v2.0.0**.
 | **Render Pipeline Asset** | **Open Render Pipeline Asset** |
 | **Renderer Data** | **Open Current Renderer** |
 
+### Appendix B — Requirements, included packages, and dual directional shadows
+
+Light Lab PRO is a **URP** tool. You do **not** buy an extra Asset Store package for physically based sky, volumetric clouds, or sun+moon Soft shadows — those ship inside LLP.
+
+| Item | Ships with LLP? | Extra store dependency? |
+|------|-----------------|-------------------------|
+| **Unity Universal RP** (Unity 6 / URP 17.x) | Required pipeline. LLP includes a **patched** URP so two directionals can cast Soft shadows | No paid SKU. Do **not** replace LLP’s URP with a fresh Package Manager copy |
+| **Physically Based Sky** (`Sky/Visual Environment`, `Sky/Physically Based Sky`, `Sky/Fog`) | Yes — bundled MIT package + LLP celestial skybox | No |
+| **Volumetric Clouds (URP)** (`Sky/Volumetric Clouds`) | Yes — bundled under `Assets/Light Lab PRO/Volumetric Clouds URP` | No |
+| **Volumetric Fog** (Raymarch + Froxel) | Yes — LLP Volumetrics tab | No |
+| **HDRP / third-party sky or fog assets** | Not used | Do not add |
+
+**Why URP is patched (not a second product):** stock URP only casts directional Soft from **Main Light**. Volumetric Clouds sky keeps the **sun as Main** and the **moon as an additional directional**. LLP patches a handful of URP runtime files (`ShadowUtils`, `ShadowCulling`, `UniversalRenderPipeline`, `MainLightShadowCasterPass`, `AdditionalLightsShadowCasterPass`) so the moon gets **one slice** in the **additional** shadow atlas. That is how day and night both have object shadows without flipping Main Light to the moon (which would snap lighting).
+
+If you install stock URP from Package Manager **over** LLP’s copy, moon Soft shadows stop working. Keep LLP’s URP. Re-apply the notes in `Packages/com.unity.render-pipelines.universal/LLP_PATCHES.md` after a Unity/URP upgrade.
+
+**Graphics settings that must stay on** for dual Soft: Additional Light Shadows on the URP asset; Main Light Soft; renderer features **Physically Based Sky**, **Volumetric Clouds**, and **Volumetric Fog** on `LLP_PC_Renderer` (and `LLP_VR_Renderer` when using VR Mode). **Set Up Day-Night Cycle** + **Skybox Type → Volumetric Clouds** wires these.
+
+Full volume reference: **§63** (Visual Environment / Physically Based Sky / height fog) and **§64** (Volumetric Clouds).
+
 ---
 
 ## 2) Scene Lights list (shared controls)
@@ -722,6 +742,9 @@ Exact asset menus appear under **Light Lab PRO** (or submenus) in **Create** —
 | **Cycle Speed is 0 — clock is frozen** | Expected. Raise Cycle Speed on Presets, Day-Night config, or Cycle Manager (when Active). Negative speed reverses. |
 | **No fog on screen** | Enable Raymarch and/or Froxel, confirm the Volumetric Fog renderer feature, and enable Post Processing on the camera. |
 | **VR Mode but no headset stereo** | VR Mode is a quality profile only. Start OpenXR / Quest Link separately. |
+| **Moon has light but no Soft shadows** | Additional Light Shadows must be on. Do not replace LLP’s patched URP with stock URP. Keep sun as Main; moon stays additional Soft. See **§1 Appendix B**. |
+| **Volumetric Clouds button does nothing** | `PhysicallyBasedSkyURP` and `VolumetricCloudsURP` must be on the active renderer. Click **Volumetric Clouds** again after **Set Up Day-Night Cycle**. |
+| **Daytime sky is black (sun disc only)** | Visual Environment **Sky Type** must stay **Physically Based** with LLP’s volumetric skybox. Do not set Sky Type to None. |
 
 ---
 
@@ -738,7 +761,8 @@ If you publish this as a manual site:
 7. **PRO Cookies** — **§16** overview; **§43–§45** per mode.  
 8. **Animation** — Firefly and Rotation.  
 9. **Day–Night Cycle** — sky types, Moon Manager, Lightmap Blending, Cycle Manager.  
-10. **Troubleshooting & FAQ**  
+10. **Physically Based Sky & Volumetric Clouds** — volume overrides (**§63**, **§64**).  
+11. **Troubleshooting & FAQ**  
 
 ---
 
@@ -953,6 +977,8 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 60 | Moon Manager (detail) |
 | 61 | VR Mode |
 | 62 | Lightmap Blending |
+| 63 | Physically Based Sky volume |
+| 64 | Volumetric Clouds (URP) volume |
 
 ---
 
@@ -1355,16 +1381,131 @@ Use **Set Up Day-Night Cycle** once, then stay on **Directional Light and Sky**.
 
 ### Skybox Type
 
-| Button | Notes |
-|--------|--------|
-| **Clear Sky** | Atmosphere, no FBM / HQ march |
-| **Stylized Clouds** | Painterly FBM. Controls: Cloud Color, Coverage, Scale, Opacity, Sun Rays, Stretch, Edge Feathering, Noise Detail, Scroll Speed, Manual Offset, Horizon Height, Wispy Tint / Scale / Strength |
-| **HQ Clouds** | In-skybox march. Extra: Density, Shape Detail, Edge Erosion, Altitude, Thickness, Horizon Lift, March Steps, Silver Lining, Light Scatter, Ambient Lift, Self Shadow, Automatic Movement |
-| **Volumetric Clouds** | Physically based sky + volumetric cloud volume. Cloud settings live on **LLP Sky → Volumetric Clouds (URP)**, not as mapped DayNight tints |
+| Button | What you get | Where you tune it |
+|--------|----------------|-------------------|
+| **Clear Sky** | Procedural atmosphere, sun disc, celestials. No cloud layer | DayNight config sky tint / thickness / exposure |
+| **Stylized Clouds** | Painterly FBM deck. Moon under clouds, sun after with soft Beer attenuation | Sliders on this tab (below) |
+| **HQ Clouds** | In-skybox volumetric march **behind** opaque geometry | Sliders on this tab (below) |
+| **Volumetric Clouds** | Physically based atmosphere + real 3D clouds. **Sun** and **Moon** are separate directionals (moon Soft on the additional atlas) | **LLP Volumetric Sky Volume** — Visual Environment, Physically Based Sky, Fog, Volumetric Clouds (**§63**, **§64**). DayNight **does not** remap Sky Tint onto the PB volume |
+
+Clicking **Volumetric Clouds** runs `EnsureSetup`: renderer features, **LLP Volumetric Sky Volume**, dual lights. Atmosphere/cloud look is the volume — not DayNight Sky Tint mapping.
+
+#### Stylized Clouds sliders (this tab)
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Cloud Color** | HDR color | Flat paint color of solid cloud. White = no extra grade. **Enable Cloud Color Cycle** on Directional B can override per phase |
+| **Coverage** | 0–1 | How much of the sky the FBM fills. Higher = fewer gaps |
+| **Scale** | 0.3–6 | Feature size. Lower = bigger puffs |
+| **Opacity** | 0–1 | Multiplies FBM cover. Stylized factory looks sit near **0.7–1.0** (not HQ’s thin opacities) |
+| **Sun Rays** | 0–2 | Shafts through gaps. Needs real cover; 0 turns them off |
+| **Stretch** | 0.5–8 | Horizontal squash. ~2.5 is the painterly default |
+| **Edge Feathering** | 0.001–0.5 | Softens the solid/gap boundary |
+| **Noise Detail** | 0–1 | Extra FBM breakup inside the paint |
+| **Scroll Speed** | XYZ | Wind on the FBM. Zero = parked |
+| **Manual Offset** | XYZ | Nudge the pattern without waiting on wind |
+| **Horizon Height** | 0.05–1 | How high the deck sits on the dome |
+| **Wispy Tint / Scale / Strength** | color / 0.5–4 / 0–1 | Thin strokes in the gaps only. Strength 0 = no wisps |
+
+Thin cover uses soft local Beer (`exp(-α²×4)`) — it darkens the sun, it does not punch a hard hole.
+
+#### HQ Clouds sliders (this tab)
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Cloud Color** | HDR color | In-scatter tint of the march |
+| **Coverage** | 0–1 | How much of the shell is cloudy |
+| **Scale** | 0.3–8 | World size of the noise |
+| **Density** | 0.1–4 | Optical density along the march. Higher = more opaque cores |
+| **Shape Detail** | 0–1 | Extra noise in the body |
+| **Edge Erosion** | 0–1 | Eats the silhouette (wispy edges) |
+| **Opacity** | 0–1 | Global alpha of the composite. HQ factory looks are often **low** (0.04–0.18) |
+| **Altitude** | 0.05–0.85 | Height of the cloud shell on the sky dome |
+| **Thickness** | 0.02–0.5 | Radial depth of the march volume |
+| **Horizon Lift** | −0.1–0.55 | Pushes the deck up off the horizon line |
+| **Manual Offset** | XYZ | Pattern offset |
+| **Automatic Movement** | toggle | When on, uses Wind Direction × Movement Speed |
+| **Wind Direction** | XYZ | Scroll axis |
+| **Movement Speed** | XYZ | Scroll rate |
+| **March Steps** | 8–48 | Quality vs cost. ~32 is the working desktop default |
+| **Silver Lining** | 0–2 | Bright rim when looking toward the sun **through** cloud (in-march phase) |
+| **Sun Rays** | 0–2 | God rays. Gated on real cover — 0 = off |
+| **Light Scatter** | 0–2 | How strongly the sun lights the volume |
+| **Ambient Lift** | 0–1 | Fills the shadowed side so clouds are not pitch black |
+| **Self Shadow** | 0–1 | Darkening of the cloud body from its own density |
+
+Sun and moon draw **after** HQ clouds × cloud transmittance so you do not get a dark bullseye around the disc.
 
 ### Celestial Night Sky
 
-Foldouts: **Stars**, **Glimmer / Twinkle**, **Nebula**, **Aurora**, **Star Clusters**, **Galaxies**, **Shooting Stars**. These are material art toggles. Fade timing is **Celestial Dawn/Dusk hours** on the config (**§55**). Twinkle is compiled out under VR quality LOD.
+These are skybox material art controls. Fade in/out uses **Celestial Dawn/Dusk hours** on the config (**§55**) — Atmosphere Enable does **not** overwrite those hours. Twinkle is compiled out under VR quality LOD. **Night Sky Visibility** is driven by those hours, not by a slider you should keyframe by hand.
+
+#### Stars
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enabled** | toggle | Procedural star field |
+| **Star Density** | 0–1 | How many stars |
+| **Star Size** | 0.00005–0.02 | Disc radius |
+| **Star Intensity** | 0–8 | HDR brightness |
+| **Star Seed** | 0–100 | Random layout. Change to reshuffle |
+| **Star Tint** | color | Overall hue |
+| **Star Color Variance** | 0–1 | Mix of warm/cool stars |
+| **Star Streaks** | toggle + 0–4 intensity | Elongated glints |
+
+#### Glimmer / Twinkle
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enabled** | toggle | Temporal twinkle (desktop). Off in VR LOD |
+| **Twinkle Speed** | 0–8 | How fast stars pulse |
+| **Twinkle Amount** | 0–1 | How deep the pulse goes |
+
+#### Nebula
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enabled** | toggle | Soft color wash. If Aurora is also on, keep **Nebula Intensity** low so they do not fight. Nuclear Night uses nebula; Snowy Night keeps nebula **off** |
+| **Intensity** | 0–2 | Brightness |
+| **Scale** | 0.5–8 | Feature size |
+| **Warp** | 0–2 | Distorts the noise |
+| **Band Width** | 0.05–1 | How thick the galactic band is |
+| **Color A / B** | colors | Two-stop gradient |
+| **Band Direction** | vector | Aim of the band on the dome |
+
+#### Aurora
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enabled** | toggle | Curtains. Nuclear Night keeps aurora **off**. Snowy Night uses aurora only |
+| **Intensity** | 0–4 | Brightness |
+| **Height** | 0.05–0.65 | Elevation of the band |
+| **Band Span** | 0.05–0.55 | Vertical thickness |
+| **Scale** | 0.5–12 | Horizontal frequency |
+| **Speed** | 0–2 | Animation |
+| **Curtain Sharpness** | 0.5–8 | Hard vs soft folds |
+| **Color Bottom / Top / Accent** | colors | Curtain gradient |
+| **Aim** | vector | Direction on the dome |
+| **Spread** | 0.15–1 | How wide the display is |
+| **Layout** | Plane / Dome | Flat band vs wrapped |
+| **Vertical Stretch** | 0.5–10 | Keep **≤ 1.0** for HQ looks. High stretch (5–6) looks cartoon-tall |
+| **Blur** | 0–1 | Softens the curtains |
+
+Moon **Mask** does **not** hide aurora.
+
+#### Star Clusters / Galaxies / Shooting Stars
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Star Clusters Enabled** | toggle | Tight groups of extra stars |
+| **Cluster Count / Radius / Density / Star Size / Intensity / Seed / Tint** | see shader | How many blobs, how tight, how bright |
+| **Galaxies Enabled** | toggle | Up to 3 painted galaxies |
+| **Galaxy Count** | 1–3 | How many of the three slots draw |
+| **Galaxy N Dir/Size, Params, Tint** | vectors / color | Aim, size, tightness, color per galaxy |
+| **Shooting Stars Enabled** | toggle | Occasional streaks |
+| **Frequency / Length / Speed / Head Size / Tail Size / Intensity** | see shader | How often, how long, how fast, how bright |
+
+Moon **Mask** hides stars, nebula, clusters, galaxies, and shooting stars under the disc — not aurora, not the atmosphere.
 
 ### Editor Preview Controls
 
@@ -1390,19 +1531,77 @@ Sun **X** follows the arc; **Sun Y Rotation** on the config is the compass offse
 
 **Configuration Settings** is the full **`DayNightCycleConfig`**. Editing **Hour / Minute / Second** syncs **`timeOfDay`**.
 
-| Group | Fields |
-|-------|--------|
-| **Time Settings** | Hour, Minute, Second, **Cycle Speed** (0 holds; negative reverses). Overridden while Cycle Manager is Active. |
-| **Sun Rotation Settings** | **Sun Y Rotation** |
-| **Light Intensity Settings** | Sunrise / Day / Sunset intensity, **Moon Light Intensity** (night) |
-| **Light Color Settings** | Sunrise / Day / Sunset color, **Moon Light Color** |
-| **Sun / Moon Size Settings** | Per-phase sun size; **Moon Size** (use 0 when Moon Manager owns the disc) |
-| **Exposure Settings** | Sunrise / Day / Sunset / Night |
-| **Additional Skybox Settings** | **Sun Disk** (None / Simple / High Quality), Size Convergence, Atmosphere Thickness, Sky Tint, Ground Color — per phase |
-| **Cloud Color Settings** | **Enable Cloud Color Cycle** plus sunrise/day/sunset/night cloud colors |
-| **Celestial Night Visibility** | **Celestial Dawn Start/End Hour**, **Celestial Dusk Start/End Hour**. Artist-owned — Atmosphere Enable does not overwrite them |
-| **Volumetric Moon Orbit** | **Moon Y Rotation**, **Moon Orbit Inclination**, **Moon Phase Offset** (180 = default cinematic arc). Volumetric Clouds sky only |
-| **Volumetric Night & Twilight Shadows** | **Night Shadow Distance** (25–250 m), **Night Shadow Quality** (0 = 1024, then 2048, then 4096 moon slice), Depth/Normal Bias, **Sun Shadow Cutoff**, **Twilight Overlap**, **Twilight Sun Floor**, **Transition Light Overlap**, **Cloud Light Block** |
+#### Time & sun path
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Hour / Minute / Second** | 0–23 / 0–59 / 0–59 | Authored clock. Writes `timeOfDay` |
+| **Cycle Speed** | typically −10–10 | Scales time. **0 holds**. **Negative reverses**. Ignored while Cycle Manager is Active (that tab owns speed) |
+| **Sun Y Rotation** | degrees | Compass offset of the sun arc |
+
+#### Light intensity & color
+
+| Control | What it does |
+|---------|----------------|
+| **Sunrise / Day / Sunset Intensity** | Sun directional intensity in that phase |
+| **Moon Light Intensity** | Night directional (moon) intensity. On Volumetric Clouds, live readouts under this row show moon weight, twilight Soft window, and sun/moon intensities |
+| **Sunrise / Day / Sunset / Moon Light Color** | Directional color per phase |
+
+#### Sun / moon size & exposure
+
+| Control | What it does |
+|---------|----------------|
+| **Sunrise / Day / Sunset Sun Size** | Skybox `_SunSize`. Cycle Manager does **not** blend this across a phase (avoids sun+moon double disc) |
+| **Moon Size** | Fallback disc on the directional when no Moon Manager texture. Keep **0** when Moon Manager owns the disc. HQ ≤ 0.08, Stylized ≤ 0.1 if you must use it |
+| **Sunrise / Day / Sunset / Night Exposure** | Skybox exposure. On Volumetric Clouds, DayNight keeps exposure at identity on the PB skybox; grade with the volume instead |
+
+#### Additional skybox (per phase)
+
+| Control | What it does |
+|---------|----------------|
+| **Sun Disk** | None / Simple / High Quality Mie disc |
+| **Sun Size Convergence** | How tight the High Quality disc is (1–10) |
+| **Atmosphere Thickness** | Procedural scatter amount on Clear/Stylized/HQ. Volumetric Clouds does **not** map this onto PB density |
+| **Sky Tint** | 0.5 gray = Earth identity on procedural skies. On Volumetric Clouds it is a wavelength shift **after** moon fill (0.5 gray = no grade) |
+| **Ground Color** | Lower hemisphere / ground albedo on the skybox |
+
+#### Cloud Color Settings
+
+| Control | What it does |
+|---------|----------------|
+| **Enable Cloud Color Cycle** | When on, stamps sunrise/day/sunset/night cloud colors onto stylized/HQ `_CloudColor` (and volumetric `_LLP_DayNightCloudTint`). When off, the material/volume color stays |
+
+#### Celestial Night Visibility
+
+| Control | What it does |
+|---------|----------------|
+| **Celestial Dawn Start / End Hour** | Stars begin fading at Start; fully hidden at End. Defaults track the sunrise phase |
+| **Celestial Dusk Start / End Hour** | Stars begin fading in at Start; full at End |
+
+These four hours are **artist-owned**. Atmosphere Enable, Seed, and HQ celestial defaults must **not** overwrite them.
+
+#### Volumetric Moon Orbit (Volumetric Clouds sky only)
+
+| Control | What it does |
+|---------|----------------|
+| **Moon Y Rotation** | Compass offset of the moon’s own arc (not derived from the sun direction) |
+| **Moon Orbit Inclination** | Tilt vs the sun plane. ~23.5° ecliptic + ~5° lunar ≈ 28.5° |
+| **Moon Phase Offset** | Pitch offset from the cinematic arc. **180** = default (high at night). Continuous — no snap at 180. Values above 180 rise earlier in sunset |
+
+#### Volumetric Night & Twilight Shadows (Volumetric Clouds sky only)
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Night Shadow Distance** | 25–250 m (default 100) | Tight sub-frustum for the **moon** additional-atlas slice. Lower = sharper nearby trees |
+| **Night Shadow Quality** | 0 / 0.5 / 1 | Moon slice 1024 / 2048 / 4096, **clamped to the URP additional atlas**. VR atlas should stay ≥ 2048 |
+| **Depth Bias / Normal Bias** | | Moon shadow acne controls |
+| **Sun Shadow Cutoff** | degrees | Sun elevation above which only the sun casts Main Soft |
+| **Twilight Overlap** | degrees | Elevation band around the horizon used for the twilight intensity floor |
+| **Twilight Sun Floor** | | Soft sun floor **only before moon rise**. Once moon weight > 0, sun fades with the Soft-window handoff |
+| **Transition Light Overlap** | 0–1 (default 0.55) | Extra sun+moon intensity in the **middle** of the handoff so the scene does not dip dark. Endpoints stay 0 and 1 |
+| **Cloud Light Block** | 0–1 (default 0.4) | How hard the volumetric cloud cookie darkens the ground. 0 = no cookie darkening. 1 = full volume Shadow Opacity. Do not write catalog `shadowOpacity` from this slider |
+
+Stock URP cannot give the moon its own Soft slice — that is why LLP ships patched URP (**§1 Appendix B**).
 
 On Volumetric Clouds, live readouts under Moon Light Intensity show moon weight, twilight Soft window, and sun/moon intensities.
 
@@ -1488,39 +1687,140 @@ Cycle Manager only **references** catalog presets — it does not Seed or rewrit
 
 Open **Volumetrics**. **Copy Volumetrics Values** dumps active fog + per-light contribution to the clipboard.
 
-Tabs **organize** settings. Each path has its own **Enabled** toggle — Raymarch and Froxel can run together.
+Tabs **organize** settings. Each path has its own **Enabled** toggle — Raymarch and Froxel can run together. Fog composites when Enabled is on **and** Post Processing is on the camera. Orthographic cameras are supported.
 
-The **Renderer Feature** box reports whether Volumetric Fog is on the active URP renderer. Fog composites when Enabled is on **and** Post Processing is on the camera.
+The **Renderer Feature** box reports whether Volumetric Fog is on the active URP renderer.
 
-### Raymarch
+Main Light contribution lights **both** the sun (cascade atlas) and the additional directional (moon) when Day Night uses two lights. Point/spot shafts are **Froxel only**.
 
-| Area | Controls |
-|------|----------|
-| **Scene Fog (Raymarch)** | **Create Managed Volume + Profile**, **Create New Profile**. **Enabled**, Density, Distance, Base Height, Maximum Height, Enable Ground Cutoff, **Main Light (Directional)**, Scattering, Anisotropy, Tint. Point/spot volumetrics use **Froxel**, not this path |
-| **Sky Cloud Shadows / God Rays** | Shared with Froxel. **Enabled**, Strength, Cloud Deck Height, Debug Stripes. Needs Main Light + Scattering; stylized or HQ cloud skybox |
-| **Quality (Raymarch)** | Max Steps, Blur Iterations |
-| **Volumetric Lights** | Scene list + per-light **Volumetric Contribution** (directional drives Scene Fog; point/spot need Froxel) |
+### Raymarch — Scene Fog
 
-### Froxel
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Create Managed Volume + Profile** | button | Makes the global volume + `VolumetricFogVolumeComponent` profile if missing |
+| **Create New Profile** | button | New profile asset on the managed volume |
+| **Enabled** | toggle | Master switch for the raymarch path |
+| **Density** | 0–1 | How much media is in the ray. Higher = thicker fog |
+| **Distance** | 0–512 m | How far the march travels. Beyond this, no raymarch fog |
+| **Base Height** | m | Bottom of the fog slab |
+| **Maximum Height** | m | Top of the fog slab |
+| **Enable Ground Cutoff** | toggle | Stops the march below **Ground Height** so fog does not fill under the terrain |
+| **Ground Height** | m | Cutoff plane when ground cutoff is on |
+| **Main Light (Directional)** | toggle | Sun + moon directional shafts. Needs Main Soft shadows for object shafts |
+| **Scattering** | 0–1 | How brightly lit fog glows. 0 = extinction only (dark fog) |
+| **Anisotropy** | −1–1 | Phase: **positive** = forward scatter (glow toward the light), **0** = isotropic, **negative** = backscatter. 0 is a good default |
+| **Tint** | HDR color | Multiplies in-scattered light |
 
-| Area | Controls |
-|------|----------|
-| **Volumes** | **Create Global Froxel Volume**, **Create Local Fog Region**. GPU uses up to 8 regions. Select a region in the Inspector for **Local Noise** (Enable, Intensity, Cutoff, Scale, **Wind Speed**, **Axis Speed**, Wind Direction). Axis Speed is per-axis (1 = follow Wind Speed, 0 = no scroll, negative = reverse). Global froxel wind stays a single speed |
-| **Scene Fog (Froxel)** | Enabled, Density, Distance, **Attenuation Distance**, Base/Maximum Height, Ground Cutoff, Ambient Color, **Main Light Contribution**, Scattering, Anisotropy, Tint, **Point / Spot Lights (Froxel)** |
-| **Sky Cloud Shadows / God Rays** | Same shared foldout as Raymarch |
-| **Multiple Scattering (SSMS)** | Intensity (0 disables), Scatter, Radius, Threshold, Max Iterations |
-| **Noise (Global Froxel)** | Enable, Scale, Intensity, Cutoff, Wind Speed, Wind Direction, Variable Direction, Gust Strength |
-| **Quality (Froxel)** | Temporal Accumulation, Z Jitter, Apply Dither, Grid Width / Height / Depth |
+Point/spot volumetrics use **Froxel**, not this path.
+
+### Raymarch — Quality
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Max Steps** | 8–256 | March samples. More = smoother shafts, higher cost |
+| **Blur Iterations** | 1–4 | Half-res blur of the fog buffer |
+
+### Froxel — volumes
+
+| Control | What it does |
+|---------|----------------|
+| **Create Global Froxel Volume** | Global volume for froxel Scene Fog |
+| **Create Local Fog Region** | Box/region collider the GPU can inject (max **8** regions). Select it in the Inspector for **Local Noise** |
+
+#### Local region noise (Inspector on the region)
+
+| Control | What it does |
+|---------|----------------|
+| **Enable** | Local noise on this region only |
+| **Intensity / Cutoff / Scale** | How strong, where it clips, feature size |
+| **Wind Speed** | Overall scroll along Wind Direction |
+| **Axis Speed** | Per-axis multiplier (default 1,1,1). 1 = follow Wind Speed, 0 = no scroll on that axis, negative = reverse. Do not normalize this away |
+| **Wind Direction** | World-space scroll vector |
+
+Global froxel wind stays a **single** speed; axis speed is local-region only.
+
+### Froxel — Scene Fog
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enabled** | toggle | Master switch, independent from Raymarch |
+| **Density** | 0–2 | Injected media amount |
+| **Distance** | 0–512 m | Max froxel range from camera |
+| **Attenuation Distance** | metres (default 128) | Optical depth. **Shorter = thicker**. Independent from Distance. 128 m matches the original look |
+| **Base Height / Maximum Height** | m | Vertical slab |
+| **Ground Cutoff / Ground Height** | | Same idea as raymarch |
+| **Ambient Color** | HDR | Unlit fog color (fill when no shafts) |
+| **Main Light Contribution** | toggle | Sun + moon directional inject |
+| **Scattering / Anisotropy / Tint** | same idea as raymarch | Froxel copies of those |
+| **Point / Spot Lights (Froxel)** | toggle | Master switch. Per-light still needs **Contribute To Froxel** |
+
+### Sky Cloud Shadows / God Rays (shared)
+
+Needs Main Light + Scattering, and a **stylized or HQ** cloudy skybox (or volumetric cookie mode). Debug Stripes ignore the sky and draw world-space bars so you can verify the bind.
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enabled** | toggle | Clouds occlude sun inside the fog; gaps stay lit (god rays that match the deck) |
+| **Strength** | 0–1 | How dark fully covered fog gets. 1 = clouds block the sun completely |
+| **Cloud Deck Height** | 20–2000 m | Virtual deck above the camera. Lower = tighter, faster shafts; higher = broad parallel beams |
+| **Debug Stripes** | toggle | Bold world-space stripes instead of the cloud pattern |
+
+### Froxel — Multiple Scattering (SSMS)
+
+Screen-space veil on top of froxel. Intensity **0** disables it. Catalog cap is **1.574**.
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Intensity** | 0–1.574 | 0 = off. Higher = stronger distant haze |
+| **Scatter** | 0–1 | How strongly coarser mips bleed in (1 = maximum soft veil). Scatter is **width**, not a bypass of blur |
+| **Radius** | ≥ 0.01 (try 0.35–0.7) | Softness / brightness scale of the SSMS buffer. **Lower = brighter veil** |
+| **Threshold** | 0–1 | Prefilter brightness. **0** blurs the whole image (best for fog) |
+| **Max Iterations** | 3–10 | Mip blur passes. More = wider veil, higher cost |
+
+### Froxel — Noise (global)
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enable** | toggle | Global 3D noise in the froxel |
+| **Scale** | 0.005–1 | Feature size. Lower = larger blobs |
+| **Intensity** | 0–1 | How hard noise modulates density |
+| **Cutoff** | 0–1 | Threshold; higher = more empty pockets |
+| **Wind Speed** | 0–2 | Scroll rate along Wind Direction |
+| **Wind Direction** | vector | World-space axis |
+| **Variable Direction** | toggle | Gently swings heading over time |
+| **Variation Frequency / Amount** | 0.01–1 / 0–1 | How fast / how far the heading wanders |
+| **Gust Strength** | 0–1 | Fast rushes along the wind |
+| **Gust Frequency** | 0.02–1 | How often gusts build (lower = slower, more natural) |
+| **Gust Spatial Scale** | 0.005–0.25 | World size of gust patches. **Lower = larger** sweeping gusts |
+| **Gust Uniformity** | 0–1 | 0 = random spots, 1 = uniform sheet, ~0.4 = both |
+
+### Froxel — Quality
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Temporal Accumulation** | 0–0.98 (~0.85 default) | History blend. Primary anti-banding. 0 = off (noisier, no ghosting) |
+| **Z Jitter** | 0–1 | Breaks concentric slice banding across frames. Runtime floors this to ≥ 0.5 when main shadows run |
+| **Apply Dither** | 0–1 (keep ~0.2–0.5) | Soft anti-grid at composite. High values look grainy without TAA |
+| **Grid Width / Height / Depth** | 96–320 / 54–180 / 48–256 | Froxel resolution. Bigger = sharper shafts, more GPU |
 
 ### Per-light Volumetric Contribution
 
-On **Volumetric Lights**, **Edit** a light:
+On **Volumetric Lights**, **Edit** a light. **Enable** adds `VolumetricAdditionalLight` — it does **not** replace Scene Fog.
 
-- **Enable** adds `VolumetricAdditionalLight` (does **not** replace Scene Fog).  
-- **Volume Profile** + **Create New Profile** / **Set as Active Profile** (only if you intend to replace the global profile).  
-- Point/spot: **Contribute To Froxel**, Froxel Intensity / Anisotropy / Falloff / Range Scale / Density Boost / Tint.  
-- **Enable All Spot/Point** / **Disable All Spot/Point** for batch toggles.  
-- **Make Preset** saves a volumetrics preset from that light.
+| Control | What it does |
+|---------|----------------|
+| **Volume Profile** + **Create New Profile** / **Set as Active Profile** | Only if you intend to **replace** the global fog profile |
+| **Contribute To Froxel** | This light injects shafts into the froxel |
+| **Froxel Intensity** | Brightness of those shafts |
+| **Froxel Anisotropy** | Phase; positive = glow toward the light |
+| **Froxel Falloff** | Distance falloff shape. Higher = tighter core |
+| **Range Scale** | Scales Unity light range for froxel only (1 = match the light) |
+| **Density Boost** | Extra fog density near this light. 0 keeps Scene Fog unchanged |
+| **Tint** | Color of this light’s shafts |
+| **Enable All Spot/Point** / **Disable All Spot/Point** | Batch toggles |
+| **Make Preset** | Saves a volumetrics preset from that light |
+
+Directional lights drive Scene Fog Main Light; they do not need Contribute To Froxel.
 
 ### Setup checklist
 
@@ -1534,32 +1834,53 @@ On **Volumetric Lights**, **Edit** a light:
 
 ## 59) HQ, Stylized, and Volumetric clouds
 
-Four sky kinds from **Skybox Type**:
+Four sky kinds from **Skybox Type** on **Directional Light and Sky**:
 
-| Mode | Look |
-|------|------|
-| **Clear Sky** | Atmosphere without FBM / HQ march |
-| **Stylized Clouds** | Painterly flat **Cloud Color** FBM; moon → clouds → soft sun attenuation |
-| **HQ Clouds** | In-skybox volumetric march behind opaques |
-| **Volumetric Clouds** | Physically based sky + real volumetric clouds (LLP Sky volume) |
+| Mode | Look | Tune here |
+|------|------|-----------|
+| **Clear Sky** | Atmosphere without FBM / HQ march | DayNight config |
+| **Stylized Clouds** | Painterly flat **Cloud Color** FBM; moon → clouds → soft sun attenuation | Sliders on that tab (**§54**) |
+| **HQ Clouds** | In-skybox volumetric march behind opaques | Sliders on that tab (**§54**) |
+| **Volumetric Clouds** | Physically based sky + real volumetric clouds | **LLP Volumetric Sky Volume** (**§63**, **§64**) |
 
 ### HQ
 
 - Composite in the skybox (behind opaque geometry)  
 - Sun after clouds × cloud transmittance — no bullseye clamp ring  
 - Sun Rays gated on real cover  
+- Slider-by-slider: **§54** HQ table  
 
 ### Stylized
 
 - Factory opacity ~0.7–1.0 (not HQ volumetric opacities)  
 - Thin cover uses soft local Beer attenuation, not a hard sun block  
+- Slider-by-slider: **§54** Stylized table  
 
-### Volumetric
+### Volumetric Clouds (Physically Based)
 
-- Sun and moon are separate directionals  
-- Atmosphere/cloud look is the **LLP Sky** volume, not DayNight sky-tint mapping  
+This is a **fourth sky kind**, not an Atmosphere Scene Preset style. Presets stay Clear / Stylized / HQ.
 
-Atmosphere Scene Presets (**§56**) stamp the matching sky style and cloud deck per look × phase.
+Click **Volumetric Clouds**:
+
+1. `EnsureSetup` adds **PhysicallyBasedSkyURP** + **VolumetricCloudsURP** to the active renderer.  
+2. Creates **LLP Volumetric Sky Volume** with Visual Environment (Physically Based, Dynamic, **Camera** space), Physically Based Sky, Fog, and Volumetric Clouds.  
+3. Assigns the LLP **Physically Based Volumetric** skybox (PB atmosphere + LLP celestials + moon).  
+4. Ensures a **Moon directional** so night Soft can live on the additional atlas (**§1 Appendix B**).
+
+Atmosphere and cloud look live on that volume. DayNight Sky Tint / Atmosphere Thickness / Exposure are **not** copied onto PB `airTint` / densities.
+
+| Volume override | Role |
+|-----------------|------|
+| **Visual Environment (URP)** | Sky Type = Physically Based, Ambient Mode, planet radius, **Rendering Space = Camera** |
+| **Physically Based Sky** | Earth model, aerosols, artistic tints, intensity (**§63**) |
+| **Fog** | Height fog / aerial perspective from the PB package (**§63**) |
+| **Volumetric Clouds (URP)** | 3D cloud march, wind, lighting, cookie shadows (**§64**) |
+
+Switching away from Volumetric Clouds **disables** the PB volume so Clear/Stylized/HQ skies are not left with a live Physically Based stack.
+
+Celestial art (stars, aurora, nebula, …) still uses the **§54** foldouts on the volumetric skybox.
+
+Atmosphere Scene Presets (**§56**) stamp Clear / Stylized / HQ only.
 
 ---
 
@@ -1641,6 +1962,185 @@ Smooth GPU material tinting — does **not** rebuild lightmaps while scrubbing.
 | **Tint Strength** | 0–1 |
 | **04:00 / 12:00 / 18:00 / 22:00 Tint** | Keyframe colors |
 | **Refresh Tint Renderers** | Rebuilds the tint renderer list |
+
+---
+
+## 63) Physically Based Sky volume (Visual Environment, Sky, Fog)
+
+These overrides live on **LLP Volumetric Sky Volume** after you click **Skybox Type → Volumetric Clouds**. Open the volume in the Inspector (or the Volume component on that object). They are **bundled with LLP** — not a second Asset Store product (**§1 Appendix B**).
+
+DayNight Sky Tint does **not** write these fields. Tune the sky here; use DayNight for sun/moon **lights**, celestials, and the cycle clock.
+
+### Visual Environment (URP)
+
+| Control | What it does |
+|---------|----------------|
+| **Sky Type** | **None** / **Physically Based Sky** / **Custom**. For LLP volumetric, keep **Physically Based Sky**. None blacks the daytime atmosphere |
+| **Sky Material** | Only for Custom. LLP assigns the Physically Based Volumetric skybox via the renderer feature — leave this unless you know you need a custom shader graph (Render Face = Both) |
+| **Ambient Mode** | **Dynamic** rebuilds the ambient probe from the displayed sky (correct for a moving sun/moon). **Static** uses Environment Lighting on the Lighting window |
+| **Radius** | Planet radius in **kilometers** (Earth ≈ 6378). Drives horizon curvature for sky and clouds |
+| **Rendering Space** | **Camera** = sky/clouds stay centered on the camera (LLP default — required so Scene view does not steal the planet). **World** = you can fly through the atmosphere |
+| **Center** | World space only. Automatic = surface at origin. Manual = **Position** of the planet center in km |
+
+### Physically Based Sky — Model
+
+| Control | What it does |
+|---------|----------------|
+| **Type** | **Earth (Simple)** — fewer fields. **Earth (Advanced)** — ozone, space, ground textures. **Custom Planet** — you own air RGB densities |
+| **Atmospheric Scattering** | Blue-tints distant opaque objects (aerial perspective). Off = mountains stay their albedo color |
+
+### Planet & space (hidden on Earth Simple)
+
+| Control | What it does |
+|---------|----------------|
+| **Planet Rotation** | Orients ground textures. Does not rebuild LUTs |
+| **Ground Color Texture** | Surface albedo map |
+| **Ground Tint** | Multiplies the ground (and the default ground color if no texture) |
+| **Ground Emission Texture / Multiplier** | City lights / lava. Multiplier is HDR |
+| **Space Rotation / Space Emission Texture / Multiplier** | Night sky HDRI behind the atmosphere |
+
+### Air (Custom Planet only)
+
+| Control | What it does |
+|---------|----------------|
+| **Air Maximum Altitude** | Depth of the molecular layer from sea level (m). Controls height falloff |
+| **Air Density R / G / B** | Opacity of air at zenith per channel. This is the Rayleigh color of the sky |
+| **Air Tint** | Single-scattering albedo of air molecules. 0 = absorbing, 1 = scattering. On Earth models, leave this alone — LLP Sky Tint is the shader-side grade |
+
+Do **not** crank aerosol density to “fix” Sky Tint. Extra Mie at the horizon draws spokes that converge on the sun.
+
+### Aerosols (Mie / haze)
+
+| Control | What it does |
+|---------|----------------|
+| **Aerosol Density** | Opacity of haze at zenith. Higher = milkier sky, stronger sun aureole |
+| **Aerosol Tint** | Albedo of the haze. 0 absorbs, 1 scatters |
+| **Aerosol Anisotropy** | **Positive** = forward scatter (glow around the sun), **negative** = backscatter, **0** = isotropic |
+| **Aerosol Maximum Altitude** | Height falloff of the haze layer (Earth Advanced / Custom) |
+
+### Ozone (Earth Advanced / Custom)
+
+| Control | What it does |
+|---------|----------------|
+| **Ozone Density** | Dims/green-shifts the upper atmosphere |
+| **Ozone Minimum Altitude / Layer Width** | Custom Planet only — where the ozone slab sits |
+
+### Artistic Overrides (do not affect precomputation LUTs)
+
+| Control | What it does |
+|---------|----------------|
+| **Color Saturation** | How colorful the sky is. 1 = physical. 0 = gray |
+| **Alpha Saturation / Alpha Multiplier** | Opacity of the sky overlay |
+| **Horizon Tint** | Color grade at the horizon |
+| **Horizon-Zenith Shift** | Blend between Horizon Tint and Zenith Tint |
+| **Zenith Tint** | Color grade straight up |
+
+### Miscellaneous — intensity
+
+| Control | What it does |
+|---------|----------------|
+| **Intensity Mode** | **Exposure** (EV compensation) or **Multiplier**. Lux is unused unless enabled in the editor |
+| **Exposure Compensation** | EV. Higher = brighter sky |
+| **Multiplier** | Linear brightness when mode is Multiplier |
+
+### Fog (PB height fog — not the Volumetrics tab)
+
+This is the physically based **height fog** on the same volume. LLP Raymarch/Froxel is a separate override (**§58**). You can use both: PB fog for aerial perspective, LLP fog for local shafts.
+
+| Control | What it does |
+|---------|----------------|
+| **State** | Enables PB fog |
+| **Fog Attenuation Distance** | Distance at which fog reduces background light by ~63% (m). Shorter = thicker |
+| **Base Height** | Boundary between constant and exponential fog (m) |
+| **Maximum Height** | Top of the fog layer (m). Cannot be below Base Height |
+| **Max Fog Distance** | Hard cut |
+| **Color Mode** | **Constant Color** or sky-tinted mip fog |
+| **Color** | Constant mode |
+| **Tint + Mip Fog Near / Far / Max Mip** | Sky-tinted mode — samples the sky LUT |
+| **Under Water / Water Height** | Optional underwater fog when the camera is below the water plane |
+
+---
+
+## 64) Volumetric Clouds (URP) volume
+
+Override **Sky/Volumetric Clouds (URP)** on **LLP Volumetric Sky Volume**. The **Volumetric Clouds** renderer feature must be enabled (`VolumetricCloudsURP`). Local Clouds and Earth Curvature are driven by Visual Environment when that override is active — use **Rendering Space** and **Planet Radius** there instead.
+
+Cloud shadows render as a **main-light cookie**. DayNight **Cloud Light Block** (**§55**) scales how hard that cookie darkens the ground. Do not set cookie transmittance so low that the terrain goes black while the sun still glows through the deck.
+
+### General & shape
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **State** | on/off | Master switch |
+| **Local Clouds** | toggle | Scene-space vs skybox. Disabled when Visual Environment is active (use Rendering Space) |
+| **Cloud Preset** | Sparse / Cloudy / Overcast / Stormy / **Custom** | Loads density, shape, erosion, altitude. Editing any child field flips to Custom |
+| **Density Multiplier** | 0–1 | Global density of the volume |
+| **Density Curve** | 0–1 height → density | How thick the cloud is from bottom (left) to top (right) |
+| **Shape Factor** | 0–1 | Larger noise through coverage. **Higher = less coverage, smaller clouds** |
+| **Shape Scale** | ≥ 0.1 | Size of that large noise |
+| **Erosion Factor** | 0–1 | Smaller noise on edges. **Higher = more eaten silhouettes** |
+| **Erosion Scale** | ≥ 1 | Size of the erosion noise |
+| **Erosion Curve** | height → erosion | Erosion vs height in the volume |
+| **Micro Erosion** | toggle | Extra finest noise (expensive) |
+| **Micro Erosion Factor / Scale** | 0–1 / ≥ 0.1 | Amount and size of that noise |
+| **Ambient Occlusion Curve** | height → AO | Darkens the base of the volume |
+| **Bottom Altitude** | m (≥ 0.01) | Height of the cloud layer bottom |
+| **Altitude Range** | m (≥ 100) | Thickness of the layer |
+| **Shape Offset** | XYZ m | World offset of the large noise |
+| **Earth Curvature** | 0–1 | Horizon intersection. Disabled when Visual Environment owns planet radius |
+
+**Sparse** = small, spread apart, high altitude. **Cloudy** = partial cover. **Overcast** = thin full-sky sheet. **Stormy** = tall dark mass.
+
+### Wind
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Global Wind Speed** | km/h | Horizontal speed |
+| **Shape Speed Multiplier** | 0–1 | How much of that speed the large shapes use (additional properties) |
+| **Erosion Speed Multiplier** | 0–1 | How much the erosion noise uses |
+| **Orientation** | 0–360° | Wind heading vs world +X |
+| **Altitude Distortion** | −1–1 | Wind shears the layer vertically |
+| **Vertical Shape Wind Speed** | | Up/down drift of large shapes |
+| **Vertical Erosion Wind Speed** | | Up/down drift of erosion |
+
+### Lighting
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Ambient Light Probe Dimmer** | 0–2 | Probe influence. Lower = darker clouds |
+| **Sun Light Dimmer** | 0–2 | Sun influence. Lower = darker clouds |
+| **Erosion Occlusion** | 0–1 | How much erosion darkens AO |
+| **Scattering Tint** | color | Default black = physical. Tint shifts the in-scatter (not DayNight Sky Tint) |
+| **Powder Effect Intensity** | 0–1 | Local scatter; higher = more powdery/diffused |
+| **Multi Scattering** | 0–1 | Light bouncing inside the cloud. Higher = softer, brighter cores |
+
+Night lighting uses LLP’s moon cloud path (`_LLP_MoonCloud*`) while the sun stays Main. Do not expect URP additional lights to shade the deck.
+
+### Shadows (cloud cookie)
+
+| Control | What it does |
+|---------|----------------|
+| **Shadows** | Builds the main-light cookie. Overrides the directional cookie while on |
+| **Shadow Resolution** | 64 / 128 / 256 / 512 / 1024. Higher = sharper ground blobs, more GPU |
+| **Shadow Opacity** | 0–1 how dark the cookie is. DayNight **Cloud Light Block** scales this at runtime |
+| **Shadow Distance** | Metres of ground around the camera the cookie covers (default 8000) |
+| **Shadow Opacity Fallback** | Opacity outside that area |
+
+### Quality
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Temporal Accumulation** | 0–1 (default 0.95) | History blend. Higher = smoother, more ghosting when the camera turns. Stereo VR skips this pass |
+| **Perceptual Blending** | toggle (0 or 1) | Blends clouds perceptually with the environment. Can artifact if the sky is over-exposed |
+| **Num Primary Steps** | 24–256 (desktop ~32) | View-ray samples. More = less noise, longer view, more GPU. VR presenting caps this |
+| **Num Light Steps** | 1–16 | Lighting march. More = smoother self-shadow, more GPU |
+| **Fade In Mode** | Automatic / Manual | How clouds appear near the camera near plane |
+| **Fade In Start / Distance** | m | Manual only — where they start and how far until full density |
+| **Distance Attenuation** | 0–1 | Horizon fade of density/detail. **0 = off** |
+| **Distance Attenuation Start** | m (default 8000) | Where the fade begins |
+| **Distance Attenuation Distance** | m (default 20000) | How long the fade takes |
+| **Distance Attenuation Irregularity** | 0–1 | Breaks the fade into patches instead of a flat shelf |
+| **Distance Attenuation Noise Scale** | m (default 5000) | Size of those patches. Larger = broader lobes |
 
 ---
 
