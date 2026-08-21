@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260802-atmosphere" />
+  <link rel="stylesheet" href="styles.css?v=20260821-ui" />
 </head>
 <body>
   <header class="site-header" id="siteHeader">
@@ -83,7 +83,7 @@
       <section class="doc-page" id="intro">
         <p class="page-eyebrow">Documentation</p>
         <h1 class="page-title">Light Lab PRO — Tutorials &amp; Documentation</h1>
-        <p class="page-lead">Guides, module references, and troubleshooting for the Light Lab PRO Unity editor window.</p>
+        <p class="page-lead">Guides, module references, and troubleshooting for Light Lab PRO v2.0.0 in Unity 6 URP.</p>
         <aside class="callout callout--note" role="note">
           <p class="callout-title">Note</p>
           <p>This guide was generated with AI assistance to help a solo developer maintain documentation. Please report inaccuracies or suggest improvements.</p>
@@ -110,11 +110,9 @@
         <p class="page-lead module-hint">Choose a topic from the sidebar to load its documentation.</p>
 
         <div class="module-doc">
-          <div id="docThumbWrap" class="module-screenshot" hidden>
-            <button type="button" id="docImageOpen" class="module-screenshot-btn" aria-label="Open full-size screenshot">
-              <img id="docImage" alt="" loading="lazy" />
-            </button>
-            <p class="module-screenshot-caption">Click to enlarge</p>
+          <div id="docThumbWrap" class="module-screenshot-gallery" hidden>
+            <div id="docGallery" class="screenshot-stack"></div>
+            <p class="module-screenshot-caption">Click a screenshot to enlarge</p>
           </div>
           <article id="docReadmeBody" class="prose module-prose">
             <p><em>Loading documentation…</em></p>
@@ -189,9 +187,9 @@
     </button>
   </template>
 
-  <script src="readme-data.js?v=20260802-atmosphere"></script>
+  <script src="readme-data.js?v=20260821-ui"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="modules.js?v=20260802-atmosphere"></script>
-  <script src="script.js?v=20260802-atmosphere"></script>
+  <script src="modules.js?v=20260821-ui"></script>
+  <script src="script.js?v=20260821-ui"></script>
 </body>
 </html>

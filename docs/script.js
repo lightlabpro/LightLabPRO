@@ -6,12 +6,12 @@ const moduleCardsRoot = document.getElementById("moduleCards");
 const docTitle = document.getElementById("docTitle");
 const docReadmeBody = document.getElementById("docReadmeBody");
 const docThumbWrap = document.getElementById("docThumbWrap");
+const docGallery = document.getElementById("docGallery");
 const docImage = document.getElementById("docImage");
 const troubleshootingReadme = document.getElementById("troubleshootingReadme");
 const imageLightbox = document.getElementById("imageLightbox");
 const lightboxImage = document.getElementById("lightboxImage");
 const lightboxCaption = document.getElementById("lightboxCaption");
-const docImageOpen = document.getElementById("docImageOpen");
 const sidebar = document.getElementById("sidebar");
 const sidebarToggle = document.getElementById("sidebarToggle");
 const sidebarBackdrop = document.getElementById("sidebarBackdrop");
@@ -24,16 +24,7 @@ let cards = [];
 let activeModuleCard = null;
 let activeSection = "intro";
 
-const moduleImages = {
-  "Window Overview & Utilities": {
-    src: "StudioLightingUI.png",
-    caption: "Window utilities and top-level tabs in the Light Lab PRO UI",
-  },
-  "Scene Lights & Cluster": {
-    src: "LightGroupsUI.png",
-    caption: "Scene lights list, grouping, and synchronized editing context",
-  },
-};
+const moduleImages = {};
 
 const MODULE_SECTION_IDS = {
   "Gradual Effect": ["47"],
@@ -45,7 +36,7 @@ const MODULE_SECTION_IDS = {
   "Animation: Rotation": ["53"],
   "Day-Night: Directional A": ["54"],
   "Day-Night: Directional B": ["55"],
-  "Day-Night: Moon": ["46", "5"],
+  "Moon Manager": ["46", "60"],
   "PRO Cookies: Texture": ["43"],
   "PRO Cookies: Animated": ["44"],
   "PRO Cookies: Video": ["45"],
@@ -222,6 +213,71 @@ function moduleDocLooksWrong(title, md) {
   return cfg.forbidden.some((needle) => md.includes(needle));
 }
 
+function findModuleByTitle(title) {
+  return (window.LLP_MODULES || []).find((mod) => mod.title === title) || null;
+}
+
+function getModuleShots(mod, card) {
+  const shots = [];
+  if (mod?.images?.length) {
+    for (const item of mod.images) {
+      if (typeof item === "string") {
+        shots.push({ src: item, alt: mod.imageAlt || mod.title, caption: "" });
+      } else if (item?.src) {
+        shots.push({
+          src: item.src,
+          alt: item.alt || mod.imageAlt || mod.title,
+          caption: item.caption || "",
+        });
+      }
+    }
+  } else if (mod?.image) {
+    shots.push({ src: mod.image, alt: mod.imageAlt || mod.title, caption: "" });
+  } else {
+    const cardImage = card?.querySelector(".card-thumb:not([hidden])");
+    const mapped = moduleImages[mod?.title || getCardTitle(card)];
+    if (cardImage) {
+      shots.push({
+        src: cardImage.getAttribute("src"),
+        alt: cardImage.getAttribute("alt") || `${getCardTitle(card)} reference image`,
+        caption: "",
+      });
+    } else if (mapped) {
+      shots.push({ src: mapped.src, alt: `${mod?.title || "Module"} reference image`, caption: mapped.caption || "" });
+    }
+  }
+  return shots.filter((shot) => shot.src);
+}
+
+function renderModuleGallery(shots, title) {
+  if (!docGallery) return;
+  docGallery.innerHTML = "";
+  shots.forEach((shot, index) => {
+    const figure = document.createElement("figure");
+    figure.className = "screenshot-figure";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "module-screenshot-btn";
+    button.setAttribute("aria-label", `Open full-size screenshot ${index + 1}`);
+    button.dataset.lightboxSrc = shot.src;
+    button.dataset.lightboxAlt = shot.alt || `${title} screenshot`;
+    button.dataset.lightboxCaption = shot.caption || title;
+    const img = document.createElement("img");
+    img.src = shot.src;
+    img.alt = shot.alt || `${title} screenshot`;
+    img.loading = "lazy";
+    button.appendChild(img);
+    figure.appendChild(button);
+    if (shot.caption) {
+      const cap = document.createElement("figcaption");
+      cap.className = "module-screenshot-item-caption";
+      cap.textContent = shot.caption;
+      figure.appendChild(cap);
+    }
+    docGallery.appendChild(figure);
+  });
+}
+
 function getCardTitle(card) {
   return card.querySelector(".sidebar-link-title")?.textContent?.trim() || "Module";
 }
@@ -350,8 +406,8 @@ function selectCard(card, options = {}) {
   card.classList.add("active");
 
   const title = getCardTitle(card);
-  const cardImage = card.querySelector(".card-thumb:not([hidden])");
-  const mappedImage = moduleImages[title];
+  const mod = findModuleByTitle(title);
+  const shots = getModuleShots(mod, card);
   const sectionIds = getCardSectionIds(card);
 
   if (docTitle) docTitle.textContent = title;
@@ -364,21 +420,10 @@ function selectCard(card, options = {}) {
       : "<p><em>No README sections mapped for this module.</em></p>";
   }
 
-  const hasRefImage = Boolean(cardImage || mappedImage);
+  const hasRefImage = shots.length > 0;
   if (docThumbWrap) docThumbWrap.hidden = !hasRefImage;
-
-  if (hasRefImage) {
-    if (cardImage) {
-      docImage.src = cardImage.getAttribute("src");
-      docImage.alt = cardImage.getAttribute("alt") || `${title} reference image`;
-    } else if (mappedImage) {
-      docImage.src = mappedImage.src;
-      docImage.alt = `${title} reference image`;
-    }
-  } else if (docImage) {
-    docImage.removeAttribute("src");
-    docImage.alt = "";
-  }
+  if (hasRefImage) renderModuleGallery(shots, title);
+  else if (docGallery) docGallery.innerHTML = "";
 
   closeSidebarMobile();
 
@@ -428,12 +473,12 @@ function closeSidebarMobile() {
   body.classList.remove("sidebar-open");
 }
 
-function openLightbox() {
-  if (!imageLightbox || !lightboxImage || !docImage) return;
-  lightboxImage.src = docImage.currentSrc || docImage.src;
-  lightboxImage.alt = docImage.alt || "Screenshot";
+function openLightbox(src, alt, caption) {
+  if (!imageLightbox || !lightboxImage || !src) return;
+  lightboxImage.src = src;
+  lightboxImage.alt = alt || "Screenshot";
   if (lightboxCaption) {
-    lightboxCaption.textContent = docTitle?.textContent?.trim() || docImage.alt || "";
+    lightboxCaption.textContent = caption || docTitle?.textContent?.trim() || alt || "";
   }
   imageLightbox.removeAttribute("hidden");
   imageLightbox.setAttribute("aria-hidden", "false");
@@ -489,9 +534,11 @@ window.addEventListener("hashchange", () => {
   showSection(getSectionFromHash(), { scroll: true, updateHash: false });
 });
 
-docImageOpen?.addEventListener("click", (event) => {
-  event.stopPropagation();
-  openLightbox();
+docGallery?.addEventListener("click", (event) => {
+  const button = event.target.closest(".module-screenshot-btn");
+  if (!button || !docGallery.contains(button)) return;
+  event.preventDefault();
+  openLightbox(button.dataset.lightboxSrc, button.dataset.lightboxAlt, button.dataset.lightboxCaption);
 });
 
 imageLightbox?.querySelectorAll("[data-lightbox-close]").forEach((el) => {

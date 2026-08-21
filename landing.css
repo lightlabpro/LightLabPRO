@@ -822,7 +822,7 @@ img {
 .workflow-window--6 { left: 83%; width: min(50%, 31rem); }
 .workflow-window--6.is-revealed { transform: translate(-50%, calc(-50% - 48%)) scale(0.94); }
 
-.workflow-window--7 { left: 62%; width: min(38%, 22rem); }
+.workflow-window--7 { left: 62%; width: min(50%, 31rem); }
 .workflow-window--7.is-revealed { transform: translate(-50%, calc(-50% - 8%)) scale(0.8); }
 
 /* Docs band */
