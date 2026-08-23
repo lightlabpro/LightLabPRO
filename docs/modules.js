@@ -231,6 +231,12 @@ window.LLP_MODULES = [
     ],
   },
   {
+    title: "LLP Lens Flares",
+    sections: "65",
+    keywords: "lens flare llp lens flare profile sun disk glow ghost disc iris glint streak chromatic occlusion cats eye axis array photographic stylized",
+    imageAlt: "LLP Lens Flare component on a Light",
+  },
+  {
     title: "VR Mode",
     sections: "61",
     keywords: "vr mode quest pcvr quality lod openxr volumetrics enable volumetrics",

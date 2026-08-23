@@ -24,6 +24,8 @@ Use the horizontal tabs under the header to switch workflows:
 6. **Animation** — Firefly and Rotation  
 7. **Day–Night Cycle** — **Directional Light and Sky**, **Moon Manager**, **Lightmap Blending**, **Cycle Manager** (see **§15**, **§57**, **§60**, **§62**)
 
+**LLP Lens Flares** are not a window tab. Add **Light Lab PRO → Lens Flare** on a `Light` (Inspector). Full reference: **§65**.
+
 Per-light options appear after you enable **Edit** on a light in a scene list (Presets, FX & Settings, Volumetrics, PRO Cookies, or Animation).
 
 ### Bottom buttons
@@ -58,6 +60,7 @@ Light Lab PRO is a **URP** tool. You do **not** buy an extra Asset Store package
 | **Physically Based Sky** (`Sky/Visual Environment`, `Sky/Physically Based Sky`, `Sky/Fog`) | Yes — bundled MIT package + LLP celestial skybox | No |
 | **Volumetric Clouds (URP)** (`Sky/Volumetric Clouds`) | Yes — bundled under `Assets/Light Lab PRO/Volumetric Clouds URP` | No |
 | **Volumetric Fog** (Raymarch + Froxel) | Yes — LLP Volumetrics tab | No |
+| **LLP Lens Flares** | Yes — `Assets/Light Lab PRO/Lens Flare` (`LLPLensFlare` on a Light) | No. Visual overlay only — does not replace Unity’s Lens Flare Data or change Light energy |
 | **HDRP / third-party sky or fog assets** | Not used | Do not add |
 
 **Why URP is patched (not a second product):** stock URP only casts directional Soft from **Main Light**. Volumetric Clouds sky keeps the **sun as Main** and the **moon as an additional directional**. LLP patches a handful of URP runtime files (`ShadowUtils`, `ShadowCulling`, `UniversalRenderPipeline`, `MainLightShadowCasterPass`, `AdditionalLightsShadowCasterPass`) so the moon gets **one slice** in the **additional** shadow atlas. That is how day and night both have object shadows without flipping Main Light to the moon (which would snap lighting).
@@ -725,6 +728,7 @@ Your project uses ScriptableObject-style presets for:
 - **Animation** settings  
 - **PRO Cookies** configurations  
 - **Day-Night** / **Moon** cycle configs  
+- **Lens Flare** profiles (`LLPFlareProfile` — **Create → Light Lab PRO → Lens Flare → Flare Profile**, see **§65**)  
 
 Exact asset menus appear under **Light Lab PRO** (or submenus) in **Create** — use Unity’s **Project** search for class names if needed.
 
@@ -745,6 +749,9 @@ Exact asset menus appear under **Light Lab PRO** (or submenus) in **Create** —
 | **Moon has light but no Soft shadows** | Additional Light Shadows must be on. Do not replace LLP’s patched URP with stock URP. Keep sun as Main; moon stays additional Soft. See **§1 Appendix B**. |
 | **Volumetric Clouds button does nothing** | `PhysicallyBasedSkyURP` and `VolumetricCloudsURP` must be on the active renderer. Click **Volumetric Clouds** again after **Set Up Day-Night Cycle**. |
 | **Daytime sky is black (sun disc only)** | Visual Environment **Sky Type** must stay **Physically Based** with LLP’s volumetric skybox. Do not set Sky Type to None. |
+| **Two sun discs / flare looks doubled** | A **Sun Disk** flare element plus the skybox sun. Set that phase’s skybox **Sun Size** to **0**, or disable the Sun Disk element. See **§65**. |
+| **Lens flare does not appear** | Component needs an enabled `Light`. Master **Intensity** > 0. Check **Fades**, **Occlusion**, and that the light is on-screen / facing the camera. |
+| **Editing a flare changes every instance** | A **Flare Profile** is a shared asset. Use **Unpack To Inline** to work on one light only. |
 
 ---
 
@@ -762,7 +769,8 @@ If you publish this as a manual site:
 8. **Animation** — Firefly and Rotation.  
 9. **Day–Night Cycle** — sky types, Moon Manager, Lightmap Blending, Cycle Manager.  
 10. **Physically Based Sky & Volumetric Clouds** — volume overrides (**§63**, **§64**).  
-11. **Troubleshooting & FAQ**  
+11. **Lens Flares** — component + profiles (**§65**).  
+12. **Troubleshooting & FAQ**  
 
 ---
 
@@ -846,6 +854,8 @@ A: **Cluster** syncs a **small set** of properties for lights in the same charac
 | **Preset** | ScriptableObject or serialized profile applied via popup. |
 | **Indirect Multiplier** | Unity’s `Light.bounceIntensity` (GI bounce contribution). |
 | **SRP** | Scriptable Render Pipeline (URP/HDRP). |
+| **LLP Lens Flare** | Visual-only overlay on a `Light` (`LLPLensFlare`). Does not change Light color, intensity, or DayNight lighting. See **§65**. |
+| **Flare Profile** | `LLPFlareProfile` asset — shared element stack for one or more lights. |
 
 ---
 
@@ -911,7 +921,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 
 ---
 
-## 41) Section index (1–62)
+## 41) Section index (1–65)
 
 | § | Title |
 |---|--------|
@@ -979,6 +989,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | 62 | Lightmap Blending |
 | 63 | Physically Based Sky volume |
 | 64 | Volumetric Clouds (URP) volume |
+| 65 | LLP Lens Flares |
 
 ---
 
@@ -992,6 +1003,7 @@ Appendix lettering **restarts at A** within each numbered section (**§1**, **§
 | Cookie motion | `LightCookieMotion` (fields referenced in PRO Cookies UI) |
 | Day–night sun & sky | `DayNightCycle`, `DayNightCycleConfig` — `Light Lab PRO/Day Night Cycle Tool/Scripts/` |
 | Moon cycle | `MoonCycleWithIndividualZenithFlip`, `MoonCycleConfig` — same folder |
+| Lens flare | `LLPLensFlare`, `LLPLensFlareElement`, `LLPFlareProfile` — `Light Lab PRO/Lens Flare/` |
 
 Use **Solution Explorer** / **Search in Files** in Unity for exact class filenames.
 
@@ -2145,6 +2157,272 @@ Night lighting uses LLP’s moon cloud path (`_LLP_MoonCloud*`) while the sun st
 | **Distance Attenuation Distance** | m (default 20000) | How long the fade takes |
 | **Distance Attenuation Irregularity** | 0–1 | Breaks the fade into patches instead of a flat shelf |
 | **Distance Attenuation Noise Scale** | m (default 5000) | Size of those patches. Larger = broader lobes |
+
+---
+
+## 65) LLP Lens Flares
+
+**Add Component → Light Lab PRO → Lens Flare** on a GameObject that already has a `Light`. This is **not** a Light Lab PRO window tab and **not** Unity’s built-in Lens Flare Data / HDRP flare. It is LLP’s own overlay (`LLPLensFlare`).
+
+**Visual only.** The component never writes Light color, intensity, shadows, or DayNight lighting. `fadeMultiplier` is for animation / preset hooks only.
+
+A starter asset ships at `Assets/Light Lab PRO/Lens Flare/LLP_BasicFlareProfile.asset`. Create more with **Create → Light Lab PRO → Lens Flare → Flare Profile**.
+
+When a **Sun Disk** (or **Cel Disk**) element is on, set that phase’s skybox **Sun Size** to **0** so the procedural sundisk and the flare disc do not stack.
+
+### Setup
+
+| Control | Notes |
+|---------|--------|
+| **Flare Profile** | Shared `LLPFlareProfile`. When assigned, the Inspector edits **that asset’s** element list (every light using it). |
+| **Save As Profile...** | Writes the current stack to a new profile and assigns it |
+| **Unpack To Inline** | Copies the profile onto this component and clears the assignment so later edits stay local |
+
+### Master
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Intensity** | ≥ 0 | Master brightness of the whole stack |
+| **Scale** | ≥ 0.01 | Master size of the whole stack |
+| **Modulate By Light Color** | toggle (default on) | Multiplies element colors by `Light.color` (read-only) |
+| **Modulate By Light Intensity** | toggle (default off) | Scales brightness by `Light.intensity / Light Intensity Reference` |
+| **Light Intensity Reference** | > 0 | Only when modulate-by-intensity is on. `1` = Light intensity 1 looks like the authored flare |
+| **Fade Multiplier** | ≥ 0 | Extra scale for scripts / animation. Does not affect lighting |
+| **Flare Material** | material | Leave the shipped `LLPLensFlare` material unless you know you need a copy |
+
+If a **Flare Profile** is assigned, Master **Intensity** / **Scale** on the profile win over the component’s copies for drawing.
+
+### Elements (stack)
+
+Each element is one shape along the flare axis. **Top of the list draws first.** Use **Add Element**, **⧉** duplicate, **▲▼** reorder, **✕** delete, and the enable checkbox.
+
+**Photographic shapes:** Sun Disk, Glow, Ring, Polygon, Streak, Ghost Disc, Texture, Cross, Glint, Caustic, Spectrum, Shimmer, Hair Glint, Caustic Arc, Focus Point, Orb, Rounded Rect.
+
+**Stylized shapes:** Cel Disk, Cel Glow, Anime Spike, Anime Cross, Anime Streak, Iris Outline, Rainbow Ring.
+
+#### Shared per element
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Enabled** | toggle | Skip this element when off |
+| **Label** | text | Name in the stack |
+| **Shape** | popup | Photographic / Stylized family |
+| **Axis** | −0.5–2.5 | **0** = on the light, **1** = screen center, **>1** = past center (ghost trail) |
+| **Size** | ≥ 0.001 | Element scale |
+| **Aspect** | XY | Stretch. X > 1 is anamorphic / wide |
+| **Rotation** | degrees | Fixed spin |
+| **Auto Rotate** | toggle | Keep the element aligned to the flare axis as the light moves |
+| **Color** | HDR | Tint |
+| **Intensity** | ≥ 0 | This element only |
+| **Chromatic** | 0–1 | RGB fringe on procedural shapes and Texture |
+| **Coating Amount / Tint** | 0–1 / color | Shown when Chromatic > 0 (Ghost Disc also shows coating without chromatic) |
+| **Blend** | **Additive** / **Screen** | How it composites |
+| **Edge Softness** | 0–0.5 | Outer border (Sun Disk / Cel Disk use **Border Softness** instead) |
+
+#### Placement & Motion (every element)
+
+| Control | What it does |
+|---------|----------------|
+| **Axis Offset** | Extra screen-space shift after axis placement |
+| **Axis Pull** | 0–1 pull back toward the light after axis placement |
+| **Spin Degrees Per Second** | Continuous spin |
+| **Motion Rotation Amount** | −180–180. Rotate from source screen motion |
+| **Ignore Stack Curve** | Skip the component **Stack Size Curve** for this element |
+
+#### Axis Array (repeat along light ↔ center)
+
+| Control | Range | What it does |
+|---------|-------|----------------|
+| **Count** | 1–16 | Copies. **1** = single |
+| **Origin** | Centered / From Axis (+) | Centered = −/+ around Axis. From Axis (+) = start on Axis, step only toward + |
+| **Seed** | int | Deterministic jitter |
+| **Spacing** | ≥ 0 | Axis distance between neighbours (0 = light, 1 = screen center) |
+| **Random Spacing** | 0–1 | 0 = even gaps, 1 = each gap 0×–2× Spacing |
+| **Size Along Axis** | curve | Scale from first copy (0) to last (1) |
+| **Random Size** | 0–1 | Per-copy size jitter around the curve |
+| **Random Angle** | 0–180° | Per-copy rotation jitter |
+| **Color Start / End** | HDR | Tint along the array |
+
+### Shape-specific controls
+
+#### Sun Disk / Cel Disk
+
+| Control | What it does |
+|---------|----------------|
+| **Border Softness** | Outer edge of the disc |
+| **Band Softness** | Softens horizontal color-band / bar-line transitions |
+| **Gradient Direction** | 2D direction of the gradient |
+| **Stop Count** | 2–5 color stops |
+| **Gradient Contrast / Bias** | Tighten or shift the bands |
+| **Stop N Color / Position** | HDR color and 0–1 position |
+
+#### Glow / Cel Glow
+
+| Control | What it does |
+|---------|----------------|
+| **Clamp / Max Radius** | 0.05–1.5. Lower = tighter cutoff |
+| **Falloff Power** | 0.25–8 |
+| **Anisotropy** | 0–5 core tightness |
+| **Soft Knee** | 0–0.5 |
+| **Veil Mix** | 0–1 wide Gaussian haze vs power falloff |
+| **Toon Bands** | Cel Glow only. 0 = unused, 2–8 radial bands |
+
+Raise **Chromatic** for an RGB fringe on the glow edge.
+
+#### Ring / Rainbow Ring
+
+| Control | What it does |
+|---------|----------------|
+| **Ring Thickness** | 0.01–0.95 |
+| **Ringing** | Faint concentric diffraction |
+| **Ring Ribbing** | Rainbow Ring only — concentric scan ribs |
+
+#### Ghost Disc
+
+| Control | What it does |
+|---------|----------------|
+| **Ghost Fill** | Soft blotch. High = translucent haze, lower = softer stain |
+| **Coating Amount / Tint** | AR-coating tint on the ghost |
+
+#### Streak / Anime Streak
+
+| Control | What it does |
+|---------|----------------|
+| **Streak Amount** | 1–16. **1** = anamorphic bar, **2+** = multi-arm |
+| **Core Shroud / Anamorphic Ratio** | Anime Streak extra (soft arm width / horizontal stretch) |
+
+#### Polygon (Iris) / Iris Outline
+
+| Control | What it does |
+|---------|----------------|
+| **Sides** | 3–24 (3 = triangle, 6 = hex) |
+| **Roundness** | 0 = sharp, 1 = circle |
+| **Corner Round** | Polygon only — rounds blade corners without pulling the flats |
+| **Edge Character** | Polygon only — 0 = crisp aperture, 1 = super soft |
+| **Fill / Ghost Fill** | Lower = more translucent |
+| **Surface Grain / Grain Seed** | Polygon only — dust / pinholes |
+| **Coating Rim / Angle** | Polygon only — coloured coating rim |
+| **Outline Width** | Iris Outline only — hollow rim (0 = filled) |
+
+#### Glint / Hair Glint / Anime Spike
+
+| Control | What it does |
+|---------|----------------|
+| **Ray Count** | Glint / Anime Spike. Hair Glint uses **Ray Density** (×20 — 6 ≈ 120 needles, 16 ≈ 320) |
+| **Thickness** | Ray width. 0 = hairline |
+| **Length** | How far rays reach |
+| **Center Mask Strength / Falloff** | Punch a hole in the center of the burst (Strength 0 = no hole) |
+| **Edge Softness** | Softens the sides of each ray |
+| **Length Variety / Ray Seed / Anamorphic Ratio** | Hair Glint extras |
+| **Ray Length Jitter / Spectrum Amount / Core Shroud / Anamorphic Ratio** | Anime Spike extras |
+
+#### Cross / Anime Cross
+
+| Control | What it does |
+|---------|----------------|
+| **Arm Thickness** | 0.001–0.5 |
+| **Core Shroud / Anamorphic Ratio** | Anime Cross extra |
+
+#### Texture
+
+| Control | What it does |
+|---------|----------------|
+| **Texture** | 2D sprite / gobo. Chromatic still applies |
+
+#### Caustic
+
+| Control | What it does |
+|---------|----------------|
+| **Caustic Mode** | 0 / 1 / 2 — different caustic patterns |
+| **Caustic Scale / Warp / Contrast / Seed** | Size, distortion, punch, and variation |
+
+#### Spectrum
+
+| Control | What it does |
+|---------|----------------|
+| **Spectrum Width / Softness** | Width and edge of the spectral streak |
+
+#### Shimmer
+
+| Control | What it does |
+|---------|----------------|
+| **Shimmer Ribbing / Frequency** | Concentric shimmer strength and count |
+
+#### Caustic Arc
+
+| Control | What it does |
+|---------|----------------|
+| **Arc Radius / Width / Spread** | Crescent size, thickness, half-angle (radians) |
+| **Arc Wisp** | Filaments along the crescent |
+| **Inner Spill** | Soft fill inside the arc |
+| **Caustic Seed** | Variation |
+
+#### Focus Point
+
+| Control | What it does |
+|---------|----------------|
+| **Shell Thickness** | Outer shell |
+| **Inner Haze** | Soft center |
+| **Focus Offset / Size** | Spot position and size |
+| **Knot Scale / Warp / Contrast / Seed** | Internal caustic knots |
+
+#### Rounded Rect / Orb
+
+| Control | What it does |
+|---------|----------------|
+| **Width : Height** | Rounded Rect anamorphic ratio |
+| **Edge Character / Fill / Corner Round** | Rounded Rect body |
+| **Fill** | Orb — low = shaded glass ball, high = flat bright ghost |
+| **Surface Grain / Coating Rim / Angle / Grain Seed** | Both |
+
+### Fades
+
+| Control | What it does |
+|---------|----------------|
+| **Screen Edge Fade** + **Screen Edge Curve** | Dim as the source nears the frame edge |
+| **Angular Fade** + **Angular Fade Start** | Fade when the light approaches the camera plane / behind the camera (default on) |
+| **Off Screen Fade Distance** | How far off-screen before the flare dies |
+| **Use Distance Fade** + **Max Distance** | Fade with camera distance |
+| **Distance Affects Scale / Brightness** | What the distance fade scales |
+| **Use Angle Limit** + **Max Angle** + **Angle Curve** | Cone vs camera forward |
+| **Angle Affects Scale / Brightness** | What the angle limit scales |
+
+### Stack & Motion
+
+| Control | What it does |
+|---------|----------------|
+| **Stack Size Curve** | Size along the flare axis for elements that do not **Ignore Stack Curve** |
+| **Cats Eye Amount** | 0–1. Photographic aperture occlusion (cat’s-eye) as the source nears the frame edge |
+
+### Dynamic Boosts
+
+| Control | What it does |
+|---------|----------------|
+| **Use Center Boost** | Extra scale / brightness when the source is near screen center |
+| **Center Boost Range / Bias / Scale / Brightness** | How wide, shift, size add, brightness add |
+| **Use Edge Boost** | Extra scale / brightness near the frame edge |
+| **Edge Boost Range / Bias / Scale / Brightness / Curve** | Same idea at the edge |
+
+### Occlusion
+
+Ray-samples geometry in front of the source so the flare can dim (and optionally shrink) when the light is blocked.
+
+| Control | What it does |
+|---------|----------------|
+| **Enable Occlusion** | Off by default |
+| **Occlusion Radius** | World-space sample radius around the source |
+| **Occlusion Samples** | 1–16 |
+| **Occlusion Softness** | How softly blocked samples fade |
+| **Occlusion Mask** | Layers that can block |
+| **Occlusion Scale Speed / Brightness Speed** | How fast size / brightness catch up |
+| **Occlusion Sample Interval** | Frames between samples (higher = cheaper) |
+| **Occlusion Affects Scale** | Also shrink the stack when occluded |
+
+### Appendix A — What this is not
+
+- Not a Light Lab PRO window tab. There is no Lens Flare row in Studio / FX / Cookies.
+- Not Unity **Lens Flare (SRP)** / **Lens Flare Data**. Do not mix the two on the same look unless you mean to.
+- Does **not** light the scene. Terrain, fog, and clouds ignore it.
 
 ---
 
